@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: WebsiteMother
+  profiles:
+    active: local
+langchain4j:
+  community:
+    dashscope:
+      chat-model:
+        api-key: ${DASHSCOPE_API_KEY:}
+        model-name: qwen-plus
