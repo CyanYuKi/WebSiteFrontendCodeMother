@@ -1,7 +1,7 @@
 # 前端Vue.js应用
 
 <cite>
-**本文引用的文件**
+**本文档引用的文件**
 - [frontend/src/main.js](file://frontend/src/main.js)
 - [frontend/src/App.vue](file://frontend/src/App.vue)
 - [frontend/src/components/HelloWorld.vue](file://frontend/src/components/HelloWorld.vue)
@@ -30,7 +30,7 @@
 10. [附录](#附录)
 
 ## 简介
-本项目是一个基于 Vue 3 单文件组件（SFC）的前端应用，配合后端 Spring Boot 服务，实现“零代码网站生成”的交互式流程。前端负责用户交互、状态管理与 UI 展示；后端通过 LangGraph 工作流编排 AI 节点，完成从需求理解到 Vue 代码生成与审查的全流程。Vite 作为构建工具，提供快速热更新与代理能力，TailwindCSS 实现响应式与暗色主题支持。
+本项目是一个基于 Vue 3 单文件组件（SFC）的前端应用，配合后端 Spring Boot 服务，实现"零代码网站生成"的完整交互式流程。前端负责用户交互、状态管理与 UI 展示；后端通过 LangGraph 工作流编排 AI 节点，完成从需求理解到 Vue 代码生成与审查的全流程。Vite 作为构建工具，提供快速热更新与代理能力，TailwindCSS 实现响应式与暗色主题支持。
 
 ## 项目结构
 前端采用典型的 Vue 3 应用目录结构：
@@ -65,22 +65,22 @@ C -.HTTP.-> H
 H --> I --> J --> K
 ```
 
-图表来源
+**图表来源**
 - [frontend/index.html:1-14](file://frontend/index.html#L1-L14)
 - [frontend/src/main.js:1-6](file://frontend/src/main.js#L1-L6)
-- [frontend/src/App.vue:1-337](file://frontend/src/App.vue#L1-L337)
+- [frontend/src/App.vue:1-345](file://frontend/src/App.vue#L1-L345)
 - [frontend/src/style.css:1-275](file://frontend/src/style.css#L1-L275)
 - [frontend/src/components/HelloWorld.vue:1-94](file://frontend/src/components/HelloWorld.vue#L1-L94)
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
 - [frontend/package.json:1-24](file://frontend/package.json#L1-L24)
-- [src/main/java/com/example/websitemother/controller/GenerateController.java:1-115](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L1-L115)
+- [src/main/java/com/example/websitemother/controller/GenerateController.java:1-131](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L1-L131)
 - [src/main/java/com/example/websitemother/service/GraphWorkflowService.java:1-60](file://src/main/java/com/example/websitemother/service/GraphWorkflowService.java#L1-L60)
 - [src/main/java/com/example/websitemother/state/ProjectState.java:1-78](file://src/main/java/com/example/websitemother/state/ProjectState.java#L1-L78)
 - [src/main/java/com/example/websitemother/node/VueGenerator.java:1-64](file://src/main/java/com/example/websitemother/node/VueGenerator.java#L1-L64)
 
-章节来源
+**章节来源**
 - [frontend/src/main.js:1-6](file://frontend/src/main.js#L1-L6)
-- [frontend/src/App.vue:1-337](file://frontend/src/App.vue#L1-L337)
+- [frontend/src/App.vue:1-345](file://frontend/src/App.vue#L1-L345)
 - [frontend/src/style.css:1-275](file://frontend/src/style.css#L1-L275)
 - [frontend/index.html:1-14](file://frontend/index.html#L1-L14)
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
@@ -90,8 +90,8 @@ H --> I --> J --> K
 - 应用入口与挂载
   - main.js 创建 Vue 应用实例并挂载到 index.html 的 #app。
 - 主界面组件 App.vue
-  - 使用组合式 API 管理多步骤状态（输入、对话、清单、生成、结果）。
-  - 通过 fetch 与后端 /api/generate 接口交互，驱动工作流。
+  - 使用组合式 API 管理五步状态机（输入、聊天、清单、生成、结果）。
+  - 通过 fetch 与后端 /api/generate 接口交互，驱动完整工作流。
   - 使用 highlight.js 对生成的 Vue 代码进行语法高亮。
 - 示例组件 HelloWorld.vue
   - 展示静态资源引入与基础交互按钮。
@@ -101,16 +101,16 @@ H --> I --> J --> K
   - vite.config.js 配置 Vue 插件、TailwindCSS 插件与 /api 代理到后端 8080 端口。
   - package.json 提供 dev/build/preview 脚本。
 
-章节来源
+**章节来源**
 - [frontend/src/main.js:1-6](file://frontend/src/main.js#L1-L6)
-- [frontend/src/App.vue:1-337](file://frontend/src/App.vue#L1-L337)
+- [frontend/src/App.vue:1-345](file://frontend/src/App.vue#L1-L345)
 - [frontend/src/components/HelloWorld.vue:1-94](file://frontend/src/components/HelloWorld.vue#L1-L94)
 - [frontend/src/style.css:1-275](file://frontend/src/style.css#L1-L275)
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
 - [frontend/package.json:1-24](file://frontend/package.json#L1-L24)
 
 ## 架构总览
-前端与后端通过 REST API 协作，形成“前端交互 + 后端工作流”的分层架构。前端负责 UI 与用户交互，后端负责业务编排与 AI 生成。
+前端与后端通过 REST API 协作，形成"前端交互 + 后端工作流"的分层架构。前端负责 UI 与用户交互，后端负责业务编排与 AI 生成。
 
 ```mermaid
 sequenceDiagram
@@ -120,12 +120,12 @@ participant API as "后端 GenerateController"
 participant WF as "GraphWorkflowService"
 participant ST as "ProjectState"
 participant VG as "VueGenerator"
-U->>FE : 输入需求并点击“开始”
+U->>FE : 输入需求并点击"开始"
 FE->>API : POST /api/generate/start
 API->>WF : start(input)
 WF->>ST : 初始化状态
-API-->>FE : 返回 sessionId/intent/chatReply/checklist
-U->>FE : 填写清单并点击“确认并生成”
+API-->>FE : 返回 sessionId/intentType/chatReply/checklist
+U->>FE : 填写清单并点击"确认并生成"
 FE->>API : POST /api/generate/resume
 API->>WF : resume(state)
 WF->>VG : 生成 Vue 代码
@@ -134,15 +134,15 @@ API-->>FE : 返回 vueCode/reviewPassed/retryCount
 FE->>FE : 语法高亮与展示
 ```
 
-图表来源
-- [frontend/src/App.vue:24-95](file://frontend/src/App.vue#L24-L95)
-- [src/main/java/com/example/websitemother/controller/GenerateController.java:33-84](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L33-L84)
+**图表来源**
+- [frontend/src/App.vue:24-103](file://frontend/src/App.vue#L24-L103)
+- [src/main/java/com/example/websitemother/controller/GenerateController.java:38-99](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L38-L99)
 - [src/main/java/com/example/websitemother/service/GraphWorkflowService.java:31-58](file://src/main/java/com/example/websitemother/service/GraphWorkflowService.java#L31-L58)
 - [src/main/java/com/example/websitemother/node/VueGenerator.java:24-62](file://src/main/java/com/example/websitemother/node/VueGenerator.java#L24-L62)
 
 ## 组件详解
 
-### App.vue：多步骤工作流与状态管理
+### App.vue：五步工作流与状态管理
 - 状态设计
   - 用户输入、加载态、当前步骤（input/chatting/checklist/generating/result）
   - 会话 ID、聊天回复、清单数据与答案映射、生成的 Vue 代码、审查结果与重试计数、复制成功提示
@@ -157,7 +157,7 @@ FE->>FE : 语法高亮与展示
 ```mermaid
 flowchart TD
 S["开始"] --> I["输入步骤"]
-I --> |用户点击“开始”| START["调用 /api/generate/start"]
+I --> |用户点击"开始"| START["调用 /api/generate/start"]
 START --> |返回 intentType=chat| CHAT["聊天步骤"]
 START --> |返回 checklist| CHECK["清单步骤"]
 CHAT --> |继续发送| START
@@ -169,24 +169,24 @@ RESULT --> RESET["重新开始"]
 RESET --> I
 ```
 
-图表来源
-- [frontend/src/App.vue:24-126](file://frontend/src/App.vue#L24-L126)
+**图表来源**
+- [frontend/src/App.vue:24-134](file://frontend/src/App.vue#L24-L134)
 
-章节来源
-- [frontend/src/App.vue:1-337](file://frontend/src/App.vue#L1-L337)
+**章节来源**
+- [frontend/src/App.vue:1-345](file://frontend/src/App.vue#L1-L345)
 
 ### HelloWorld.vue：示例与静态资源
 - 展示如何在 SFC 中使用组合式 API、静态资源导入与基础交互。
 - 适合用于学习组件结构与资源路径。
 
-章节来源
+**章节来源**
 - [frontend/src/components/HelloWorld.vue:1-94](file://frontend/src/components/HelloWorld.vue#L1-L94)
 
 ### 样式与主题：style.css
 - 引入 TailwindCSS 并自定义深色主题变量，适配系统偏好。
 - 定义响应式断点与组件化布局，如主容器、卡片、列表等。
 
-章节来源
+**章节来源**
 - [frontend/src/style.css:1-275](file://frontend/src/style.css#L1-L275)
 
 ### 构建与开发：vite.config.js 与 package.json
@@ -198,7 +198,7 @@ RESET --> I
 - 脚本
   - dev/build/preview：本地开发、打包与预览
 
-章节来源
+**章节来源**
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
 - [frontend/package.json:1-24](file://frontend/package.json#L1-L24)
 
@@ -222,22 +222,22 @@ A -.依赖.-> T["TailwindCSS"]
 A -.依赖.-> VUE["Vue 3"]
 ```
 
-图表来源
+**图表来源**
 - [frontend/src/main.js:1-6](file://frontend/src/main.js#L1-L6)
-- [frontend/src/App.vue:1-337](file://frontend/src/App.vue#L1-L337)
+- [frontend/src/App.vue:1-345](file://frontend/src/App.vue#L1-L345)
 - [frontend/src/style.css:1-275](file://frontend/src/style.css#L1-L275)
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
 - [frontend/package.json:1-24](file://frontend/package.json#L1-L24)
-- [src/main/java/com/example/websitemother/controller/GenerateController.java:1-115](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L1-L115)
+- [src/main/java/com/example/websitemother/controller/GenerateController.java:1-131](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L1-L131)
 - [src/main/java/com/example/websitemother/service/GraphWorkflowService.java:1-60](file://src/main/java/com/example/websitemother/service/GraphWorkflowService.java#L1-L60)
 - [src/main/java/com/example/websitemother/state/ProjectState.java:1-78](file://src/main/java/com/example/websitemother/state/ProjectState.java#L1-L78)
 - [src/main/java/com/example/websitemother/node/VueGenerator.java:1-64](file://src/main/java/com/example/websitemother/node/VueGenerator.java#L1-L64)
 
-章节来源
+**章节来源**
 - [frontend/src/main.js:1-6](file://frontend/src/main.js#L1-L6)
-- [frontend/src/App.vue:1-337](file://frontend/src/App.vue#L1-L337)
+- [frontend/src/App.vue:1-345](file://frontend/src/App.vue#L1-L345)
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
-- [src/main/java/com/example/websitemother/controller/GenerateController.java:1-115](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L1-L115)
+- [src/main/java/com/example/websitemother/controller/GenerateController.java:1-131](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L1-L131)
 - [src/main/java/com/example/websitemother/service/GraphWorkflowService.java:1-60](file://src/main/java/com/example/websitemother/service/GraphWorkflowService.java#L1-L60)
 - [src/main/java/com/example/websitemother/state/ProjectState.java:1-78](file://src/main/java/com/example/websitemother/state/ProjectState.java#L1-L78)
 - [src/main/java/com/example/websitemother/node/VueGenerator.java:1-64](file://src/main/java/com/example/websitemother/node/VueGenerator.java#L1-L64)
@@ -256,9 +256,9 @@ A -.依赖.-> VUE["Vue 3"]
   - 对第三方库进行外部化（如 highlight.js）以减小 bundle 体积
   - 使用 CDN 加速静态资源
 
-章节来源
+**章节来源**
 - [frontend/vite.config.js:1-17](file://frontend/vite.config.js#L1-L17)
-- [frontend/src/App.vue:84-88](file://frontend/src/App.vue#L84-L88)
+- [frontend/src/App.vue:92-96](file://frontend/src/App.vue#L92-L96)
 - [frontend/src/style.css:1-275](file://frontend/src/style.css#L1-L275)
 - [frontend/package.json:1-24](file://frontend/package.json#L1-L24)
 
@@ -276,10 +276,10 @@ A -.依赖.-> VUE["Vue 3"]
   - 确认 TailwindCSS 插件已正确安装与配置
   - 检查深色主题变量是否被覆盖
 
-章节来源
+**章节来源**
 - [frontend/vite.config.js:8-15](file://frontend/vite.config.js#L8-L15)
-- [frontend/src/App.vue:30-95](file://frontend/src/App.vue#L30-L95)
-- [src/main/java/com/example/websitemother/controller/GenerateController.java:33-84](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L33-L84)
+- [frontend/src/App.vue:24-103](file://frontend/src/App.vue#L24-L103)
+- [src/main/java/com/example/websitemother/controller/GenerateController.java:38-99](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L38-L99)
 - [src/main/java/com/example/websitemother/service/GraphWorkflowService.java:31-58](file://src/main/java/com/example/websitemother/service/GraphWorkflowService.java#L31-L58)
 - [frontend/src/style.css:11-29](file://frontend/src/style.css#L11-L29)
 
@@ -298,8 +298,8 @@ A -.依赖.-> VUE["Vue 3"]
   - ProjectState 作为全局状态载体，贯穿工作流
   - VueGenerator 负责最终 Vue 代码生成
 
-章节来源
-- [src/main/java/com/example/websitemother/controller/GenerateController.java:14-84](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L14-L84)
+**章节来源**
+- [src/main/java/com/example/websitemother/controller/GenerateController.java:16-99](file://src/main/java/com/example/websitemother/controller/GenerateController.java#L16-L99)
 - [src/main/java/com/example/websitemother/service/GraphWorkflowService.java:11-58](file://src/main/java/com/example/websitemother/service/GraphWorkflowService.java#L11-L58)
 - [src/main/java/com/example/websitemother/state/ProjectState.java:9-77](file://src/main/java/com/example/websitemother/state/ProjectState.java#L9-L77)
 - [src/main/java/com/example/websitemother/node/VueGenerator.java:13-62](file://src/main/java/com/example/websitemother/node/VueGenerator.java#L13-L62)
@@ -314,8 +314,8 @@ A -.依赖.-> VUE["Vue 3"]
 - 代理配置
   - 若后端端口变更，同步修改 vite.config.js 中的 proxy.target
 
-章节来源
+**章节来源**
 - [frontend/package.json:6-10](file://frontend/package.json#L6-L10)
 - [frontend/vite.config.js:8-15](file://frontend/vite.config.js#L8-L15)
-- [src/main/resources/application.yml:1-9](file://src/main/resources/application.yml#L1-L9)
-- [pom.xml:33-58](file://pom.xml#L33-L58)
+- [src/main/resources/application.yml:1-11](file://src/main/resources/application.yml#L1-L11)
+- [pom.xml](file://pom.xml)
