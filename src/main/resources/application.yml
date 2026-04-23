@@ -3,6 +3,9 @@ spring:
     name: WebsiteMother
   profiles:
     active: local
+pexels:
+  api-key: ${PEXELS_API_KEY:}
+
 langchain4j:
   community:
     dashscope:

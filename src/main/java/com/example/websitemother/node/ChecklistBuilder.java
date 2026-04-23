@@ -28,7 +28,8 @@ public class ChecklistBuilder implements NodeAction<ProjectState> {
 
         String response = chatModelService.chat(
                 PromptTemplates.CHECKLIST_BUILDER_SYSTEM,
-                PromptTemplates.checklistBuilderUser(currentInput)
+                PromptTemplates.checklistBuilderUser(currentInput),
+                ChatModelService.ModelType.SMART
         );
 
         // 清理可能的 markdown 代码块标记

@@ -23,6 +23,7 @@ public class ReviewRouter implements EdgeAction<ProjectState> {
     public String apply(ProjectState state) throws Exception {
         boolean reviewPassed = state.reviewPassed();
         int retryCount = state.retryCount();
+        String reviewFeedback = state.reviewFeedback();
 
         log.info("[ReviewRouter] 路由判断: reviewPassed={}, retryCount={}", reviewPassed, retryCount);
 
@@ -32,11 +33,12 @@ public class ReviewRouter implements EdgeAction<ProjectState> {
         }
 
         if (retryCount < MAX_RETRY) {
-            log.info("[ReviewRouter] 审查未通过，返回VueGenerator重试 (retryCount={})", retryCount);
+            log.warn("[ReviewRouter] 审查未通过，返回VueGenerator重试 (retryCount={}, feedback={})",
+                    retryCount, reviewFeedback);
             return TARGET_RETRY;
         }
 
-        log.warn("[ReviewRouter] 已达最大重试次数({})，强制结束", MAX_RETRY);
+        log.warn("[ReviewRouter] 已达最大重试次数({})，强制结束。未通过原因: {}", MAX_RETRY, reviewFeedback);
         return TARGET_END;
     }
 }

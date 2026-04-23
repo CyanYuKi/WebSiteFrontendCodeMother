@@ -299,11 +299,11 @@ function handleKeydown(e) {
           <div>
             <h2 class="text-2xl font-bold text-slate-900">生成完成</h2>
             <p class="text-slate-500 text-sm mt-1">
-              审查状态:
+              代码审查状态
               <span :class="reviewPassed ? 'text-green-600' : 'text-amber-600'">
-                {{ reviewPassed ? '通过' : '未通过（已达最大重试次数）' }}
+                {{ reviewPassed ? '已通过' : '未通过（已达最大重试次数）' }}
               </span>
-              <span v-if="retryCount > 0" class="text-slate-400"> | 重试次数: {{ retryCount }}</span>
+              <span v-if="retryCount > 0" class="text-slate-400"> | 自动修复 {{ retryCount }} 次</span>
             </p>
           </div>
           <button
@@ -316,8 +316,35 @@ function handleKeydown(e) {
           </button>
         </div>
 
-        <div v-if="reviewFeedback && !reviewPassed" class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 text-sm">
-          <strong>审查反馈：</strong>{{ reviewFeedback }}
+        <!-- 审查结果卡片 -->
+        <div
+          v-if="reviewFeedback"
+          class="rounded-xl border p-4"
+          :class="reviewPassed
+            ? 'bg-green-50 border-green-200 text-green-800'
+            : 'bg-amber-50 border-amber-200 text-amber-800'"
+        >
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5">
+              <!-- 通过图标 -->
+              <svg v-if="reviewPassed" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <!-- 未通过图标 -->
+              <svg v-else class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div class="space-y-1 min-w-0">
+              <p class="font-semibold text-sm">
+                {{ reviewPassed ? '代码审查通过' : '代码审查未通过' }}
+              </p>
+              <p class="text-sm leading-relaxed whitespace-pre-wrap">{{ reviewFeedback }}</p>
+              <p v-if="!reviewPassed" class="text-xs text-amber-600/80 mt-1">
+                AI 已尝试自动修复 {{ retryCount }} 次，但仍未完全通过审查。建议下载代码后手动调整。
+              </p>
+            </div>
+          </div>
         </div>
 
         <div class="bg-[#1f2028] rounded-2xl overflow-hidden shadow-lg">

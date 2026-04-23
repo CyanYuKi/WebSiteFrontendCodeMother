@@ -28,7 +28,8 @@ public class IntentAnalyzer implements NodeAction<ProjectState> {
 
         String response = chatModelService.chat(
                 PromptTemplates.INTENT_ANALYZER_SYSTEM,
-                PromptTemplates.intentAnalyzerUser(currentInput)
+                PromptTemplates.intentAnalyzerUser(currentInput),
+                ChatModelService.ModelType.FAST
         );
 
         String intentType = "chat";
