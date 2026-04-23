@@ -1,6 +1,7 @@
 package com.example.websitemother.controller;
 
 import com.example.websitemother.service.GraphWorkflowService;
+import com.example.websitemother.service.ProjectStorageService;
 import com.example.websitemother.state.ProjectState;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,9 @@ public class GenerateController {
 
     @Resource
     private GraphWorkflowService graphWorkflowService;
+
+    @Resource
+    private ProjectStorageService projectStorageService;
 
     /** 内存级会话状态存储（演示级，生产环境应使用Redis） */
     private final ConcurrentHashMap<String, ProjectState> sessionStore = new ConcurrentHashMap<>();
@@ -79,14 +83,18 @@ public class GenerateController {
         // 更新存储
         sessionStore.put(sessionId, finalState);
 
+        // 持久化保存生成的 Vue 项目
+        String projectId = projectStorageService.saveProject(finalState);
+
         ResumeResponse response = new ResumeResponse();
+        response.setProjectId(projectId);
         response.setVueCode(finalState.vueCode());
         response.setReviewPassed(finalState.reviewPassed());
         response.setReviewFeedback(finalState.reviewFeedback());
         response.setRetryCount(finalState.retryCount());
 
-        log.info("[GenerateController] /resume 响应: reviewPassed={}, retryCount={}",
-                finalState.reviewPassed(), finalState.retryCount());
+        log.info("[GenerateController] /resume 响应: reviewPassed={}, retryCount={}, projectId={}",
+                finalState.reviewPassed(), finalState.retryCount(), projectId);
         return response;
     }
 
@@ -113,6 +121,7 @@ public class GenerateController {
 
     @Data
     public static class ResumeResponse {
+        private String projectId;
         private String vueCode;
         private boolean reviewPassed;
         private String reviewFeedback;
