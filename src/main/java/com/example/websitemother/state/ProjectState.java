@@ -18,10 +18,15 @@ public class ProjectState extends AgentState {
     public static final String CHECKLIST = "checklist";
     public static final String USER_ANSWERS = "userAnswers";
     public static final String ASSETS_JSON = "assetsJson";
-    public static final String VUE_CODE = "vueCode";
+    public static final String HTML_CODE = "htmlCode";
+    public static final String DESIGN_CONCEPT = "designConcept";
+    public static final String DESIGN_TOKENS = "designTokens";
     public static final String REVIEW_PASSED = "reviewPassed";
     public static final String REVIEW_FEEDBACK = "reviewFeedback";
     public static final String RETRY_COUNT = "retryCount";
+    public static final String SESSION_ID = "sessionId";
+    public static final String MODEL = "model";
+    public static final String PAGES = "pages";
 
     public ProjectState(Map<String, Object> initData) {
         super(initData);
@@ -52,8 +57,16 @@ public class ProjectState extends AgentState {
         return value(ASSETS_JSON).map(Object::toString).orElse("");
     }
 
-    public String vueCode() {
-        return value(VUE_CODE).map(Object::toString).orElse("");
+    public String htmlCode() {
+        return value(HTML_CODE).map(Object::toString).orElse("");
+    }
+
+    public String designConcept() {
+        return value(DESIGN_CONCEPT).map(Object::toString).orElse("");
+    }
+
+    public String designTokens() {
+        return value(DESIGN_TOKENS).map(Object::toString).orElse("");
     }
 
     public boolean reviewPassed() {
@@ -73,5 +86,9 @@ public class ProjectState extends AgentState {
                 return 0;
             }
         }).orElse(0);
+    }
+
+    public String sessionId() {
+        return value(SESSION_ID).map(Object::toString).orElse("");
     }
 }

@@ -11,4 +11,4 @@ langchain4j:
     dashscope:
       chat-model:
         api-key: ${DASHSCOPE_API_KEY:}
-        model-name: qwen-plus
+        model-name: qwen-turbo

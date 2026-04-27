@@ -5,8 +5,9 @@ import com.example.websitemother.edge.ReviewRouter;
 import com.example.websitemother.node.AssetCollector;
 import com.example.websitemother.node.ChecklistBuilder;
 import com.example.websitemother.node.CodeReviewer;
+import com.example.websitemother.node.DesignConceptGenerator;
+import com.example.websitemother.node.HtmlGenerator;
 import com.example.websitemother.node.IntentAnalyzer;
-import com.example.websitemother.node.VueGenerator;
 import com.example.websitemother.state.ProjectState;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.CompiledGraph;
@@ -36,7 +37,9 @@ public class GraphConfig {
     @Resource
     private AssetCollector assetCollector;
     @Resource
-    private VueGenerator vueGenerator;
+    private DesignConceptGenerator designConceptGenerator;
+    @Resource
+    private HtmlGenerator htmlGenerator;
     @Resource
     private CodeReviewer codeReviewer;
     @Resource
@@ -70,7 +73,7 @@ public class GraphConfig {
     }
 
     /**
-     * 第二阶段图：素材收集 -> Vue代码生成 -> 代码审查 -> (条件循环)
+     * 第二阶段图：素材收集 -> 设计概念生成 -> HTML代码生成 -> 代码审查 -> (条件循环)
      * 接收前端补充的答案后继续执行
      */
     @Bean
@@ -79,17 +82,19 @@ public class GraphConfig {
 
         StateGraph<ProjectState> graph = new StateGraph<>(ProjectState::new)
                 .addNode("asset_collector", node_async(assetCollector))
-                .addNode("vue_generator", node_async(vueGenerator))
+                .addNode("design_concept_generator", node_async(designConceptGenerator))
+                .addNode("html_generator", node_async(htmlGenerator))
                 .addNode("code_reviewer", node_async(codeReviewer))
                 .addEdge(StateGraph.START, "asset_collector")
-                .addEdge("asset_collector", "vue_generator")
-                .addEdge("vue_generator", "code_reviewer")
+                .addEdge("asset_collector", "design_concept_generator")
+                .addEdge("design_concept_generator", "html_generator")
+                .addEdge("html_generator", "code_reviewer")
                 .addConditionalEdges(
                         "code_reviewer",
                         edge_async(reviewRouter),
                         Map.of(
                                 ReviewRouter.TARGET_END, StateGraph.END,
-                                ReviewRouter.TARGET_RETRY, "vue_generator"
+                                ReviewRouter.TARGET_RETRY, "html_generator"
                         )
                 );
 

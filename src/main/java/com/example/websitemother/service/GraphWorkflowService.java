@@ -6,6 +6,7 @@ import org.bsc.langgraph4j.CompiledGraph;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,10 +29,14 @@ public class GraphWorkflowService {
      * @param input 用户初始输入
      * @return 执行后的状态
      */
-    public ProjectState start(String input) {
+    public ProjectState start(String input, String model) {
         try {
-            log.info("[GraphWorkflowService] 执行 startGraph, input={}", input);
-            Map<String, Object> initState = Map.of(ProjectState.CURRENT_INPUT, input);
+            log.info("[GraphWorkflowService] 执行 startGraph, input={}, model={}", input, model);
+            Map<String, Object> initState = new HashMap<>();
+            initState.put(ProjectState.CURRENT_INPUT, input);
+            if (model != null && !model.isBlank()) {
+                initState.put(ProjectState.MODEL, model);
+            }
             var result = startGraph.invoke(initState);
             return result.map(r -> new ProjectState(r.data())).orElse(new ProjectState(Map.of()));
         } catch (Exception e) {
@@ -41,7 +46,7 @@ public class GraphWorkflowService {
     }
 
     /**
-     * 执行第二阶段：素材收集 + Vue生成 + 代码审查循环
+     * 执行第二阶段：素材收集 + 设计概念生成 + HTML生成 + 代码审查循环
      *
      * @param state 包含用户答案的完整状态
      * @return 执行后的最终状态

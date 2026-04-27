@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class ReviewRouter implements EdgeAction<ProjectState> {
 
     public static final String TARGET_END = "__end__";
-    public static final String TARGET_RETRY = "vue_generator";
+    public static final String TARGET_RETRY = "html_generator";
     public static final int MAX_RETRY = 3;
 
     @Override
@@ -33,7 +33,7 @@ public class ReviewRouter implements EdgeAction<ProjectState> {
         }
 
         if (retryCount < MAX_RETRY) {
-            log.warn("[ReviewRouter] 审查未通过，返回VueGenerator重试 (retryCount={}, feedback={})",
+            log.warn("[ReviewRouter] 审查未通过，返回HtmlGenerator重试 (retryCount={}, feedback={})",
                     retryCount, reviewFeedback);
             return TARGET_RETRY;
         }

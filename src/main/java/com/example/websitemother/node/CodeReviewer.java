@@ -3,16 +3,20 @@ package com.example.websitemother.node;
 import com.example.websitemother.prompt.PromptTemplates;
 import com.example.websitemother.service.ChatModelService;
 import com.example.websitemother.state.ProjectState;
+import com.example.websitemother.controller.SseEmitterStore;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.action.NodeAction;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.annotation.Resource;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Node 5: 代码审查
- * 让大模型检查 vueCode 是否完整、是否有严重语法错误
+ * Node: 代码审查
+ * 检查 htmlCode 是否完整、是否有严重结构错误
  */
 @Slf4j
 @Component
@@ -23,25 +27,27 @@ public class CodeReviewer implements NodeAction<ProjectState> {
 
     @Override
     public Map<String, Object> apply(ProjectState state) throws Exception {
-        String vueCode = state.vueCode();
+        sendStage(SseEmitterStore.get(state.sessionId()), "code_reviewer");
+
+        String htmlCode = state.htmlCode();
         int retryCount = state.retryCount();
 
-        log.info("[CodeReviewer] 开始审查代码, currentRetry={}", retryCount);
+        log.info("[CodeReviewer] 开始审查HTML代码, currentRetry={}", retryCount);
 
         // 1. 快速结构检查
-        String fastCheckResult = fastStructureCheck(vueCode);
+        String fastCheckResult = fastStructureCheck(htmlCode);
         if (fastCheckResult == null) {
             log.info("[CodeReviewer] 快速检查通过");
             return Map.of(
                     ProjectState.REVIEW_PASSED, true,
-                    ProjectState.REVIEW_FEEDBACK, "代码结构完整，通过自动化审查。",
+                    ProjectState.REVIEW_FEEDBACK, "HTML结构完整，通过自动化审查。",
                     ProjectState.RETRY_COUNT, retryCount + 1
             );
         }
 
         // 2. 尝试自动修复
-        String fixedCode = autoFixStructure(vueCode);
-        if (!fixedCode.equals(vueCode)) {
+        String fixedCode = autoFixStructure(htmlCode);
+        if (!fixedCode.equals(htmlCode)) {
             String reCheck = fastStructureCheck(fixedCode);
             if (reCheck == null) {
                 log.info("[CodeReviewer] 自动修复成功: {}", fastCheckResult);
@@ -49,12 +55,12 @@ public class CodeReviewer implements NodeAction<ProjectState> {
                         ProjectState.REVIEW_PASSED, true,
                         ProjectState.REVIEW_FEEDBACK, "自动修复: " + fastCheckResult,
                         ProjectState.RETRY_COUNT, retryCount + 1,
-                        ProjectState.VUE_CODE, fixedCode
+                        ProjectState.HTML_CODE, fixedCode
                 );
             }
         }
 
-        // 3. 自动修复不了，返回失败（不再调用 LLM 审查，避免误判）
+        // 3. 自动修复不了，返回失败
         int newRetryCount = retryCount + 1;
         log.warn("[CodeReviewer] 结构检查未通过且自动修复失败: {}", fastCheckResult);
         return Map.of(
@@ -65,124 +71,152 @@ public class CodeReviewer implements NodeAction<ProjectState> {
     }
 
     /**
-     * 快速结构检查：基于纯文本分析捕获 Vue SFC 的致命结构缺陷
-     * 只检查会导致编译失败的客观问题，避免 LLM 的主观误判
+     * 快速结构检查：基于纯文本分析捕获 HTML 的致命结构缺陷
+     * 只检查会导致页面无法渲染的客观问题
      * @return null 表示检查通过；否则返回失败原因
      */
-    private String fastStructureCheck(String vueCode) {
-        if (vueCode == null || vueCode.isBlank()) {
+    private String fastStructureCheck(String htmlCode) {
+        if (htmlCode == null || htmlCode.isBlank()) {
             return "代码为空";
         }
 
-        String lower = vueCode.toLowerCase();
+        String lower = htmlCode.toLowerCase();
 
-        // 1. 基本标签存在性
-        if (!lower.contains("<template")) return "缺少 <template> 标签";
-        if (!lower.contains("<script"))  return "缺少 <script> 标签";
-        if (!lower.contains("<style"))   return "缺少 <style> 标签";
+        // 1. 基本 HTML 结构存在性
+        if (!lower.contains("<!doctype html>")) return "缺少 <!DOCTYPE html> 声明";
+        if (!lower.contains("<html")) return "缺少 <html> 标签";
+        if (!lower.contains("<head")) return "缺少 <head> 标签";
+        if (!lower.contains("<body")) return "缺少 <body> 标签";
 
         // 2. 标签闭合检查
-        if (!lower.contains("</template>")) return "<template> 标签未闭合";
-        if (!lower.contains("</script>"))   return "<script> 标签未闭合";
-        if (!lower.contains("</style>"))    return "<style> 标签未闭合";
+        if (!lower.contains("</html>")) return "<html> 标签未闭合";
+        if (!lower.contains("</head>")) return "<head> 标签未闭合";
+        if (!lower.contains("</body>")) return "<body> 标签未闭合";
 
-        // 3. 标签开启/闭合数量匹配（防止嵌套错乱）
-        if (countOccurrences(lower, "<template") != countOccurrences(lower, "</template>")) {
-            return "<template> 标签开启/闭合数量不匹配";
+        // 3. 标签开启/闭合数量匹配（使用正则避免 <header> 等标签误判为 <head>）
+        if (countTagOpen(lower, HTML_OPEN) != countTagClose(lower, HTML_CLOSE)) {
+            return "<html> 标签开启/闭合数量不匹配";
         }
-        if (countOccurrences(lower, "<script") != countOccurrences(lower, "</script>")) {
-            return "<script> 标签开启/闭合数量不匹配";
+        if (countTagOpen(lower, HEAD_OPEN) != countTagClose(lower, HEAD_CLOSE)) {
+            return "<head> 标签开启/闭合数量不匹配";
         }
-        if (countOccurrences(lower, "<style") != countOccurrences(lower, "</style>")) {
-            return "<style> 标签开启/闭合数量不匹配";
+        if (countTagOpen(lower, BODY_OPEN) != countTagClose(lower, BODY_CLOSE)) {
+            return "<body> 标签开启/闭合数量不匹配";
         }
 
-        // 4. script setup 语法（Vue 3 项目要求）
-        if (!lower.contains("<script setup") && !lower.contains("setup")) {
-            return "未使用 <script setup> 语法";
+        // 4. CSS 变量设计系统检查
+        if (!lower.contains(":root")) {
+            return "缺少 :root CSS 变量设计系统";
         }
 
         // 5. 残留的 markdown 代码块标记
-        if (vueCode.contains("```vue") || vueCode.contains("```")) {
+        if (htmlCode.contains("```html") || htmlCode.contains("```")) {
             return "代码中包含残留的 markdown 标记 ```";
         }
 
-        // 6. 提取 template 块内容，只对 template 内部做引号和尖括号检查
-        // （script 块中的 JS 比较运算符如 > < 会干扰全文件统计）
-        String templateContent = extractTemplateBlock(vueCode);
-        if (templateContent != null) {
-            // 6a. template 块内双引号匹配
-            long doubleQuotes = templateContent.chars().filter(c -> c == '"').count();
+        // 6. body 内引号匹配检查
+        String bodyContent = extractBodyBlock(htmlCode);
+        if (bodyContent != null) {
+            long doubleQuotes = bodyContent.chars().filter(c -> c == '"').count();
             if (doubleQuotes % 2 != 0) {
-                return "template 中存在未闭合的双引号";
-            }
-            // 6b. template 块内尖括号匹配（HTML 标签完整性）
-            long lt = templateContent.chars().filter(c -> c == '<').count();
-            long gt = templateContent.chars().filter(c -> c == '>').count();
-            if (lt != gt) {
-                return "template 中 HTML 尖括号数量不匹配，可能存在未闭合标签";
+                return "body 中存在未闭合的双引号";
             }
         }
 
         return null;
     }
 
+    private void sendStage(SseEmitter emitter, String stage) {
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("stage").data(stage));
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private static final Pattern HEAD_OPEN = Pattern.compile("<head\\b");
+    private static final Pattern HEAD_CLOSE = Pattern.compile("</head>");
+    private static final Pattern HTML_OPEN = Pattern.compile("<html\\b");
+    private static final Pattern HTML_CLOSE = Pattern.compile("</html>");
+    private static final Pattern BODY_OPEN = Pattern.compile("<body\\b");
+    private static final Pattern BODY_CLOSE = Pattern.compile("</body>");
+
     private long countOccurrences(String str, String sub) {
         return str.split(sub, -1).length - 1;
     }
 
+    private long countTagOpen(String str, Pattern openPattern) {
+        Matcher m = openPattern.matcher(str);
+        long count = 0;
+        while (m.find()) count++;
+        return count;
+    }
+
+    private long countTagClose(String str, Pattern closePattern) {
+        Matcher m = closePattern.matcher(str);
+        long count = 0;
+        while (m.find()) count++;
+        return count;
+    }
+
     /**
-     * 提取 template 块的内容（不包括 <template> 和 </template> 标签本身）
+     * 提取 body 块的内容（不包括 <body> 和 </body> 标签本身）
      */
-    private String extractTemplateBlock(String vueCode) {
-        if (vueCode == null) return null;
-        int start = vueCode.toLowerCase().indexOf("<template>");
+    private String extractBodyBlock(String htmlCode) {
+        if (htmlCode == null) return null;
+        int start = htmlCode.toLowerCase().indexOf("<body>");
         if (start < 0) {
-            start = vueCode.toLowerCase().indexOf("<template ");
+            start = htmlCode.toLowerCase().indexOf("<body ");
         }
         if (start < 0) return null;
-        // 找到开始标签的结束位置
-        int contentStart = vueCode.indexOf(">", start) + 1;
-        int end = vueCode.toLowerCase().lastIndexOf("</template>");
+        int contentStart = htmlCode.indexOf(">", start) + 1;
+        int end = htmlCode.toLowerCase().lastIndexOf("</body>");
         if (end < 0 || end <= contentStart) return null;
-        return vueCode.substring(contentStart, end);
+        return htmlCode.substring(contentStart, end);
     }
 
     /**
      * 自动修复常见的简单结构问题
      * @return 修复后的代码（如果无法修复则返回原代码）
      */
-    private String autoFixStructure(String vueCode) {
-        String fixed = vueCode;
-        String lower = vueCode.toLowerCase();
+    private String autoFixStructure(String htmlCode) {
+        String fixed = htmlCode;
+        String lower = htmlCode.toLowerCase();
         boolean modified = false;
 
-        // 1. 自动补全未闭合的 template 标签
-        if (lower.contains("<template") && !lower.contains("</template>")) {
-            fixed = fixed + "\n</template>\n";
+        // 1. 自动补全 DOCTYPE
+        if (!lower.contains("<!doctype html>")) {
+            fixed = "<!DOCTYPE html>\n" + fixed;
             modified = true;
         }
 
-        // 2. 自动补全未闭合的 script 标签
-        if (lower.contains("<script") && !lower.contains("</script>")) {
-            int styleIdx = lower.indexOf("<style");
-            if (styleIdx > 0) {
-                fixed = fixed.substring(0, styleIdx) + "\n</script>\n" + fixed.substring(styleIdx);
+        // 2. 自动补全未闭合的 html 标签
+        if (lower.contains("<html") && !lower.contains("</html>")) {
+            fixed = fixed + "\n</html>\n";
+            modified = true;
+        }
+
+        // 3. 自动补全未闭合的 head 标签
+        if (lower.contains("<head") && !lower.contains("</head>")) {
+            int bodyIdx = lower.indexOf("<body");
+            if (bodyIdx > 0) {
+                fixed = fixed.substring(0, bodyIdx) + "\n</head>\n" + fixed.substring(bodyIdx);
             } else {
-                fixed = fixed + "\n</script>\n";
+                fixed = fixed + "\n</head>\n";
             }
             modified = true;
         }
 
-        // 3. 自动补全未闭合的 style 标签
-        if (lower.contains("<style") && !lower.contains("</style>")) {
-            fixed = fixed + "\n</style>\n";
+        // 4. 自动补全未闭合的 body 标签
+        if (lower.contains("<body") && !lower.contains("</body>")) {
+            fixed = fixed + "\n</body>\n";
             modified = true;
         }
 
-        // 4. 清理残留的 markdown 代码块标记
-        if (fixed.contains("```vue")) {
-            fixed = fixed.replace("```vue", "").trim();
+        // 5. 清理残留的 markdown 代码块标记
+        if (fixed.contains("```html")) {
+            fixed = fixed.replace("```html", "").trim();
             modified = true;
         }
         if (fixed.contains("```")) {

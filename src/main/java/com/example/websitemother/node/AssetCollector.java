@@ -3,10 +3,12 @@ package com.example.websitemother.node;
 import com.example.websitemother.service.LogoGenerationService;
 import com.example.websitemother.service.PexelsImageService;
 import com.example.websitemother.state.ProjectState;
+import com.example.websitemother.controller.SseEmitterStore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.action.NodeAction;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.annotation.Resource;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class AssetCollector implements NodeAction<ProjectState> {
 
     @Override
     public Map<String, Object> apply(ProjectState state) throws Exception {
+        sendStage(SseEmitterStore.get(state.sessionId()), "asset_collector");
+
         Map<String, String> answers = state.userAnswers();
         log.info("[AssetCollector] 收集素材，用户答案: {}", answers);
 
@@ -139,6 +143,15 @@ public class AssetCollector implements NodeAction<ProjectState> {
                 String.format("https://picsum.photos/seed/%s_product/600/600", safeSeed)));
         assets.put("team", buildAsset("团队风采图",
                 String.format("https://picsum.photos/seed/%s_team/800/600", safeSeed)));
+    }
+
+    private void sendStage(SseEmitter emitter, String stage) {
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("stage").data(stage));
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     private String extractKeyword(String input) {

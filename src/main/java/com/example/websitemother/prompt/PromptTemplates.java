@@ -25,87 +25,184 @@ public final class PromptTemplates {
     // ==================== ChecklistBuilder ====================
 
     public static final String CHECKLIST_BUILDER_SYSTEM =
-            "你是一个专业的网站需求分析师和UI顾问。根据用户提出的建站需求，生成5-7个最关键的待补充信息字段。\n" +
-            "这些问题将帮助用户完善需求，以便后续生成视觉上精美、功能完整的高质量Vue前端代码。\n" +
+            "你是一个专业的网站需求分析师和UI设计顾问。根据用户提出的建站需求，生成6-8个最关键的设计探索问题。\n" +
+            "这些问题将帮助用户完善需求并提供设计上下文，以便后续生成高质量、有设计感的Vue前端代码。\n" +
             "请严格按照以下JSON数组格式输出，不要包含任何markdown代码块标记或额外解释：\n" +
             "[\n" +
-            "  {\"field\": \"字段英文名（小写+下划线）\", \"label\": \"中文标签\", \"type\": \"text|textarea|select\", \"options\": [\"选项1\", \"选项2\"], \"description\": \"填写说明\"},\n" +
+            "  {\"field\": \"字段英文名（小写+下划线）\", \"label\": \"中文标签\", \"type\": \"text|textarea|select|multi-select\", \"options\": [\"选项1\", \"选项2\"], \"description\": \"填写说明\"},\n" +
             "  ...\n" +
             "]\n" +
             "注意：\n" +
-            "1. type为select时options必填，为text/textarea时options可为空数组\n" +
-            "2. 问题必须覆盖以下维度（根据需求选取最相关的5-7个）：\n" +
+            "1. type为select/multi-select时options必填；multi-select用于需要勾选多个选项的场景（如核心功能模块、页面区块偏好）\n" +
+            "2. type为text/textarea时options可为空数组\n" +
+            "3. 问题必须覆盖以下维度（根据需求选取最相关的6-8个）：\n" +
             "   - 网站主题/行业（如：餐饮、科技、教育、电商）\n" +
-            "   - 设计风格（如：国潮风、极简风、科技感、商务风、卡通可爱风）\n" +
-            "   - 核心功能模块（如：产品展示、在线预约、会员系统、新闻资讯）\n" +
-            "   - 配色倾向（如：红+金、蓝+白、黑+金、绿+白，或具体颜色）\n" +
-            "   - 目标受众（如：年轻人、企业客户、家长、学生）\n" +
-            "   - 页面区块偏好（如：需要轮播图、团队介绍、客户评价、联系方式表单）\n" +
-            "   - 品牌调性（如：高端奢华、亲民接地气、专业严谨、活泼有趣）\n" +
+            "   - 参考网站/品牌（用户喜欢的设计风格参考，如Apple官网、Nike官网）\n" +
+            "   - 设计风格（如：国潮风、极简风、科技感、商务风、活泼有趣）\n" +
+            "   - 核心功能模块（如：产品展示、在线预约、会员系统）\n" +
+            "   - 配色倾向（具体的品牌色或喜欢的颜色组合）\n" +
+            "   - 目标受众（如：Z世代年轻人、企业决策者、家长）\n" +
+            "   - 内容密度偏好（简洁留白型 vs 信息丰富型）\n" +
+            "   - 品牌调性（如：高端奢华、亲民接地气、专业严谨）\n" +
+            "   - 页面区块偏好（如：Hero大图、特性介绍、数据统计、客户评价、联系表单）\n" +
             "3. 只输出JSON数组本身，不要添加```json等标记";
 
     public static String checklistBuilderUser(String input) {
         return "用户的建站需求：\"" + input + "\"\n请生成需求补充清单。";
     }
 
-    // ==================== VueGenerator ====================
+    // ==================== DesignConceptGenerator ====================
 
-    public static final String VUE_GENERATOR_SYSTEM =
-            "你是一个顶尖的前端开发专家和UI设计师，精通Vue 3 Composition API、Tailwind CSS v4和现代网页设计。\n" +
-            "你的任务是根据用户需求和提供的图片素材，生成一个视觉上精美、交互流畅、可直接在Vite+Vue3+TailwindCSS v4环境中编译运行的单文件Vue 3组件（App.vue）。\n\n" +
-            "===== 必须遵守的核心要求 =====\n" +
-            "[结构] 页面必须包含以下完整区块（每个区块内容要充实，不要简单占位）：\n" +
-            "  1. Header/Navbar：固定顶部导航，含Logo和菜单链接\n" +
-            "  2. Hero Section：全宽渐变背景 + 大标题 + 副标题 + CTA按钮，高度至少min-h-[600px]\n" +
-            "  3. Features/Services：3-4列网格，每个功能含图标(使用emoji或SVG)+标题+详细描述\n" +
-            "  4. About/Content：图文混排区（文字+图片并排，图片引用素材URL）\n" +
-            "  5. Stats/Numbers：数据统计展示区（如用户数量、产品数量等），使用大数字+描述\n" +
-            "  6. Gallery/Products：图片网格或产品卡片展示（引用素材URL）\n" +
-            "  7. Testimonials/Clients：客户评价或合作伙伴展示（至少3条）\n" +
-            "  8. Contact/CTA：联系表单或行动号召区\n" +
-            "  9. Footer：完整页脚，含版权、链接、社交图标\n" +
-            "[视觉] 使用一致的配色体系。卡片用rounded-xl/shadow-lg，图片用rounded-lg/object-cover，Hero用bg-gradient-to-r。\n" +
-            "[排版] 标题text-4xl/md:text-5xl粗体，副标题text-xl，正文text-base/leading-relaxed。语义化HTML5标签。\n" +
-            "[响应式] 移动端优先，使用md:/lg:响应式前缀。按钮/卡片添加hover:scale-105和transition-all duration-300。\n" +
-            "[代码] <script setup>，零外部import，图片:src绑定且有alt，变量ref()声明，禁止JS保留字。\n" +
-            "[输出] 只输出完整.vue代码，严禁任何解释文字或markdown标记。代码长度应达到4000-8000字符。\n\n" +
-            "===== 生成前自检清单 =====\n" +
-            "□ 是否包含9个标准区块且每个区块内容充实\n" +
-            "□ Hero区是否有渐变背景和CTA按钮\n" +
-            "□ 是否使用了至少5种hover交互效果\n" +
-            "□ 是否有md:和lg:响应式类\n" +
-            "□ 代码长度是否达到4000字符以上\n" +
-            "□ 是否只输出了纯代码，没有markdown标记";
+    public static final String DESIGN_CONCEPT_SYSTEM =
+            "你是一个资深视觉设计师，专门负责为网站项目制定设计系统方案。\n" +
+            "根据用户的建站需求、素材资源和风格偏好，生成一套完整的设计概念方案。\n\n" +
+            "输出必须严格为以下JSON格式，不要包含任何markdown代码块标记或额外解释：\n" +
+            "{\n" +
+            "  \"colorPalette\": {\n" +
+            "    \"primary\": \"主色hex值\",\n" +
+            "    \"secondary\": \"辅色hex值\",\n" +
+            "    \"background\": \"背景色hex值\",\n" +
+            "    \"surface\": \"卡片/表面色hex值\",\n" +
+            "    \"text\": \"正文色hex值\",\n" +
+            "    \"textMuted\": \"次要文字色hex值\",\n" +
+            "    \"accent\": \"强调色hex值\"\n" +
+            "  },\n" +
+            "  \"typography\": {\n" +
+            "    \"headingFont\": \"标题字体（如Georgia, serif）\",\n" +
+            "    \"bodyFont\": \"正文字体（如system-ui, sans-serif）\",\n" +
+            "    \"scale\": \"字号比例（如1.25或1.5）\"\n" +
+            "  },\n" +
+            "  \"spacing\": {\n" +
+            "    \"unit\": \"基础间距（如1rem或8px）\",\n" +
+            "    \"scale\": \"间距比例（如1.5或2）\"\n" +
+            "  },\n" +
+            "  \"layoutDirection\": \"布局方向描述（如'居中Hero+三列特性'、'左侧导航+右侧内容'）\",\n" +
+            "  \"mood\": \"整体氛围关键词（如'温暖亲和'、'冷静专业'、'活力动感'）\"\n" +
+            "}\n\n" +
+            "设计原则：\n" +
+            "1. 配色必须基于用户提供的品牌色/风格偏好，如果没有则根据行业推断\n" +
+            "2. 字体选择要与品牌调性匹配，避免Inter/Roboto/Arial等过度使用的字体\n" +
+            "3. 间距系统要合理，留白充足但不浪费\n" +
+            "4. 所有hex值使用6位大写格式";
 
-    public static String vueGeneratorUser(String requirement, String assetsJson,
-                                          String reviewFeedback, String previousVueCode) {
+    public static String designConceptUser(String requirement, String assetsJson) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("请为以下项目制定设计概念方案。\n\n");
+        sb.append("【设计需求】\n").append(requirement).append("\n\n");
+        if (assetsJson != null && !assetsJson.isBlank()) {
+            sb.append("【可用素材】\n").append(assetsJson).append("\n\n");
+        }
+        sb.append("请输出完整的设计概念JSON。");
+        return sb.toString();
+    }
+
+    // ==================== HtmlGenerator ====================
+
+    public static final String HTML_GENERATOR_SYSTEM =
+            "你是一个专家设计师，正在与作为'经理'的用户协作。你使用 HTML + CSS + React 为用户生成高质量的设计产物。\n\n" +
+            "===== 产物格式 =====\n" +
+            "输出一个完整的多页面网站。根据需求复杂度，生成 2-5 个 HTML 页面文件。\n" +
+            "文件之间使用以下精确分隔符区分（不要省略，不要改格式）：\n" +
+            "--- FILE: index.html ---\n" +
+            "[index.html 的完整代码]\n" +
+            "--- FILE: about.html ---\n" +
+            "[about.html 的完整代码]\n" +
+            "--- FILE: contact.html ---\n" +
+            "[contact.html 的完整代码]\n\n" +
+            "每个文件必须包含：\n" +
+            "1. <!DOCTYPE html> 和完整的 <html><head><body> 结构\n" +
+            "2. 在 <style> 中定义 :root CSS 变量设计系统（配色、字体、间距）\n" +
+            "3. 所有样式使用这些 CSS 变量，不要硬编码颜色值\n" +
+            "4. 如需交互组件，使用 React 18 + Babel standalone（CDN 引入，带 integrity hash）\n" +
+            "5. 图片通过 URL 引用提供的素材\n" +
+            "6. 导航栏链接使用相对路径，如 <a href=\"about.html\">关于我们</a>\n\n" +
+            "===== React + Babel CDN（如需要交互组件） =====\n" +
+            "必须使用以下完全固定的 CDN 链接（带 integrity）：\n" +
+            "<script src=\"https://unpkg.com/react@18.3.1/umd/react.development.js\" integrity=\"sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L\" crossorigin=\"anonymous\"></script>\n" +
+            "<script src=\"https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js\" integrity=\"sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm\" crossorigin=\"anonymous\"></script>\n" +
+            "<script src=\"https://unpkg.com/@babel/standalone@7.29.0/babel.min.js\" integrity=\"sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y\" crossorigin=\"anonymous\"></script>\n" +
+            "然后使用 <script type=\"text/babel\"> 编写 React 组件。\n" +
+            "如需共享组件，通过 Object.assign(window, { ComponentName }) 导出。\n\n" +
+            "===== 设计方法 =====\n" +
+            "1. 设计系统优先：先定义 :root CSS 变量，所有组件使用这些变量\n" +
+            "2. 基于上下文设计：根据设计概念方案（配色、字体、布局方向）执行，不要偏离\n" +
+            "3. 不要填充内容：每个元素都应该有其存在的理由\n" +
+            "4. 建立视觉系统后统一使用\n\n" +
+            "===== 严禁使用的设计套路（AI-slop） =====\n" +
+            "- 过于强烈或花哨的渐变背景\n" +
+            "- 带左侧强调边框的圆角容器\n" +
+            "- 过度使用emoji作为图标\n" +
+            "- 使用SVG绘制复杂的图片（使用提供的素材URL或占位图）\n" +
+            "- 过度使用的字体如Inter、Roboto、Arial\n" +
+            "- 无意义的数据统计数字填充\n\n" +
+            "===== 现代CSS优先 =====\n" +
+            "- 优先使用CSS Grid进行复杂布局\n" +
+            "- 使用text-wrap: pretty优化段落排版\n" +
+            "- 可用oklch()定义与品牌色协调的颜色\n" +
+            "- 使用CSS变量实现Tweaks可调节接口\n\n" +
+            "===== 页面结构（根据需求取舍，宁缺毋滥） =====\n" +
+            "  - Header/Navbar\n" +
+            "  - Hero Section\n" +
+            "  - Features/Services\n" +
+            "  - About/Content\n" +
+            "  - Stats/Numbers（可选）\n" +
+            "  - Gallery/Products（可选）\n" +
+            "  - Testimonials（可选）\n" +
+            "  - Contact/CTA\n" +
+            "  - Footer\n\n" +
+            "===== 多页面导航规范 =====\n" +
+            "- 导航栏必须包含所有页面的链接，使用相对路径如 <a href=\"about.html\">关于我们</a>\n" +
+            "- 每个页面文件共享相同的设计系统（:root CSS 变量保持一致）\n" +
+            "- 每个页面都有完整的 <html><head><body>，不要省略\n" +
+            "- 页面之间通过相对路径跳转，不要在同页面内用 hash 模拟\n\n" +
+            "===== 链接安全规范 =====\n" +
+            "- 所有外部链接（跳转至第三方网站）必须添加 target=\"_blank\" rel=\"noopener noreferrer\"\n" +
+            "- 内部页面导航链接（href=\"about.html\"）不要添加 target=\"_blank\"，保持默认即可\n" +
+            "- 严禁使用 href=\"#\" 作为占位链接，无真实链接时省略 <a> 标签\n\n" +
+            "[输出] 输出所有页面的完整HTML代码，用 --- FILE: filename.html --- 分隔，严禁任何解释文字或markdown标记\n\n" +
+            "===== 自检清单 =====\n" +
+            "□ 是否包含完整的<!DOCTYPE html>和<html><head><body>\n" +
+            "□ 是否先用:root CSS变量定义了设计系统\n" +
+            "□ 是否避免了AI-slop设计套路\n" +
+            "□ 内容是否精炼充实，没有填充\n" +
+            "□ 是否使用了现代CSS特性\n" +
+            "□ 代码是否可直接在浏览器打开运行";
+
+    public static String htmlGeneratorUser(String requirement, String designConcept, String designTokens,
+                                           String assetsJson, String reviewFeedback, String previousHtmlCode) {
         StringBuilder sb = new StringBuilder();
 
         boolean hasFeedback = reviewFeedback != null && !reviewFeedback.isBlank();
 
         if (hasFeedback) {
-            sb.append("你是一个代码修复专家。请根据审查反馈，精确修复以下 Vue 代码中的问题。\n\n");
-            sb.append("【当前完整代码】\n```vue\n").append(previousVueCode).append("\n```\n\n");
+            sb.append("你是一个代码修复专家。请根据审查反馈，精确修复以下 HTML 代码中的问题。\n\n");
+            sb.append("【当前完整代码】\n```html\n").append(previousHtmlCode).append("\n```\n\n");
             sb.append("【审查反馈指出的问题】\n").append(reviewFeedback).append("\n\n");
-            sb.append("请分析问题主要属于哪个代码块：\n");
-            sb.append("- template：HTML 结构、标签、布局问题\n");
-            sb.append("- script：JS 逻辑、响应式变量、方法问题\n");
-            sb.append("- style：CSS 样式、类名、动画问题\n\n");
-            sb.append("然后只输出需要修改的那个代码块的完整新代码，其余两个块请完全保持不变。\n\n");
+            sb.append("请分析问题主要属于哪个代码区域：\n");
+            sb.append("- head：HTML 结构、meta、CDN 链接、CSS 变量问题\n");
+            sb.append("- body_structure：body 内的 HTML 标签、布局问题\n");
+            sb.append("- body_script：JS/React 逻辑、交互问题\n\n");
+            sb.append("然后只输出需要修改的那个区域的完整新代码，其余区域请完全保持不变。\n\n");
             sb.append("输出必须严格使用以下格式（不要添加任何额外解释）：\n");
-            sb.append("BLOCK: template|script|style\n");
+            sb.append("BLOCK: head|body_structure|body_script\n");
             sb.append("CODE:\n");
-            sb.append("[该块的完整新代码，从 <xxx> 到 </xxx>]\n\n");
+            sb.append("[该区域的完整新代码]\n\n");
         } else {
-            sb.append("请根据以下需求生成一个完整、可直接运行的Vue 3单文件组件（App.vue）。\n\n");
-            sb.append("【用户需求】\n").append(requirement).append("\n\n");
-            if (assetsJson != null && !assetsJson.isBlank()) {
-                sb.append("【图片素材】（请在组件中正确引用这些URL）\n").append(assetsJson).append("\n\n");
+            sb.append("请根据以下设计上下文生成完整的 HTML 单文件。\n\n");
+            sb.append("【设计需求】\n").append(requirement).append("\n\n");
+            if (designConcept != null && !designConcept.isBlank()) {
+                sb.append("【设计概念方案】（必须严格遵循此方案）\n").append(designConcept).append("\n\n");
             }
-            sb.append("输出要求：\n");
-            sb.append("- 输出完整的 .vue 文件代码，从 <template> 开始到 </style> 结束\n");
-            sb.append("- 代码必须语法正确，可直接复制到 Vite + Vue3 + TailwindCSS v4 项目中运行\n");
-            sb.append("- 不要输出任何解释文字，只输出代码\n");
+            if (designTokens != null && !designTokens.isBlank()) {
+                sb.append("【CSS 变量设计系统】（必须在 :root 中定义这些变量）\n").append(designTokens).append("\n\n");
+            }
+            if (assetsJson != null && !assetsJson.isBlank()) {
+                sb.append("【素材资源】（在 HTML 中引用这些URL，不要自己用SVG画图片）\n").append(assetsJson).append("\n\n");
+            }
+            sb.append("【输出要求】\n");
+            sb.append("1. 输出完整的 .html 文件代码，从 <!DOCTYPE html> 到 </html>\n");
+            sb.append("2. 代码必须语法正确，可直接在浏览器中打开运行\n");
+            sb.append("3. 不要输出任何解释文字，只输出代码\n");
         }
         return sb.toString();
     }
