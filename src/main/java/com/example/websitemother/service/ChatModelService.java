@@ -38,6 +38,9 @@ public class ChatModelService {
     @Value("${langchain4j.community.dashscope.chat-model.api-key:}")
     private String apiKey;
 
+    @Value("${deepseek.api-key:}")
+    private String deepseekApiKey;
+
     private ChatModel fastModel;
     private ChatModel smartModel;
     private StreamingChatModel smartStreamingModel;
@@ -59,7 +62,10 @@ public class ChatModelService {
         if (apiKey == null || apiKey.isBlank()) {
             apiKey = System.getenv("DASHSCOPE_API_KEY");
         }
-        if (apiKey == null || apiKey.isBlank()) {
+        if (deepseekApiKey == null || deepseekApiKey.isBlank()) {
+            deepseekApiKey = System.getenv("DEEPSEEK_API_KEY");
+        }
+        if ((apiKey == null || apiKey.isBlank()) && (deepseekApiKey == null || deepseekApiKey.isBlank())) {
             log.warn("[ChatModelService] 未配置 API Key，仅 Spring Boot 默认模型可用");
             return;
         }
@@ -308,8 +314,10 @@ public class ChatModelService {
             return new ModelConfig("https://dashscope.aliyuncs.com/compatible-mode/v1", apiKey, "qwen3.6-max-preview");
         }
         if (mn.contains("deepseek")) {
-            return new ModelConfig("https://api.deepseek.com/v1",
-                    "sk-8f258f2ddeb748b0ab13bf722b632642", "deepseek-chat");
+            if (deepseekApiKey == null || deepseekApiKey.isBlank()) {
+                throw new IllegalStateException("DeepSeek API Key 未配置，请在 application-local.yml 中设置 deepseek.api-key 或设置 DEEPSEEK_API_KEY 环境变量");
+            }
+            return new ModelConfig("https://api.deepseek.com/v1", deepseekApiKey, "deepseek-chat");
         }
         // 默认回退
         return new ModelConfig("https://dashscope.aliyuncs.com/compatible-mode/v1", apiKey, "qwen3.6-plus");

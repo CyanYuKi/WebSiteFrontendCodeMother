@@ -55,7 +55,11 @@ public class GraphWorkflowService {
         try {
             log.info("[GraphWorkflowService] 执行 resumeGraph");
             var result = resumeGraph.invoke(state.data());
-            return result.map(r -> new ProjectState(r.data())).orElse(state);
+            return result.map(r -> {
+                Map<String, Object> finalData = r.data();
+                log.info("[GraphWorkflowService] resumeGraph 完成, state keys={}", finalData.keySet());
+                return new ProjectState(finalData);
+            }).orElse(state);
         } catch (Exception e) {
             log.error("[GraphWorkflowService] resumeGraph 执行失败", e);
             throw new RuntimeException("工作流恢复失败: " + e.getMessage(), e);

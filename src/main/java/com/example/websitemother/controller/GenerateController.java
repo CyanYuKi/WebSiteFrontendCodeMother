@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,8 +121,9 @@ public class GenerateController {
                 response.setReviewPassed(finalState.reviewPassed());
                 response.setReviewFeedback(finalState.reviewFeedback());
                 response.setRetryCount(finalState.retryCount());
-                response.setPreviewUrl("/api/preview/" + projectId);
-                log.info("[GenerateController] /resume-stream 完成, projectId={}, previewUrl={}", projectId, response.getPreviewUrl());
+                response.setPreviewUrl("/api/preview/" + projectId + "/");
+                response.setPages(extractPageList(finalState));
+                log.info("[GenerateController] /resume-stream 完成, projectId={}, previewUrl={}, pages={}", projectId, response.getPreviewUrl(), response.getPages());
 
                 String json = objectMapper.writeValueAsString(response);
                 emitter.send(SseEmitter.event().name("complete").data(json));
@@ -180,10 +182,11 @@ public class GenerateController {
         response.setReviewPassed(finalState.reviewPassed());
         response.setReviewFeedback(finalState.reviewFeedback());
         response.setRetryCount(finalState.retryCount());
-        response.setPreviewUrl("/api/preview/" + projectId);
+        response.setPreviewUrl("/api/preview/" + projectId + "/");
+        response.setPages(extractPageList(finalState));
 
-        log.info("[GenerateController] /resume 响应: reviewPassed={}, retryCount={}, projectId={}",
-                finalState.reviewPassed(), finalState.retryCount(), projectId);
+        log.info("[GenerateController] /resume 响应: reviewPassed={}, retryCount={}, projectId={}, pages={}",
+                finalState.reviewPassed(), finalState.retryCount(), projectId, response.getPages());
         return response;
     }
 
@@ -240,5 +243,19 @@ public class GenerateController {
         private String reviewFeedback;
         private int retryCount;
         private String previewUrl;
+        private List<String> pages;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> extractPageList(ProjectState state) {
+        Object pagesObj = state.data().get(ProjectState.PAGES);
+        if (pagesObj instanceof Map<?, ?> pages) {
+            List<String> list = new ArrayList<>();
+            for (Object key : pages.keySet()) {
+                list.add(key.toString());
+            }
+            return list;
+        }
+        return List.of("index.html");
     }
 }

@@ -45,7 +45,8 @@ public final class PromptTemplates {
             "   - 内容密度偏好（简洁留白型 vs 信息丰富型）\n" +
             "   - 品牌调性（如：高端奢华、亲民接地气、专业严谨）\n" +
             "   - 页面区块偏好（如：Hero大图、特性介绍、数据统计、客户评价、联系表单）\n" +
-            "3. 只输出JSON数组本身，不要添加```json等标记";
+            "   - 是否需要生成品牌Logo（type为select，options: ['是，生成品牌Logo', '否，不需要Logo']，默认推荐选'是'）\n" +
+            "4. 只输出JSON数组本身，不要添加```json等标记";
 
     public static String checklistBuilderUser(String input) {
         return "用户的建站需求：\"" + input + "\"\n请生成需求补充清单。";
@@ -100,15 +101,19 @@ public final class PromptTemplates {
 
     public static final String HTML_GENERATOR_SYSTEM =
             "你是一个专家设计师，正在与作为'经理'的用户协作。你使用 HTML + CSS + React 为用户生成高质量的设计产物。\n\n" +
-            "===== 产物格式 =====\n" +
-            "输出一个完整的多页面网站。根据需求复杂度，生成 2-5 个 HTML 页面文件。\n" +
-            "文件之间使用以下精确分隔符区分（不要省略，不要改格式）：\n" +
+            "===== 产物格式（极其重要，必须严格遵守）=====\n" +
+            "根据需求复杂度决定页面数量：\n" +
+            "- 简单需求（如个人博客、单页介绍）：生成 1 个 index.html 即可\n" +
+            "- 复杂需求（如品牌官网、电商平台）：生成 2-5 个页面（如 index.html, about.html, contact.html）\n" +
+            "不要强行多页面，宁缺毋滥。单页面也可以做得很精致。\n\n" +
+            "文件之间使用以下精确分隔符区分（不要省略，不要改格式，不要加markdown代码块）：\n" +
             "--- FILE: index.html ---\n" +
             "[index.html 的完整代码]\n" +
             "--- FILE: about.html ---\n" +
             "[about.html 的完整代码]\n" +
             "--- FILE: contact.html ---\n" +
             "[contact.html 的完整代码]\n\n" +
+            "警告：不要在代码外包裹 ```html 或 ``` 标记。直接输出原始HTML代码和分隔符。\n\n" +
             "每个文件必须包含：\n" +
             "1. <!DOCTYPE html> 和完整的 <html><head><body> 结构\n" +
             "2. 在 <style> 中定义 :root CSS 变量设计系统（配色、字体、间距）\n" +
@@ -150,8 +155,10 @@ public final class PromptTemplates {
             "  - Testimonials（可选）\n" +
             "  - Contact/CTA\n" +
             "  - Footer\n\n" +
-            "===== 多页面导航规范 =====\n" +
-            "- 导航栏必须包含所有页面的链接，使用相对路径如 <a href=\"about.html\">关于我们</a>\n" +
+            "===== 多页面导航规范（仅多页面时需要） =====\n" +
+            "- 导航栏中的链接 href 必须与实际生成的文件名完全一致（这是最常见的错误，必须极其小心）\n" +
+            "- 例如：如果生成了 index.html 和 blog.html，链接必须是 <a href=\"blog.html\">博客</a>\n" +
+            "- 严禁导航栏链接指向未生成的页面文件，这会导致页面无法访问\n" +
             "- 每个页面文件共享相同的设计系统（:root CSS 变量保持一致）\n" +
             "- 每个页面都有完整的 <html><head><body>，不要省略\n" +
             "- 页面之间通过相对路径跳转，不要在同页面内用 hash 模拟\n\n" +
@@ -159,14 +166,15 @@ public final class PromptTemplates {
             "- 所有外部链接（跳转至第三方网站）必须添加 target=\"_blank\" rel=\"noopener noreferrer\"\n" +
             "- 内部页面导航链接（href=\"about.html\"）不要添加 target=\"_blank\"，保持默认即可\n" +
             "- 严禁使用 href=\"#\" 作为占位链接，无真实链接时省略 <a> 标签\n\n" +
-            "[输出] 输出所有页面的完整HTML代码，用 --- FILE: filename.html --- 分隔，严禁任何解释文字或markdown标记\n\n" +
+            "[输出] 输出所有页面的完整HTML代码，用 --- FILE: filename.html --- 分隔，严禁任何解释文字或markdown代码块标记\n\n" +
             "===== 自检清单 =====\n" +
             "□ 是否包含完整的<!DOCTYPE html>和<html><head><body>\n" +
             "□ 是否先用:root CSS变量定义了设计系统\n" +
             "□ 是否避免了AI-slop设计套路\n" +
             "□ 内容是否精炼充实，没有填充\n" +
             "□ 是否使用了现代CSS特性\n" +
-            "□ 代码是否可直接在浏览器打开运行";
+            "□ 代码是否可直接在浏览器打开运行\n" +
+            "□ 导航链接的 href 是否与实际生成的文件名完全一致（再次检查）";
 
     public static String htmlGeneratorUser(String requirement, String designConcept, String designTokens,
                                            String assetsJson, String reviewFeedback, String previousHtmlCode) {
@@ -188,7 +196,7 @@ public final class PromptTemplates {
             sb.append("CODE:\n");
             sb.append("[该区域的完整新代码]\n\n");
         } else {
-            sb.append("请根据以下设计上下文生成完整的 HTML 单文件。\n\n");
+            sb.append("请根据以下设计上下文生成完整的多页面网站。\n\n");
             sb.append("【设计需求】\n").append(requirement).append("\n\n");
             if (designConcept != null && !designConcept.isBlank()) {
                 sb.append("【设计概念方案】（必须严格遵循此方案）\n").append(designConcept).append("\n\n");
@@ -200,9 +208,12 @@ public final class PromptTemplates {
                 sb.append("【素材资源】（在 HTML 中引用这些URL，不要自己用SVG画图片）\n").append(assetsJson).append("\n\n");
             }
             sb.append("【输出要求】\n");
-            sb.append("1. 输出完整的 .html 文件代码，从 <!DOCTYPE html> 到 </html>\n");
-            sb.append("2. 代码必须语法正确，可直接在浏览器中打开运行\n");
-            sb.append("3. 不要输出任何解释文字，只输出代码\n");
+            sb.append("1. 根据需求复杂度决定页面数量：简单需求1页即可，复杂需求2-5页。不要强行多页面。\n");
+            sb.append("2. 用 --- FILE: filename.html --- 分隔每个页面（即使只有1页也要用此格式）\n");
+            sb.append("3. 每个页面从 <!DOCTYPE html> 到 </html> 完整独立\n");
+            sb.append("4. 导航栏中的链接 href 必须与实际生成的文件名完全一致\n");
+            sb.append("5. 代码必须语法正确，可直接在浏览器中打开运行\n");
+            sb.append("6. 不要输出任何解释文字，不要包裹markdown代码块，只输出代码和分隔符\n");
         }
         return sb.toString();
     }

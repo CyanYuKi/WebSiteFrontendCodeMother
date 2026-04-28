@@ -36,6 +36,15 @@ const selectedModel = ref('qwen3.6-plus')
 // 多页面预览 URL
 const previewUrl = ref('')
 
+// 多页面列表与当前选中页面
+const pages = ref([])
+const currentPage = ref('')
+
+const activePreviewUrl = computed(() => {
+  if (!previewUrl.value) return undefined
+  return previewUrl.value + (currentPage.value || 'index.html')
+})
+
 // Agent 聊天消息流
 const messages = ref([])
 
@@ -191,7 +200,9 @@ async function handleResume() {
           reviewFeedback.value = data.reviewFeedback || ''
           retryCount.value = data.retryCount || 0
           previewUrl.value = data.previewUrl || ''
-          console.log('[SSE] complete event, previewUrl=', previewUrl.value)
+          pages.value = data.pages || ['index.html']
+          currentPage.value = pages.value[0] || 'index.html'
+          console.log('[SSE] complete event, previewUrl=', previewUrl.value, 'pages=', pages.value)
           initTweaks()
           step.value = 'result'
           await nextTick()
@@ -666,10 +677,26 @@ function handleKeydown(e) {
               <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
               <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
               <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-              <span class="ml-2 text-xs text-stone-400 font-mono">index.html</span>
+              <span class="ml-2 text-xs text-stone-400 font-mono">{{ currentPage }}</span>
+            </div>
+            <!-- 多页面切换标签 -->
+            <div v-if="pages.length > 1" class="flex gap-1 px-3 py-2 bg-stone-100 border-b border-stone-200 overflow-x-auto">
+              <button
+                v-for="page in pages"
+                :key="page"
+                @click="currentPage = page"
+                :class="[
+                  'px-3 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap',
+                  currentPage === page
+                    ? 'bg-stone-800 text-white'
+                    : 'bg-white text-stone-600 hover:bg-stone-200'
+                ]"
+              >
+                {{ page }}
+              </button>
             </div>
             <iframe
-              :src="previewUrl || undefined"
+              :src="activePreviewUrl"
               :srcdoc="previewUrl ? undefined : tweakedHtmlCode"
               class="w-full border-0"
               style="height: calc(100vh - 220px); min-height: 500px;"
@@ -685,14 +712,30 @@ function handleKeydown(e) {
                   <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                   <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
                   <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                  <span class="ml-2 text-xs text-stone-400 font-mono">index.html</span>
+                  <span class="ml-2 text-xs text-stone-400 font-mono">{{ currentPage }}</span>
                 </div>
                 <button @click="showPreviewModal = false" class="text-stone-500 hover:text-stone-800 p-1 rounded-lg hover:bg-stone-200 transition-colors">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
               </div>
+              <!-- 多页面切换标签 -->
+              <div v-if="pages.length > 1" class="flex gap-1 px-3 py-2 bg-stone-100 border-b border-stone-200 overflow-x-auto shrink-0">
+                <button
+                  v-for="page in pages"
+                  :key="page"
+                  @click="currentPage = page"
+                  :class="[
+                    'px-3 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap',
+                    currentPage === page
+                      ? 'bg-stone-800 text-white'
+                      : 'bg-white text-stone-600 hover:bg-stone-200'
+                  ]"
+                >
+                  {{ page }}
+                </button>
+              </div>
               <iframe
-                :src="previewUrl || undefined"
+                :src="activePreviewUrl"
                 :srcdoc="previewUrl ? undefined : tweakedHtmlCode"
                 class="w-full border-0 flex-1"
                 sandbox="allow-scripts allow-same-origin"
