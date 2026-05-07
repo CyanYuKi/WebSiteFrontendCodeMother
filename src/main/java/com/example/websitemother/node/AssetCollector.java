@@ -48,13 +48,13 @@ public class AssetCollector implements NodeAction<ProjectState> {
   "brandName": "品牌名称，简洁，用于Logo生成。如果用户没指定，从需求中提取最合适的名称",
   "logoPrompt": "英文prompt，用于AI Logo生成。描述清晰有视觉细节（行业、风格、色彩、氛围），适合AI图像生成。纯图形标志，不要包含文字、字母或数字。100词左右",
   "searchQueries": [
-    {"section": "hero", "query": "5-10个英文关键词，如luosifen food neon banner", "count": 2},
-    {"section": "about", "query": "5-10个英文关键词，如chinese restaurant culture heritage", "count": 2},
-    {"section": "feature", "query": "5-10个英文关键词，如noodle ingredients closeup studio", "count": 2},
-    {"section": "gallery", "query": "5-10个英文关键词，如product packaging flatlay dark", "count": 2},
-    {"section": "team", "query": "5-10个英文关键词，如chef team kitchen portrait", "count": 1},
-    {"section": "testimonial", "query": "5-10个英文关键词，如customers dining happy friends", "count": 1},
-    {"section": "contact", "query": "5-10个英文关键词，如modern storefront night neon", "count": 1}
+    {"section": "hero", "query": "5-10个英文关键词，如luosifen food neon banner", "count": 2, "size": "large2x"},
+    {"section": "about", "query": "5-10个英文关键词，如chinese restaurant culture heritage", "count": 2, "size": "large"},
+    {"section": "feature", "query": "5-10个英文关键词，如noodle ingredients closeup studio", "count": 2, "size": "large"},
+    {"section": "gallery", "query": "5-10个英文关键词，如product packaging flatlay dark", "count": 2, "size": "large"},
+    {"section": "team", "query": "5-10个英文关键词，如chef team kitchen portrait", "count": 1, "size": "medium"},
+    {"section": "testimonial", "query": "5-10个英文关键词，如customers dining happy friends", "count": 1, "size": "medium"},
+    {"section": "contact", "query": "5-10个英文关键词，如modern storefront night neon", "count": 1, "size": "large"}
   ]
 }
 
@@ -63,6 +63,11 @@ public class AssetCollector implements NodeAction<ProjectState> {
 2. logoPrompt 用英文，包含行业、风格、色彩、氛围等视觉细节
 3. 每个section的query必须是5-10个英文关键词（如：luosifen food neon cyberpunk night），不要长句子。Pexels图库搜索对简短关键词支持更好，长句子会导致搜索无结果
 4. count是请求该section的图片数量，建议hero/about/feature/gallery各2张，其余1张
+5. size是图片尺寸，根据区块用途选择：
+   - hero（首屏大图）用 large2x（约1880px）确保高清
+   - about/feature/gallery/contact 用 large（约940px）
+   - team/testimonial（头像/小图）用 medium（约350px）
+   可选值：large2x/large/medium/small/original
 """;
 
     @Override
@@ -87,10 +92,12 @@ public class AssetCollector implements NodeAction<ProjectState> {
         if (needLogo) {
             String logoUrl = logoGenerationService.generateLogoWithPrompt(config.brandName, config.logoPrompt);
             if (logoUrl != null) {
-                Map<String, String> logoAsset = new HashMap<>();
+                Map<String, Object> logoAsset = new HashMap<>();
                 logoAsset.put("url", logoUrl);
                 logoAsset.put("description", "AI生成的品牌Logo");
                 logoAsset.put("keyword", "logo");
+                logoAsset.put("width", 1024);
+                logoAsset.put("height", 1024);
                 assets.put("logo", logoAsset);
                 log.info("[AssetCollector] Logo生成成功");
             }
@@ -98,15 +105,21 @@ public class AssetCollector implements NodeAction<ProjectState> {
             log.info("[AssetCollector] 用户选择不生成Logo，跳过");
         }
 
-        // 3. 按区块分别搜索图片，每个区块用专属查询词
-        List<String> galleryPool = new ArrayList<>();
+        // 3. 按区块分别搜索图片，每个区块用专属查询词和尺寸
+        List<Map<String, Object>> galleryPool = new ArrayList<>();
         for (SectionQuery sq : config.searchQueries) {
-            List<String> images = pexelsImageService.searchImages(sq.query, sq.count);
+            List<PexelsImageService.ImageInfo> images = pexelsImageService.searchImagesWithInfo(sq.query, sq.count, sq.size);
             if (!images.isEmpty()) {
-                assets.put(sq.section, buildAsset(sq.description, images.get(0)));
+                PexelsImageService.ImageInfo first = images.get(0);
+                assets.put(sq.section, buildAsset(sq.description, first.url(), first.width(), first.height()));
                 // 多余图片放入素材池
                 for (int i = 1; i < images.size(); i++) {
-                    galleryPool.add(images.get(i));
+                    PexelsImageService.ImageInfo img = images.get(i);
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("url", img.url());
+                    item.put("width", img.width());
+                    item.put("height", img.height());
+                    galleryPool.add(item);
                 }
             }
         }
@@ -145,7 +158,7 @@ public class AssetCollector implements NodeAction<ProjectState> {
      * 判断用户是否需要生成Logo。默认生成，仅在用户明确选择不需要时跳过。
      */
     private boolean isNeedLogo(Map<String, String> answers) {
-        String needLogo = getAnswer(answers, "need_logo", "logo", "generate_logo", "");
+        String needLogo = getAnswer(answers, "logo_needed", "need_logo", "logo", "generate_logo");
         if (needLogo.isEmpty()) {
             return true; // 默认生成
         }
@@ -175,18 +188,19 @@ public class AssetCollector implements NodeAction<ProjectState> {
                     String section = qn.path("section").asText("");
                     String query = qn.path("query").asText("");
                     int count = qn.path("count").asInt(1);
+                    String size = qn.path("size").asText(defaultSizeForSection(section));
                     if (!section.isBlank() && !query.isBlank()) {
-                        searchQueries.add(new SectionQuery(section, query, count, sectionDescription(section)));
+                        searchQueries.add(new SectionQuery(section, query, count, sectionDescription(section), size));
                     }
                 }
             }
 
             // 兜底：如果LLM没有生成任何查询，使用默认查询
             if (searchQueries.isEmpty()) {
-                searchQueries.add(new SectionQuery("hero", fallbackQuery, 3, sectionDescription("hero")));
-                searchQueries.add(new SectionQuery("about", fallbackQuery, 2, sectionDescription("about")));
-                searchQueries.add(new SectionQuery("feature", fallbackQuery, 2, sectionDescription("feature")));
-                searchQueries.add(new SectionQuery("gallery", fallbackQuery, 2, sectionDescription("gallery")));
+                searchQueries.add(new SectionQuery("hero", fallbackQuery, 3, sectionDescription("hero"), "large2x"));
+                searchQueries.add(new SectionQuery("about", fallbackQuery, 2, sectionDescription("about"), "large"));
+                searchQueries.add(new SectionQuery("feature", fallbackQuery, 2, sectionDescription("feature"), "large"));
+                searchQueries.add(new SectionQuery("gallery", fallbackQuery, 2, sectionDescription("gallery"), "large"));
             }
 
             // 兜底
@@ -200,10 +214,10 @@ public class AssetCollector implements NodeAction<ProjectState> {
             log.warn("[AssetCollector] LLM素材配置生成失败，使用兜底策略: {}", e.getMessage());
             String fallbackQuery = userInput + " website professional";
             List<SectionQuery> fallbackQueries = new ArrayList<>();
-            fallbackQueries.add(new SectionQuery("hero", fallbackQuery, 3, sectionDescription("hero")));
-            fallbackQueries.add(new SectionQuery("about", fallbackQuery, 2, sectionDescription("about")));
-            fallbackQueries.add(new SectionQuery("feature", fallbackQuery, 2, sectionDescription("feature")));
-            fallbackQueries.add(new SectionQuery("gallery", fallbackQuery, 2, sectionDescription("gallery")));
+            fallbackQueries.add(new SectionQuery("hero", fallbackQuery, 3, sectionDescription("hero"), "large2x"));
+            fallbackQueries.add(new SectionQuery("about", fallbackQuery, 2, sectionDescription("about"), "large"));
+            fallbackQueries.add(new SectionQuery("feature", fallbackQuery, 2, sectionDescription("feature"), "large"));
+            fallbackQueries.add(new SectionQuery("gallery", fallbackQuery, 2, sectionDescription("gallery"), "large"));
             return new AssetConfig(userInput,
                     "Design a professional logo for " + userInput + ". Modern, clean, white background, pure graphic symbol without text.",
                     fallbackQueries, fallbackQuery);
@@ -223,32 +237,42 @@ public class AssetCollector implements NodeAction<ProjectState> {
         };
     }
 
+    private String defaultSizeForSection(String section) {
+        return switch (section) {
+            case "hero" -> "large2x";
+            case "team", "testimonial" -> "medium";
+            default -> "large";
+        };
+    }
+
     private record AssetConfig(String brandName, String logoPrompt, List<SectionQuery> searchQueries, String fallbackQuery) {
     }
 
-    private record SectionQuery(String section, String query, int count, String description) {
+    private record SectionQuery(String section, String query, int count, String description, String size) {
     }
 
-    private Map<String, String> buildAsset(String description, String imageUrl) {
-        Map<String, String> asset = new HashMap<>();
+    private Map<String, Object> buildAsset(String description, String imageUrl, int width, int height) {
+        Map<String, Object> asset = new HashMap<>();
         asset.put("url", imageUrl);
         asset.put("description", description);
         asset.put("source", "pexels");
+        asset.put("width", width);
+        asset.put("height", height);
         return asset;
     }
 
     private void fallbackToPicsum(Map<String, Object> assets, String keyword) {
         String safeSeed = keyword.replaceAll("[^a-zA-Z0-9]", "_");
         assets.put("hero", buildAsset("主视觉Banner图",
-                String.format("https://picsum.photos/seed/%s/1200/600", safeSeed)));
+                String.format("https://picsum.photos/seed/%s/1200/600", safeSeed), 1200, 600));
         assets.put("about", buildAsset("品牌介绍配图",
-                String.format("https://picsum.photos/seed/%s_about/800/600", safeSeed)));
+                String.format("https://picsum.photos/seed/%s_about/800/600", safeSeed), 800, 600));
         assets.put("feature", buildAsset("功能特色展示图",
-                String.format("https://picsum.photos/seed/%s_feature/800/600", safeSeed)));
+                String.format("https://picsum.photos/seed/%s_feature/800/600", safeSeed), 800, 600));
         assets.put("gallery", buildAsset("产品/作品展示图",
-                String.format("https://picsum.photos/seed/%s_product/600/600", safeSeed)));
+                String.format("https://picsum.photos/seed/%s_product/600/600", safeSeed), 600, 600));
         assets.put("team", buildAsset("团队风采图",
-                String.format("https://picsum.photos/seed/%s_team/800/600", safeSeed)));
+                String.format("https://picsum.photos/seed/%s_team/800/600", safeSeed), 800, 600));
     }
 
     private void sendStage(SseEmitter emitter, String stage) {

@@ -6,10 +6,15 @@ import com.example.websitemother.state.ProjectState;
 import com.example.websitemother.controller.SseEmitterStore;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.action.NodeAction;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.ParseError;
+import org.jsoup.parser.Parser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,6 +85,38 @@ public class CodeReviewer implements NodeAction<ProjectState> {
             return "代码为空";
         }
 
+        // 0. 末尾截断检测：如果文件以未完成的标签/字符串/注释结尾，说明 LLM 输出被截断
+        String trimmed = htmlCode.trim();
+        char lastChar = trimmed.charAt(trimmed.length() - 1);
+        // 正常 HTML 应该以 > 或 } 或 ) 或 文本内容结尾
+        // 如果以 < 或 = 或 ( 或 [ 或 { 结尾，说明截断了
+        if (lastChar == '<' || lastChar == '=' || lastChar == '(' || lastChar == '[' || lastChar == '{') {
+            return "代码在末尾处被截断（未完成标签/表达式）";
+        }
+        // 检查末尾 200 字符内是否有未闭合的标签开头
+        String tail = trimmed.substring(Math.max(0, trimmed.length() - 200));
+        if (tail.lastIndexOf('<') > tail.lastIndexOf('>')) {
+            // 末尾存在未闭合的标签
+            String unclosed = tail.substring(tail.lastIndexOf('<'));
+            if (unclosed.length() < 50 && !unclosed.contains(">")) {
+                return "代码在末尾标签处被截断: " + unclosed.substring(0, Math.min(20, unclosed.length()));
+            }
+        }
+        // 检查末尾是否有未闭合的双引号或单引号
+        int lastDquote = trimmed.lastIndexOf('"');
+        int lastSquote = trimmed.lastIndexOf('\'');
+        if (lastDquote > trimmed.lastIndexOf('>', lastDquote) ||
+            lastSquote > trimmed.lastIndexOf('>', lastSquote)) {
+            // 引号在最后一个 > 之后，可能是未闭合的属性值
+            // 但需要更精确的判断：引号数量是否为奇数（在末尾区域内）
+            String tail2 = trimmed.substring(Math.max(0, trimmed.length() - 500));
+            long dquotes = tail2.chars().filter(c -> c == '"').count();
+            long squotes = tail2.chars().filter(c -> c == '\'').count();
+            if (dquotes % 2 != 0 || squotes % 2 != 0) {
+                return "代码在属性值引号处被截断";
+            }
+        }
+
         String lower = htmlCode.toLowerCase();
 
         // 1. 基本 HTML 结构存在性
@@ -123,7 +160,61 @@ public class CodeReviewer implements NodeAction<ProjectState> {
             }
         }
 
+        // 7. body 内容截断检测：body 内实质内容过少说明生成被截断
+        if (bodyContent != null) {
+            String stripped = bodyContent.replaceAll("\\s+", "");
+            if (stripped.length() < 200) {
+                return "body 内容被截断，实质内容过少（" + stripped.length() + "字符）";
+            }
+        }
+
+        // 8. jsoup HTML Linter 检查：使用真实 HTML 解析器验证语法
+        String jsoupError = jsoupLintCheck(htmlCode);
+        if (jsoupError != null) {
+            return jsoupError;
+        }
+
         return null;
+    }
+
+    /**
+     * 使用 jsoup 解析 HTML 并检查语法错误
+     * @return null 表示无错误；否则返回错误描述
+     */
+    private String jsoupLintCheck(String htmlCode) {
+        try {
+            Parser parser = Parser.htmlParser().setTrackErrors(10);
+            Document doc = Jsoup.parse(htmlCode, "", parser);
+            List<ParseError> errors = parser.getErrors();
+            if (errors != null && !errors.isEmpty()) {
+                StringBuilder sb = new StringBuilder("jsoup检测到HTML语法错误: ");
+                int count = Math.min(errors.size(), 3);
+                for (int i = 0; i < count; i++) {
+                    ParseError err = errors.get(i);
+                    sb.append("[").append(i + 1).append("]").append(err.toString());
+                    if (i < count - 1) sb.append("; ");
+                }
+                if (errors.size() > 3) {
+                    sb.append(" 等共").append(errors.size()).append("处错误");
+                }
+                String msg = sb.toString();
+                log.warn("[CodeReviewer] {}", msg);
+                return msg;
+            }
+
+            // 额外检查：解析后的 html/body/head 标签数量是否异常
+            int htmlCount = doc.getElementsByTag("html").size();
+            int bodyCount = doc.getElementsByTag("body").size();
+            int headCount = doc.getElementsByTag("head").size();
+            if (htmlCount != 1) return "jsoup解析后发现<html>标签数量为" + htmlCount + "（应为1）";
+            if (headCount != 1) return "jsoup解析后发现<head>标签数量为" + headCount + "（应为1）";
+            if (bodyCount != 1) return "jsoup解析后发现<body>标签数量为" + bodyCount + "（应为1）";
+
+            return null;
+        } catch (Exception e) {
+            log.warn("[CodeReviewer] jsoup解析异常: {}", e.getMessage());
+            return "jsoup解析异常: " + e.getMessage();
+        }
     }
 
     private void sendStage(SseEmitter emitter, String stage) {
@@ -137,7 +228,7 @@ public class CodeReviewer implements NodeAction<ProjectState> {
 
     private static final Pattern HEAD_OPEN = Pattern.compile("<head\\b");
     private static final Pattern HEAD_CLOSE = Pattern.compile("</head>");
-    private static final Pattern HTML_OPEN = Pattern.compile("<html\\b");
+    private static final Pattern HTML_OPEN = Pattern.compile("(?<![a-z])<html\\b");
     private static final Pattern HTML_CLOSE = Pattern.compile("</html>");
     private static final Pattern BODY_OPEN = Pattern.compile("<body\\b");
     private static final Pattern BODY_CLOSE = Pattern.compile("</body>");
@@ -181,6 +272,20 @@ public class CodeReviewer implements NodeAction<ProjectState> {
      * @return 修复后的代码（如果无法修复则返回原代码）
      */
     private String autoFixStructure(String htmlCode) {
+        // 如果代码末尾存在截断特征，不进行自动修复（补全标签会掩盖截断问题）
+        String trimmed = htmlCode.trim();
+        char lastChar = trimmed.charAt(trimmed.length() - 1);
+        if (lastChar == '<' || lastChar == '=' || lastChar == '(' || lastChar == '[' || lastChar == '{') {
+            return htmlCode; // 截断，不修复
+        }
+        String tail = trimmed.substring(Math.max(0, trimmed.length() - 200));
+        if (tail.lastIndexOf('<') > tail.lastIndexOf('>')) {
+            String unclosed = tail.substring(tail.lastIndexOf('<'));
+            if (unclosed.length() < 50 && !unclosed.contains(">")) {
+                return htmlCode; // 截断，不修复
+            }
+        }
+
         String fixed = htmlCode;
         String lower = htmlCode.toLowerCase();
         boolean modified = false;

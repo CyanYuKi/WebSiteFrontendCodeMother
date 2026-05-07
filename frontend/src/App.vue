@@ -1,7 +1,7 @@
 <script setup>
 import { ref, nextTick, computed } from 'vue'
 import hljs from 'highlight.js'
-import 'highlight.js/styles/github-dark.css'
+import 'highlight.js/styles/github.css'
 
 // ==================== State ====================
 const userInput = ref('')
@@ -24,6 +24,15 @@ const copySuccess = ref(false)
 // SSE 流式生成
 const streamingHtml = ref('')
 const currentStage = ref('')
+const cancelled = ref(false)
+const sseReader = ref(null)
+
+// 打字机动画
+const twDisplayed = ref({})       // 逐字显示文本 { pageName: string }
+const twTimer = ref(null)         // 共享 rAF 句柄
+const twLastTick = ref(0)         // 上次高亮计算时间戳
+const twHighlightCache = ref({})  // 高亮结果缓存 { pageName: { input, output } }
+const TW_SPEED = 5                // 每帧输出字符数
 
 // Tweaks
 const showTweaks = ref(false)
@@ -35,14 +44,32 @@ const selectedModel = ref('qwen3.6-plus')
 
 // 多页面预览 URL
 const previewUrl = ref('')
+const screenshotUrl = ref('')
 
 // 多页面列表与当前选中页面
 const pages = ref([])
 const currentPage = ref('')
 
+// iframe 引用，用于监听内部导航
+const previewFrame = ref(null)
+const modalFrame = ref(null)
+
+// 子页面生成状态
+const pageList = ref([])          // 从 page_list SSE 事件获取 [{name, title, overview}]
+const pageTokens = ref({})        // { [pageName]: accumulatedCode }
+const pageStatuses = ref({})      // { [pageName]: 'generating' | 'completed' | '' }
+
 const activePreviewUrl = computed(() => {
   if (!previewUrl.value) return undefined
   return previewUrl.value + (currentPage.value || 'index.html')
+})
+
+const allGeneratingPages = computed(() => {
+  const list = ['index.html']
+  for (const p of pageList.value) {
+    if (p.name && !list.includes(p.name)) list.push(p.name)
+  }
+  return list
 })
 
 // Agent 聊天消息流
@@ -92,7 +119,7 @@ const tweakList = computed(() => {
 })
 
 const highlightedHtmlCode = computed(() => {
-  const code = simpleBreakHtml(tweakedHtmlCode.value)
+  const code = formatHtmlCode(tweakedHtmlCode.value)
   if (!code) return ''
   try {
     return hljs.highlight(code, { language: 'html' }).value
@@ -101,9 +128,296 @@ const highlightedHtmlCode = computed(() => {
   }
 })
 
-function simpleBreakHtml(html) {
+/**
+ * 格式化 HTML 代码：智能缩进 + 标签换行，模拟 IDE 效果
+ */
+function formatHtmlCode(html) {
   if (!html) return ''
-  return html.replace(/>(?=<)/g, '>\n')
+
+  // 步骤1: 在标签边界处插入换行（保留文本内容）
+  let withNewlines = html
+    .replace(/>(\s*)</g, '>\n<')           // 标签之间换行
+    .replace(/(<!DOCTYPE[^>]*>)/gi, '$1\n') // DOCTYPE 后换行
+
+  // 步骤2: 按行处理缩进
+  const lines = withNewlines.split('\n')
+  let indent = 0
+  const result = []
+  const indentStr = '  '
+
+  for (let rawLine of lines) {
+    let line = rawLine.trim()
+    if (!line) { result.push(''); continue }
+
+    // 检测标签：必须是以 < 开头且以 > 结尾的完整标签
+    const isFullTag = /^<[^>]+>$/.test(line)
+    const isCloseTag = /^<\/[a-zA-Z]/.test(line)
+    const isSelfClosing = /\/>\s*$/.test(line) || /^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)[^>]*>$/i.test(line)
+    const isDoctype = /^<!DOCTYPE/i.test(line)
+    const isOpeningTag = isFullTag && !isCloseTag && !isSelfClosing && !isDoctype
+
+    // 闭标签：先缩进，再减层级
+    if (isCloseTag && indent > 0) {
+      indent--
+    }
+
+    // 添加当前行（带缩进）
+    result.push(indentStr.repeat(indent) + line)
+
+    // 开标签：增加层级（但排除一行内就闭合的情况如 <div>...</div>）
+    if (isOpeningTag && !line.includes('</')) {
+      indent++
+    }
+  }
+
+  // 步骤3: 对 <style> 块内的 CSS 做额外格式化
+  let output = result.join('\n')
+  output = output.replace(/(<style[^>]*>)([\s\S]*?)(<\/style>)/g, (match, open, css, close) => {
+    const cssLines = css.split('\n').map(l => l.trim())
+    let cssIndent = 1
+    const formattedCss = cssLines.map(line => {
+      if (!line) return ''
+      const isCssClose = /^\}/.test(line)
+      const isCssOpen = /\{\s*$/.test(line)
+      if (isCssClose && cssIndent > 1) cssIndent--
+      const indented = indentStr.repeat(cssIndent) + line
+      if (isCssOpen) cssIndent++
+      return indented
+    }).join('\n')
+    return open + '\n' + formattedCss + '\n' + indentStr + close
+  })
+
+  // 步骤4: 对 <script> 块内的 JS 做简单格式化
+  output = output.replace(/(<script[^>]*>)([\s\S]*?)(<\/script>)/g, (match, open, js, close) => {
+    const jsLines = js.split('\n').map(l => l.trim())
+    let jsIndent = 1
+    const formattedJs = jsLines.map(line => {
+      if (!line) return ''
+      const isJsClose = /^\}/.test(line) || /^\)/.test(line) || /^\];/.test(line)
+      const isJsOpen = /\{\s*$/.test(line) || /\(\s*$/.test(line) || /\[\s*$/.test(line)
+      if (isJsClose && jsIndent > 1) jsIndent--
+      const indented = indentStr.repeat(jsIndent) + line
+      if (isJsOpen) jsIndent++
+      return indented
+    }).join('\n')
+    return open + '\n' + formattedJs + '\n' + indentStr + close
+  })
+
+  return output
+}
+
+// ==================== Typewriter Engine ====================
+
+function twStartIfNeeded() {
+  if (twTimer.value) return
+  function tick() {
+    let hasMore = false
+    const updated = { ...twDisplayed.value }
+    for (const [name, full] of Object.entries(pageTokens.value)) {
+      if (!full) continue
+      const current = updated[name] || ''
+      if (current.length < full.length) {
+        hasMore = true
+        updated[name] = full.substring(0, current.length + TW_SPEED)
+      }
+    }
+    twDisplayed.value = updated
+    if (hasMore) {
+      twTimer.value = requestAnimationFrame(tick)
+    } else {
+      twTimer.value = null
+    }
+  }
+  twTimer.value = requestAnimationFrame(tick)
+}
+
+function twStop() {
+  if (twTimer.value) {
+    cancelAnimationFrame(twTimer.value)
+    twTimer.value = null
+  }
+  // flush: 将每页显示文本推到与源文本相同长度
+  const updated = { ...twDisplayed.value }
+  for (const [name, full] of Object.entries(pageTokens.value)) {
+    if (full) updated[name] = full
+  }
+  twDisplayed.value = updated
+}
+
+function twIsAnimating(name) {
+  const full = pageTokens.value[name] || ''
+  const displayed = twDisplayed.value[name] || ''
+  return displayed.length < full.length
+}
+
+function twLineCount(name) {
+  const text = twDisplayed.value[name] || ''
+  if (!text) return 1
+  return formatStreamingHtml(text).split('\n').length
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function colorizeAttrs(attrsStr) {
+  let out = ''
+  const re = /(\s+)([a-zA-Z][\w-]*)(?:(\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g
+  let m
+  while ((m = re.exec(attrsStr)) !== null) {
+    out += escapeHtml(m[1])
+    out += '<span class="hljs-attr">' + escapeHtml(m[2]) + '</span>'
+    if (m[3]) {
+      out += '<span class="hljs-tag">=</span>'
+      const val = m[4] !== undefined ? m[4] : (m[5] !== undefined ? m[5] : (m[6] || ''))
+      out += '<span class="hljs-string">&quot;' + escapeHtml(val) + '&quot;</span>'
+    }
+  }
+  return out
+}
+
+function colorizeTag(tag) {
+  if (/^<!DOCTYPE/i.test(tag)) {
+    return '<span class="hljs-meta">' + escapeHtml(tag) + '</span>'
+  }
+  if (/^<!--/.test(tag)) {
+    return '<span class="hljs-comment">' + escapeHtml(tag) + '</span>'
+  }
+  if (/^<\//.test(tag)) {
+    const m = tag.match(/^<\/([a-zA-Z][\w-]*)/)
+    if (m) {
+      return '<span class="hljs-tag">&lt;/</span>' +
+        '<span class="hljs-name">' + escapeHtml(m[1]) + '</span>' +
+        '<span class="hljs-tag">&gt;</span>'
+    }
+    return escapeHtml(tag)
+  }
+  const m = tag.match(/^<([a-zA-Z][\w-]*)((\s[^>]*?)?)\s*(\/?)>$/)
+  if (m) {
+    let out = '<span class="hljs-tag">&lt;</span>'
+    out += '<span class="hljs-name">' + escapeHtml(m[1]) + '</span>'
+    if (m[2]) out += colorizeAttrs(m[2])
+    out += m[4] === '/' ? '<span class="hljs-tag">/&gt;</span>' : '<span class="hljs-tag">&gt;</span>'
+    return out
+  }
+  return escapeHtml(tag)
+}
+
+function highlightStreaming(formattedHtml) {
+  if (!formattedHtml) return ''
+  let result = ''
+  let i = 0
+  while (i < formattedHtml.length) {
+    if (formattedHtml[i] === '<') {
+      const gt = formattedHtml.indexOf('>', i)
+      if (gt !== -1) {
+        result += colorizeTag(formattedHtml.substring(i, gt + 1))
+        i = gt + 1
+      } else {
+        result += escapeHtml(formattedHtml.substring(i))
+        break
+      }
+    } else {
+      const nextLt = formattedHtml.indexOf('<', i)
+      if (nextLt === -1) {
+        result += escapeHtml(formattedHtml.substring(i))
+        break
+      }
+      result += escapeHtml(formattedHtml.substring(i, nextLt))
+      i = nextLt
+    }
+  }
+  return result
+}
+
+/**
+ * 流式代码专用格式化：标签换行 + 基础缩进
+ * 用 > 作为天然断点拆行，逐行计算深度，避免跨调用状态漂移
+ */
+function formatStreamingHtml(html) {
+  if (!html) return ''
+
+  // 仅在 > 后不是换行时才插入换行，避免双倍空行
+  let text = html.replace(/>([^\n])/g, '>\n$1')
+  text = text.replace(/\n{3,}/g, '\n\n')
+
+  const rawLines = text.split('\n')
+  const result = []
+
+  // 建立标签位置索引
+  const tagRe = /<(\/?)([a-zA-Z][\w-]*)[^>]*>/g
+  const tags = []
+  let m
+  while ((m = tagRe.exec(text)) !== null) {
+    const isClose = m[1] === '/'
+    const isVoid = /^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i.test(m[0])
+    tags.push({ pos: m.index, len: m[0].length, isClose, isVoid })
+  }
+
+  let lineStartPos = 0
+  for (let i = 0; i < rawLines.length; i++) {
+    const trimmed = rawLines[i].trim()
+    if (!trimmed) {
+      result.push('')
+      lineStartPos = text.indexOf('\n', lineStartPos)
+      if (lineStartPos < 0) lineStartPos = text.length
+      else lineStartPos++
+      continue
+    }
+
+    const leadingWS = rawLines[i].length - rawLines[i].trimStart().length
+    const linePos = lineStartPos + leadingWS
+
+    let opens = 0, closes = 0
+    for (const t of tags) {
+      if (t.pos >= linePos) break
+      if (t.isClose) { closes++; continue }
+      if (t.isVoid) continue
+      opens++
+    }
+
+    const lineStartsWithClose = /^<\//.test(trimmed)
+    const depth = Math.max(0, opens - closes - (lineStartsWithClose ? 1 : 0))
+
+    result.push('  '.repeat(depth) + trimmed)
+
+    lineStartPos = text.indexOf('\n', lineStartPos)
+    if (lineStartPos < 0) lineStartPos = text.length
+    else lineStartPos++
+  }
+
+  return result.join('\n')
+}
+
+function twHighlighted(name) {
+  const text = twDisplayed.value[name] || ''
+  if (!text) return ''
+  const cache = twHighlightCache.value[name]
+  if (cache && cache.input === text) return cache.output
+
+  // 截掉末尾不完整标签（< 之后无 >），避免着色器处理半截标签
+  let safeText = text
+  const lastOpen = text.lastIndexOf('<')
+  const lastClose = text.lastIndexOf('>')
+  if (lastOpen > lastClose) {
+    safeText = text.substring(0, lastOpen)
+  }
+
+  try {
+    const formatted = formatStreamingHtml(safeText)
+    let result = highlightStreaming(formatted)
+
+    if (safeText !== text) {
+      result += escapeHtml(text.substring(lastOpen))
+    }
+
+    twHighlightCache.value = { ...twHighlightCache.value, [name]: { input: text, output: result } }
+    return result
+  } catch {
+    const escaped = escapeHtml(text)
+    twHighlightCache.value = { ...twHighlightCache.value, [name]: { input: text, output: escaped } }
+    return escaped
+  }
 }
 
 // ==================== Methods ====================
@@ -155,9 +469,16 @@ async function handleStart() {
 
 async function handleResume() {
   loading.value = true
+  cancelled.value = false
   step.value = 'generating'
   streamingHtml.value = ''
   currentStage.value = '正在准备...'
+  pageList.value = []
+  pageTokens.value = {}
+  pageStatuses.value = {}
+  twDisplayed.value = {}
+  twHighlightCache.value = {}
+  twStop()
 
   try {
     const res = await fetch('/api/generate/resume-stream', {
@@ -174,10 +495,12 @@ async function handleResume() {
     }
 
     const reader = res.body.getReader()
+    sseReader.value = reader
     const decoder = new TextDecoder()
     let buffer = ''
 
     while (true) {
+      if (cancelled.value) break
       const { done, value } = await reader.read()
       if (done) break
 
@@ -191,7 +514,26 @@ async function handleResume() {
           currentStage.value = stageToLabel(event.data)
         } else if (event.name === 'html_token') {
           streamingHtml.value += event.data
+          // 同时映射到 pageTokens，用于多页面统一展示
+          if (!pageTokens.value['index.html']) pageTokens.value['index.html'] = ''
+          pageTokens.value['index.html'] += event.data
+          twStartIfNeeded()
+        } else if (event.name === 'page_list') {
+          const data = JSON.parse(event.data)
+          pageList.value = data.pages || []
+          for (const p of pageList.value) {
+            if (p.name && !pageStatuses.value[p.name]) pageStatuses.value[p.name] = ''
+          }
+        } else if (event.name === 'page_status') {
+          const data = JSON.parse(event.data)
+          pageStatuses.value[data.page] = data.status
+        } else if (event.name === 'page_token') {
+          const data = JSON.parse(event.data)
+          if (!pageTokens.value[data.page]) pageTokens.value[data.page] = ''
+          pageTokens.value[data.page] += data.token
+          twStartIfNeeded()
         } else if (event.name === 'complete') {
+          twStop()
           const data = JSON.parse(event.data)
           htmlCode.value = data.htmlCode || ''
           designConcept.value = data.designConcept || ''
@@ -200,9 +542,16 @@ async function handleResume() {
           reviewFeedback.value = data.reviewFeedback || ''
           retryCount.value = data.retryCount || 0
           previewUrl.value = data.previewUrl || ''
+          screenshotUrl.value = data.previewUrl ? (data.previewUrl + 'screenshot.png') : ''
           pages.value = data.pages || ['index.html']
-          currentPage.value = pages.value[0] || 'index.html'
+          // 优先默认打开 index.html，如果不存在则取第一个
+          currentPage.value = pages.value.includes('index.html') ? 'index.html' : (pages.value[0] || 'index.html')
           console.log('[SSE] complete event, previewUrl=', previewUrl.value, 'pages=', pages.value)
+          // 标记所有页面完成
+          pageStatuses.value['index.html'] = 'completed'
+          for (const p of pageList.value) {
+            if (p.name) pageStatuses.value[p.name] = 'completed'
+          }
           initTweaks()
           step.value = 'result'
           await nextTick()
@@ -215,10 +564,13 @@ async function handleResume() {
       }
     }
   } catch (err) {
-    alert('请求失败: ' + err.message)
+    if (!cancelled.value) {
+      alert('请求失败: ' + err.message)
+    }
     step.value = 'checklist'
   } finally {
     loading.value = false
+    sseReader.value = null
   }
 }
 
@@ -227,6 +579,7 @@ function stageToLabel(stage) {
     'asset_collector': '正在收集素材...',
     'design_concept': '正在生成设计概念...',
     'html_generator': '正在生成 HTML 代码...',
+    'sub_page_generator': '正在生成子页面...',
     'code_reviewer': '正在审查代码...'
   }
   return map[stage] || '处理中...'
@@ -237,6 +590,7 @@ function isStageActive(stageId) {
     'asset_collector': '正在收集素材...',
     'design_concept': '正在生成设计概念...',
     'html_generator': '正在生成 HTML 代码...',
+    'sub_page_generator': '正在生成子页面...',
     'code_reviewer': '正在审查代码...'
   }
   return currentStage.value === map[stageId]
@@ -244,11 +598,12 @@ function isStageActive(stageId) {
 
 function isStageDone(stageId) {
   if (step.value === 'result') return true
-  const order = ['asset_collector', 'design_concept', 'html_generator', 'code_reviewer']
+  const order = ['asset_collector', 'design_concept', 'html_generator', 'sub_page_generator', 'code_reviewer']
   const map = {
     'asset_collector': '正在收集素材...',
     'design_concept': '正在生成设计概念...',
     'html_generator': '正在生成 HTML 代码...',
+    'sub_page_generator': '正在生成子页面...',
     'code_reviewer': '正在审查代码...'
   }
   const currentIdx = order.findIndex(id => currentStage.value === map[id])
@@ -316,6 +671,91 @@ function reset() {
   streamingHtml.value = ''
   currentStage.value = ''
   messages.value = []
+  pageList.value = []
+  pageTokens.value = {}
+  pageStatuses.value = {}
+  pages.value = []
+  currentPage.value = ''
+  previewUrl.value = ''
+  twStop()
+  twDisplayed.value = {}
+  twHighlightCache.value = {}
+}
+
+function pageStatusClass(page) {
+  const s = pageStatuses.value[page]
+  if (s === 'generating') return 'border-indigo-200 bg-indigo-50 text-indigo-700'
+  if (s === 'completed') return 'border-emerald-200 bg-emerald-50 text-emerald-700'
+  return 'border-stone-200 text-stone-500 bg-white'
+}
+
+function pageStatusBadgeClass(page) {
+  const s = pageStatuses.value[page]
+  if (s === 'generating') return 'bg-indigo-100 text-indigo-700'
+  if (s === 'completed') return 'bg-emerald-100 text-emerald-700'
+  return 'bg-stone-100 text-stone-500'
+}
+
+function pageStatusLabel(page) {
+  const s = pageStatuses.value[page]
+  if (s === 'generating') return '生成中'
+  if (s === 'completed') return '已完成'
+  return '等待中'
+}
+
+function syncCurrentPageFromFrame(frameRef) {
+  try {
+    const frame = frameRef.value
+    if (!frame || !frame.contentWindow) return
+    const href = frame.contentWindow.location.href
+    // 从 URL 提取页面文件名，如 /api/preview/xxx/about.html
+    const match = href.match(/\/([^\/]+\.html)(?:[?#].*)?$/)
+    if (match) {
+      const pageName = match[1]
+      if (pages.value.includes(pageName) && currentPage.value !== pageName) {
+        currentPage.value = pageName
+      }
+    }
+  } catch (e) {
+    // 跨域或安全限制时忽略
+  }
+}
+
+function onPreviewFrameLoad() {
+  syncCurrentPageFromFrame(previewFrame)
+}
+
+function onModalFrameLoad() {
+  syncCurrentPageFromFrame(modalFrame)
+}
+
+async function cancelGeneration() {
+  if (!cancelled.value) {
+    cancelled.value = true
+    twStop()
+    // 关闭 SSE 流
+    if (sseReader.value) {
+      try {
+        await sseReader.value.cancel()
+      } catch (e) {
+        // 忽略
+      }
+    }
+    // 通知后端取消
+    if (sessionId.value) {
+      try {
+        await fetch('/api/generate/cancel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sessionId.value })
+        })
+      } catch (e) {
+        // 忽略
+      }
+    }
+    loading.value = false
+    step.value = 'checklist'
+  }
 }
 
 async function copyCode() {
@@ -447,6 +887,13 @@ function handleKeydown(e) {
                 <span>HTML 生成</span>
               </div>
               <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
+                   :class="isStageActive('sub_page_generator') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('sub_page_generator') ? 'text-stone-500' : 'text-stone-300')">
+                <span v-if="isStageDone('sub_page_generator')" class="text-emerald-500">✓</span>
+                <span v-else-if="isStageActive('sub_page_generator')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                <span>子页面生成</span>
+              </div>
+              <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
                    :class="isStageActive('code_reviewer') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('code_reviewer') ? 'text-stone-500' : 'text-stone-300')">
                 <span v-if="isStageDone('code_reviewer')" class="text-emerald-500">✓</span>
                 <span v-else-if="isStageActive('code_reviewer')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
@@ -468,7 +915,7 @@ function handleKeydown(e) {
               <option value="qwen3.6-plus">通义千问 3.6 Plus</option>
               <option value="qwen3.6-max">通义千问 3.6 Max</option>
               <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
-              <option value="deepseek-v4-plus">DeepSeek V4 Plus</option>
+              <option value="deepseek-v4-flush">DeepSeek V4 Flush</option>
             </select>
           </div>
           <div class="bg-stone-50 rounded-xl border border-stone-200 p-2">
@@ -523,6 +970,10 @@ function handleKeydown(e) {
             <p class="text-stone-500">请填写以下信息，帮助 AI 更精准地生成</p>
           </div>
           <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 space-y-5">
+            <!-- 空清单提示 -->
+            <div v-if="checklist.length === 0" class="text-center py-8 text-stone-400">
+              <p>未获取到需求清单，您可以直接点击生成，AI 将根据描述自动生成。</p>
+            </div>
             <div v-for="item in checklist" :key="item.field" class="space-y-2">
               <label class="block text-sm font-medium text-stone-700">
                 {{ item.label }}
@@ -583,26 +1034,65 @@ function handleKeydown(e) {
         </div>
 
         <!-- Generating -->
-        <div v-if="step === 'generating'" class="h-full flex flex-col p-4">
-          <div class="flex flex-col items-center justify-center py-6 space-y-4 shrink-0">
+        <div v-if="step === 'generating'" class="h-full flex flex-col p-4 gap-3">
+          <div class="flex flex-col items-center justify-center py-4 space-y-3 shrink-0">
             <div class="relative">
               <div class="w-12 h-12 border-4 border-stone-200 rounded-full"></div>
               <div class="absolute top-0 left-0 w-12 h-12 border-4 border-stone-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
-            <div class="text-center space-y-1">
+            <div class="text-center space-y-2">
               <p class="text-base font-medium text-stone-800">AI 正在为你生成网站设计</p>
               <p class="text-stone-500 text-sm">{{ currentStage || '正在准备...' }}</p>
+              <button
+                @click="cancelGeneration"
+                class="mt-1 px-4 py-1.5 text-xs font-medium text-stone-500 border border-stone-300 rounded-lg hover:bg-stone-100 hover:text-stone-700 transition-colors"
+              >
+                取消生成
+              </button>
             </div>
           </div>
-          <!-- Code typewriter -->
-          <div v-if="streamingHtml" class="flex-1 bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm min-h-0">
-            <div class="flex items-center gap-2 px-4 py-2.5 bg-stone-50 border-b border-stone-200">
-              <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-              <span class="ml-2 text-xs text-stone-400 font-mono">index.html</span>
+
+          <!-- 页面生成状态清单 -->
+          <div v-if="allGeneratingPages.length > 0" class="shrink-0 flex justify-center">
+            <div class="flex flex-wrap gap-2 justify-center">
+              <div v-for="page in allGeneratingPages" :key="page"
+                   class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors"
+                   :class="pageStatusClass(page)">
+                <span class="font-mono">{{ page }}</span>
+                <span v-if="pageStatuses[page] === 'generating'" class="w-1.5 h-1.5 bg-current rounded-full animate-pulse opacity-70"></span>
+                <span v-else-if="pageStatuses[page] === 'completed'" class="text-[10px]">✓</span>
+                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+              </div>
             </div>
-            <pre class="p-4 overflow-auto text-sm leading-relaxed text-stone-700 font-mono bg-white h-full whitespace-pre-wrap break-all" style="text-align: left;"><code>{{ simpleBreakHtml(streamingHtml) }}</code></pre>
+          </div>
+
+          <!-- 多页面代码预览网格（IDE 风格打字机效果） -->
+          <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-auto min-h-0">
+            <div v-for="page in allGeneratingPages" :key="page"
+                 v-show="twDisplayed[page] && twDisplayed[page].length > 0"
+                 class="bg-white rounded-xl border border-stone-200 overflow-hidden flex flex-col min-h-[160px] shadow-sm">
+              <div class="flex items-center justify-between px-3 py-2 bg-stone-50 border-b border-stone-200">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                  <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                  <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                  <span class="ml-1 text-xs text-stone-500 font-mono">{{ page }}</span>
+                </div>
+                <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                      :class="pageStatusBadgeClass(page)">
+                  {{ pageStatusLabel(page) }}
+                </span>
+              </div>
+              <div class="flex flex-1 overflow-auto min-h-0">
+                <!-- 行号 Gutter -->
+                <div class="select-none text-right py-3 pl-3 pr-2 border-r border-stone-200 text-stone-300 font-mono text-sm leading-relaxed bg-stone-50/50 shrink-0"
+                     style="min-width: 3rem">
+                  <div v-for="n in twLineCount(page)" :key="n">{{ n }}</div>
+                </div>
+                <!-- 代码区 + 光标 -->
+                <pre class="flex-1 p-3 text-sm leading-relaxed font-mono whitespace-pre-wrap break-words m-0 bg-white text-stone-700"><code class="language-html" style="display:block; white-space:pre-wrap" v-html="twHighlighted(page)"></code><span v-if="twIsAnimating(page)" class="inline-block w-[2px] h-[1.2em] bg-stone-500 animate-pulse" style="animation-duration: 0.8s"></span></pre>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -671,6 +1161,17 @@ function handleKeydown(e) {
             </div>
           </div>
 
+          <!-- 页面切换器 -->
+          <div v-if="pages.length > 1" class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs text-stone-400 font-medium">页面预览:</span>
+            <button v-for="page in pages" :key="page"
+                    @click="currentPage = page"
+                    class="px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors"
+                    :class="currentPage === page ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-600 border-stone-200 hover:border-stone-400'">
+              {{ page }}
+            </button>
+          </div>
+
           <!-- Preview (Large) -->
           <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
             <div class="flex items-center gap-2 px-4 py-2.5 bg-stone-50 border-b border-stone-200">
@@ -679,28 +1180,15 @@ function handleKeydown(e) {
               <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
               <span class="ml-2 text-xs text-stone-400 font-mono">{{ currentPage }}</span>
             </div>
-            <!-- 多页面切换标签 -->
-            <div v-if="pages.length > 1" class="flex gap-1 px-3 py-2 bg-stone-100 border-b border-stone-200 overflow-x-auto">
-              <button
-                v-for="page in pages"
-                :key="page"
-                @click="currentPage = page"
-                :class="[
-                  'px-3 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap',
-                  currentPage === page
-                    ? 'bg-stone-800 text-white'
-                    : 'bg-white text-stone-600 hover:bg-stone-200'
-                ]"
-              >
-                {{ page }}
-              </button>
-            </div>
             <iframe
+              ref="previewFrame"
+              :key="currentPage"
               :src="activePreviewUrl"
               :srcdoc="previewUrl ? undefined : tweakedHtmlCode"
               class="w-full border-0"
-              style="height: calc(100vh - 220px); min-height: 500px;"
+              style="height: calc(100vh - 260px); min-height: 500px;"
               sandbox="allow-scripts allow-same-origin"
+              @load="onPreviewFrameLoad"
             ></iframe>
           </div>
 
@@ -708,37 +1196,34 @@ function handleKeydown(e) {
           <div v-if="showPreviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showPreviewModal = false">
             <div class="w-[95vw] h-[95vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
               <div class="flex items-center justify-between px-4 py-3 bg-stone-50 border-b border-stone-200 shrink-0">
-                <div class="flex items-center gap-2">
-                  <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                  <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                  <span class="ml-2 text-xs text-stone-400 font-mono">{{ currentPage }}</span>
+                <div class="flex items-center gap-3">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                    <span class="ml-2 text-xs text-stone-400 font-mono">{{ currentPage }}</span>
+                  </div>
+                  <div v-if="pages.length > 1" class="flex items-center gap-1.5 border-l border-stone-200 pl-3">
+                    <button v-for="page in pages" :key="page"
+                            @click="currentPage = page"
+                            class="px-2 py-0.5 rounded text-xs font-medium border transition-colors"
+                            :class="currentPage === page ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-600 border-stone-200 hover:border-stone-400'">
+                      {{ page }}
+                    </button>
+                  </div>
                 </div>
                 <button @click="showPreviewModal = false" class="text-stone-500 hover:text-stone-800 p-1 rounded-lg hover:bg-stone-200 transition-colors">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
               </div>
-              <!-- 多页面切换标签 -->
-              <div v-if="pages.length > 1" class="flex gap-1 px-3 py-2 bg-stone-100 border-b border-stone-200 overflow-x-auto shrink-0">
-                <button
-                  v-for="page in pages"
-                  :key="page"
-                  @click="currentPage = page"
-                  :class="[
-                    'px-3 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap',
-                    currentPage === page
-                      ? 'bg-stone-800 text-white'
-                      : 'bg-white text-stone-600 hover:bg-stone-200'
-                  ]"
-                >
-                  {{ page }}
-                </button>
-              </div>
               <iframe
+                ref="modalFrame"
+                :key="currentPage"
                 :src="activePreviewUrl"
                 :srcdoc="previewUrl ? undefined : tweakedHtmlCode"
                 class="w-full border-0 flex-1"
                 sandbox="allow-scripts allow-same-origin"
+                @load="onModalFrameLoad"
               ></iframe>
             </div>
           </div>
@@ -773,14 +1258,14 @@ function handleKeydown(e) {
           </div>
 
           <!-- Code Display -->
-          <div class="bg-[#1f2028] rounded-2xl overflow-hidden shadow-lg">
-            <div class="flex items-center gap-2 px-4 py-2.5 bg-[#16171d] border-b border-[#2e303a]">
-              <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+          <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-200">
+            <div class="flex items-center gap-2 px-4 py-2.5 bg-stone-50 border-b border-stone-200">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
               <span class="ml-2 text-xs text-stone-400 font-mono">index.html</span>
             </div>
-            <pre class="p-4 overflow-x-auto text-xs leading-relaxed whitespace-pre-wrap break-all"><code class="language-html" v-html="highlightedHtmlCode"></code></pre>
+            <pre class="p-4 overflow-x-auto text-sm leading-relaxed whitespace-pre-wrap text-stone-700"><code class="language-html block" v-html="highlightedHtmlCode"></code></pre>
           </div>
         </div>
       </main>

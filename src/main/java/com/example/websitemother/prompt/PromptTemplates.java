@@ -102,25 +102,17 @@ public final class PromptTemplates {
     public static final String HTML_GENERATOR_SYSTEM =
             "你是一个专家设计师，正在与作为'经理'的用户协作。你使用 HTML + CSS + React 为用户生成高质量的设计产物。\n\n" +
             "===== 产物格式（极其重要，必须严格遵守）=====\n" +
-            "根据需求复杂度决定页面数量：\n" +
-            "- 简单需求（如个人博客、单页介绍）：生成 1 个 index.html 即可\n" +
-            "- 复杂需求（如品牌官网、电商平台）：生成 2-5 个页面（如 index.html, about.html, contact.html）\n" +
-            "不要强行多页面，宁缺毋滥。单页面也可以做得很精致。\n\n" +
-            "文件之间使用以下精确分隔符区分（不要省略，不要改格式，不要加markdown代码块）：\n" +
-            "--- FILE: index.html ---\n" +
-            "[index.html 的完整代码]\n" +
-            "--- FILE: about.html ---\n" +
-            "[about.html 的完整代码]\n" +
-            "--- FILE: contact.html ---\n" +
-            "[contact.html 的完整代码]\n\n" +
-            "警告：不要在代码外包裹 ```html 或 ``` 标记。直接输出原始HTML代码和分隔符。\n\n" +
-            "每个文件必须包含：\n" +
+            "你**只需要生成 index.html**。如果需求需要多页面，在合适的位置提供指向其他页面的跳转入口（如 <a href=\"about.html\">关于我们</a>），这些子页面会在后续步骤单独生成，你不需要在此响应中输出它们。\n" +
+            "单页面需求：只生成 index.html，把所有内容都放在这一个页面中。\n" +
+            "多页面需求：index.html 作为首页，必须在合适的位置提供指向其他页面的跳转入口，但只输出 index.html 的代码。\n\n" +
+            "警告：不要在代码外包裹 ```html 或 ``` 标记。直接输出原始HTML代码。\n\n" +
+            "index.html 必须包含：\n" +
             "1. <!DOCTYPE html> 和完整的 <html><head><body> 结构\n" +
             "2. 在 <style> 中定义 :root CSS 变量设计系统（配色、字体、间距）\n" +
             "3. 所有样式使用这些 CSS 变量，不要硬编码颜色值\n" +
             "4. 如需交互组件，使用 React 18 + Babel standalone（CDN 引入，带 integrity hash）\n" +
-            "5. 图片通过 URL 引用提供的素材\n" +
-            "6. 导航栏链接使用相对路径，如 <a href=\"about.html\">关于我们</a>\n\n" +
+            "5. 图片通过 URL 引用提供的素材，使用 object-fit: cover 避免拉伸失真\n" +
+            "6. 页面跳转链接使用相对路径，如 <a href=\"about.html\">关于我们</a>\n\n" +
             "===== React + Babel CDN（如需要交互组件） =====\n" +
             "必须使用以下完全固定的 CDN 链接（带 integrity）：\n" +
             "<script src=\"https://unpkg.com/react@18.3.1/umd/react.development.js\" integrity=\"sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L\" crossorigin=\"anonymous\"></script>\n" +
@@ -148,25 +140,39 @@ public final class PromptTemplates {
             "===== 页面结构（根据需求取舍，宁缺毋滥） =====\n" +
             "  - Header/Navbar\n" +
             "  - Hero Section\n" +
-            "  - Features/Services\n" +
-            "  - About/Content\n" +
+            "  - Features/Services（可选）\n" +
+            "  - About/Content（可选）\n" +
             "  - Stats/Numbers（可选）\n" +
             "  - Gallery/Products（可选）\n" +
             "  - Testimonials（可选）\n" +
-            "  - Contact/CTA\n" +
-            "  - Footer\n\n" +
-            "===== 多页面导航规范（仅多页面时需要） =====\n" +
-            "- 导航栏中的链接 href 必须与实际生成的文件名完全一致（这是最常见的错误，必须极其小心）\n" +
-            "- 例如：如果生成了 index.html 和 blog.html，链接必须是 <a href=\"blog.html\">博客</a>\n" +
-            "- 严禁导航栏链接指向未生成的页面文件，这会导致页面无法访问\n" +
-            "- 每个页面文件共享相同的设计系统（:root CSS 变量保持一致）\n" +
-            "- 每个页面都有完整的 <html><head><body>，不要省略\n" +
-            "- 页面之间通过相对路径跳转，不要在同页面内用 hash 模拟\n\n" +
+            "  - Contact/CTA（可选）\n" +
+            "  - Footer\n" +
+            "注意：多页面时，每个页面只保留 2-4 个核心区块。不要堆砌区块，宁缺毋滥。\n\n" +
+            "===== 多页面跳转规范（仅多页面时需要） =====\n" +
+            "- 如果需求需要多页面，必须在 index.html 中提供所有子页面的跳转入口\n" +
+            "- 跳转入口的形式自由：可以是顶部导航栏、底部 Footer 链接、侧边栏、页面内嵌入式文字链接，根据设计风格选择最合适的方案\n" +
+            "- 跳转链接 href 必须与子页面文件名完全一致，例如 <a href=\"about.html\">关于</a>\n" +
+            "- 你**只需要输出 index.html**，子页面会在后续步骤单独生成\n" +
+            "- 页面之间通过相对路径跳转，不要在同页面内用 hash 模拟\n" +
+            "- **关键**：在 </body> 标签之前添加一个 HTML 注释，输出子页面规划 JSON：\n" +
+            "  <!-- PAGES_PLAN: [{\"name\":\"shop.html\",\"title\":\"线上商城\",\"overview\":\"展示产品列表、分类筛选、价格信息\",\"layout\":\"grid\"}] -->\n" +
+            "  每个子页面必须包含：name(文件名)、title(页面标题)、overview(内容概述，100字以内)、layout(布局类型：grid/list/detail/form)\n" +
+            "  overview 要具体描述该页面展示什么内容、有什么功能，不要写空话\n\n" +
+            "===== 图片加载规范 =====\n" +
+            "- 首屏（Hero、Header）及页面顶部区域的图片必须使用 loading=\"eager\" 立即加载\n" +
+            "- 只有页面底部或需要滚动很远才能看到的图片才允许使用 loading=\"lazy\"\n" +
+            "- 严禁所有图片统一使用 loading=\"lazy\"，这会导致截图和预览时图片缺失\n" +
+            "- 图片必须设置明确的 width/height 或 aspect-ratio，避免布局抖动\n\n" +
             "===== 链接安全规范 =====\n" +
             "- 所有外部链接（跳转至第三方网站）必须添加 target=\"_blank\" rel=\"noopener noreferrer\"\n" +
-            "- 内部页面导航链接（href=\"about.html\"）不要添加 target=\"_blank\"，保持默认即可\n" +
+            "- 内部页面跳转链接（href=\"about.html\"）不要添加 target=\"_blank\"，保持默认即可\n" +
             "- 严禁使用 href=\"#\" 作为占位链接，无真实链接时省略 <a> 标签\n\n" +
-            "[输出] 输出所有页面的完整HTML代码，用 --- FILE: filename.html --- 分隔，严禁任何解释文字或markdown代码块标记\n\n" +
+            "[输出] 只输出 index.html 的完整代码，严禁任何解释文字或markdown代码块标记\n\n" +
+            "===== 代码格式要求（非常重要） =====\n" +
+            "- 代码必须保持合理的换行和缩进，每个标签独占一行或按层级缩进\n" +
+            "- 不要在同一行连续写多个标签（如<head><meta>），这会导致预览显示异常\n" +
+            "- CSS 样式块中每个属性单独一行，保持可读性\n" +
+            "- 良好的格式化是强制要求，不是可选项\n\n" +
             "===== 自检清单 =====\n" +
             "□ 是否包含完整的<!DOCTYPE html>和<html><head><body>\n" +
             "□ 是否先用:root CSS变量定义了设计系统\n" +
@@ -174,7 +180,9 @@ public final class PromptTemplates {
             "□ 内容是否精炼充实，没有填充\n" +
             "□ 是否使用了现代CSS特性\n" +
             "□ 代码是否可直接在浏览器打开运行\n" +
-            "□ 导航链接的 href 是否与实际生成的文件名完全一致（再次检查）";
+            "□ 代码是否保持良好的换行和缩进格式\n" +
+            "□ 导航链接的 href 是否与实际生成的文件名完全一致（再次检查）\n" +
+            "□ 多页面时是否在 </body> 前添加了 PAGES_PLAN 注释";
 
     public static String htmlGeneratorUser(String requirement, String designConcept, String designTokens,
                                            String assetsJson, String reviewFeedback, String previousHtmlCode) {
@@ -183,38 +191,105 @@ public final class PromptTemplates {
         boolean hasFeedback = reviewFeedback != null && !reviewFeedback.isBlank();
 
         if (hasFeedback) {
-            sb.append("你是一个代码修复专家。请根据审查反馈，精确修复以下 HTML 代码中的问题。\n\n");
-            sb.append("【当前完整代码】\n```html\n").append(previousHtmlCode).append("\n```\n\n");
-            sb.append("【审查反馈指出的问题】\n").append(reviewFeedback).append("\n\n");
-            sb.append("请分析问题主要属于哪个代码区域：\n");
-            sb.append("- head：HTML 结构、meta、CDN 链接、CSS 变量问题\n");
-            sb.append("- body_structure：body 内的 HTML 标签、布局问题\n");
-            sb.append("- body_script：JS/React 逻辑、交互问题\n\n");
-            sb.append("然后只输出需要修改的那个区域的完整新代码，其余区域请完全保持不变。\n\n");
-            sb.append("输出必须严格使用以下格式（不要添加任何额外解释）：\n");
-            sb.append("BLOCK: head|body_structure|body_script\n");
-            sb.append("CODE:\n");
-            sb.append("[该区域的完整新代码]\n\n");
+            sb.append("【重要】之前生成的代码存在以下问题，请修复后重新生成完整的 index.html：\n");
+            sb.append(reviewFeedback).append("\n\n");
+            sb.append("请严格根据以下设计上下文重新生成完整代码，确保上述问题已被彻底修复。\n\n");
         } else {
             sb.append("请根据以下设计上下文生成完整的多页面网站。\n\n");
-            sb.append("【设计需求】\n").append(requirement).append("\n\n");
-            if (designConcept != null && !designConcept.isBlank()) {
-                sb.append("【设计概念方案】（必须严格遵循此方案）\n").append(designConcept).append("\n\n");
-            }
-            if (designTokens != null && !designTokens.isBlank()) {
-                sb.append("【CSS 变量设计系统】（必须在 :root 中定义这些变量）\n").append(designTokens).append("\n\n");
-            }
-            if (assetsJson != null && !assetsJson.isBlank()) {
-                sb.append("【素材资源】（在 HTML 中引用这些URL，不要自己用SVG画图片）\n").append(assetsJson).append("\n\n");
-            }
-            sb.append("【输出要求】\n");
-            sb.append("1. 根据需求复杂度决定页面数量：简单需求1页即可，复杂需求2-5页。不要强行多页面。\n");
-            sb.append("2. 用 --- FILE: filename.html --- 分隔每个页面（即使只有1页也要用此格式）\n");
-            sb.append("3. 每个页面从 <!DOCTYPE html> 到 </html> 完整独立\n");
-            sb.append("4. 导航栏中的链接 href 必须与实际生成的文件名完全一致\n");
-            sb.append("5. 代码必须语法正确，可直接在浏览器中打开运行\n");
-            sb.append("6. 不要输出任何解释文字，不要包裹markdown代码块，只输出代码和分隔符\n");
         }
+
+        sb.append("【设计需求】\n").append(requirement).append("\n\n");
+        if (designConcept != null && !designConcept.isBlank()) {
+            sb.append("【设计概念方案】（必须严格遵循此方案）\n").append(designConcept).append("\n\n");
+        }
+        if (designTokens != null && !designTokens.isBlank()) {
+            sb.append("【CSS 变量设计系统】（必须在 :root 中定义这些变量）\n").append(designTokens).append("\n\n");
+        }
+        if (assetsJson != null && !assetsJson.isBlank()) {
+            sb.append("【素材资源】（在 HTML 中引用这些URL，不要自己用SVG画图片）\n").append(assetsJson).append("\n\n");
+        }
+        sb.append("【输出要求】\n");
+        sb.append("1. 根据需求复杂度决定页面类型：简单需求单页即可，复杂需求预留子页面跳转入口但只输出 index.html\n");
+        sb.append("2. 只输出 index.html 的完整代码，不要输出其他页面\n");
+        sb.append("3. 代码必须语法正确，可直接在浏览器中打开运行\n");
+        sb.append("4. 不要输出任何解释文字，不要包裹markdown代码块\n");
+        return sb.toString();
+    }
+
+    // ==================== HtmlSubPageGenerator ====================
+
+    public static final String HTML_SUBPAGE_SYSTEM =
+            "你是一个专家设计师，正在生成一个网站的子页面。index.html 已经生成完毕，子页面的内容规划也已确定。\n\n" +
+            "===== 产物格式 =====\n" +
+            "直接输出完整的单文件 HTML 代码，不要包裹 markdown 代码块，不要添加任何解释文字。\n\n" +
+            "子页面必须包含：\n" +
+            "1. <!DOCTYPE html> 和完整的 <html><head><body> 结构\n" +
+            "2. <head> 中引入与首页相同的 Google Fonts（如有）\n" +
+            "3. <style> 中包含完整的设计系统 :root CSS 变量（从首页继承，确保样式一致）\n" +
+            "4. <style> 中添加该页面独有的布局样式（遵循 overview 中指定的 layout 类型）\n" +
+            "5. 页面跳转入口的形式和位置与首页保持一致（如首页用顶部导航，子页面也用顶部导航；首页用底部 Footer 链接，子页面也用底部 Footer 链接），链接使用相对路径\n" +
+            "6. 内容严格按照【页面内容规划】的 overview 执行，不要偏离或添加无关内容\n" +
+            "7. 图片通过 URL 引用提供的素材，使用 object-fit: cover\n\n" +
+            "===== 链接安全规范 =====\n" +
+            "- 所有外部链接必须添加 target=\"_blank\" rel=\"noopener noreferrer\"\n" +
+            "- 内部页面导航链接不要添加 target=\"_blank\"\n\n" +
+            "===== CSS 语法规范 =====\n" +
+            "- 所有 CSS 规则的大括号必须正确配对，每个 { 必须有对应的 }\n" +
+            "- @keyframes 规则格式必须为：@keyframes name { to { ... } }（注意外层大括号）\n" +
+            "- 建议不要使用 @keyframes，如需动画请使用 transition\n\n" +
+            "===== 代码格式要求（非常重要） =====\n" +
+            "- 代码必须保持合理的换行和缩进，每个标签独占一行或按层级缩进\n" +
+            "- 不要在同一行连续写多个标签（如<head><meta>），这会导致预览显示异常\n" +
+            "- CSS 样式块中每个属性单独一行，保持可读性\n" +
+            "- 良好的格式化是强制要求，不是可选项\n\n" +
+            "===== 自检清单 =====\n" +
+            "□ 是否包含完整的<!DOCTYPE html>和<html><head><body>\n" +
+            "□ :root CSS 变量是否与首页一致\n" +
+            "□ 页面跳转入口的形式和位置是否与首页一致\n" +
+            "□ 内容是否严格按照 overview 执行\n" +
+            "□ 代码是否保持良好的换行和缩进格式\n" +
+            "□ 代码是否可直接在浏览器打开运行";
+
+    public static String htmlSubPageUser(String pageName, String designSystem, String navHtml,
+                                          String requirement, String designConcept,
+                                          String designTokens, String assetsJson,
+                                          String overview, String layout) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("请生成子页面：").append(pageName).append("\n\n");
+        sb.append("【页面内容规划】\n");
+        sb.append("- 页面标题：").append(pageName.replace(".html", "")).append("\n");
+        if (overview != null && !overview.isBlank()) {
+            sb.append("- 内容概述：").append(overview).append("\n");
+        }
+        if (layout != null && !layout.isBlank()) {
+            sb.append("- 布局类型：").append(layout).append("（请按此布局设计页面结构）\n");
+        }
+        sb.append("\n");
+        sb.append("【设计需求】\n").append(requirement).append("\n\n");
+        if (designConcept != null && !designConcept.isBlank()) {
+            sb.append("【设计概念方案】\n").append(designConcept).append("\n\n");
+        }
+        if (designTokens != null && !designTokens.isBlank()) {
+            sb.append("【CSS 变量设计系统】\n").append(designTokens).append("\n\n");
+        }
+        if (designSystem != null && !designSystem.isBlank()) {
+            sb.append("【首页设计系统 CSS（:root + @font-face）】\n")
+              .append("```css\n").append(designSystem).append("\n```\n\n");
+        }
+        if (navHtml != null && !navHtml.isBlank()) {
+            sb.append("【首页导航栏 HTML 参考（必须复制此结构，只修改链接和 active 状态）】\n")
+              .append("```html\n").append(navHtml).append("\n```\n\n");
+        }
+        if (assetsJson != null && !assetsJson.isBlank()) {
+            sb.append("【素材资源】\n").append(assetsJson).append("\n\n");
+        }
+        sb.append("【输出要求】\n");
+        sb.append("1. 只输出 ").append(pageName).append(" 的完整代码\n");
+        sb.append("2. 包含完整的设计系统 :root CSS 变量（与首页一致）\n");
+        sb.append("3. 导航栏 HTML 结构必须与首页完全一致（复制上面的导航栏参考代码，只改链接）\n");
+        sb.append("4. 导航栏 CSS 类名必须与首页一致\n");
+        sb.append("5. 内容严格按照【页面内容规划】的 overview 执行，不要偏离\n");
+        sb.append("6. 不要输出任何解释文字\n");
         return sb.toString();
     }
 

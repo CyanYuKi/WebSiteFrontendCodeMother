@@ -328,10 +328,12 @@ public class ChatModelService {
     }
 
     private static OpenAiChatModel buildOpenAiChatModel(String modelName, String apiKey, String baseUrl) {
+        int maxTokens = resolveMaxTokens(modelName);
         return OpenAiChatModel.builder()
                 .baseUrl(baseUrl)
                 .apiKey(apiKey)
                 .modelName(modelName)
+                .maxTokens(maxTokens)
                 .timeout(Duration.ofSeconds(120))
                 .build();
     }
@@ -341,12 +343,31 @@ public class ChatModelService {
     }
 
     private static OpenAiStreamingChatModel buildOpenAiStreamingModel(String modelName, String apiKey, String baseUrl) {
+        int maxTokens = resolveMaxTokens(modelName);
         return OpenAiStreamingChatModel.builder()
                 .baseUrl(baseUrl)
                 .apiKey(apiKey)
                 .modelName(modelName)
+                .maxTokens(maxTokens)
                 .timeout(Duration.ofSeconds(120))
                 .build();
+    }
+
+    /**
+     * 根据模型名称解析对应的最大输出 token 数
+     * - DeepSeek: 384K 输出上限 → 使用 65536（足够覆盖复杂 HTML）
+     * - qwen3.6-plus/max: 64K 输出上限 → 使用 32768（安全且充足）
+     */
+    private static int resolveMaxTokens(String modelName) {
+        if (modelName == null) return 16384;
+        String mn = modelName.toLowerCase();
+        if (mn.contains("deepseek")) {
+            return 65536; // DeepSeek 支持最大 384K 输出
+        }
+        if (mn.contains("qwen3.6-max") || mn.contains("qwen3.6-plus")) {
+            return 32768; // qwen3.6 系列支持最大 64K 输出
+        }
+        return 16384; // 默认保守值
     }
 
     private record ModelConfig(String baseUrl, String apiKey, String actualModelName) {}

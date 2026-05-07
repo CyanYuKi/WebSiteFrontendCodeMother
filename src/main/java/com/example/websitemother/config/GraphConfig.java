@@ -8,6 +8,7 @@ import com.example.websitemother.node.CodeReviewer;
 import com.example.websitemother.node.DesignConceptGenerator;
 import com.example.websitemother.node.HtmlGenerator;
 import com.example.websitemother.node.IntentAnalyzer;
+import com.example.websitemother.node.SubPageGenerator;
 import com.example.websitemother.state.ProjectState;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.CompiledGraph;
@@ -41,6 +42,8 @@ public class GraphConfig {
     @Resource
     private HtmlGenerator htmlGenerator;
     @Resource
+    private SubPageGenerator subPageGenerator;
+    @Resource
     private CodeReviewer codeReviewer;
     @Resource
     private IntentRouter intentRouter;
@@ -73,8 +76,8 @@ public class GraphConfig {
     }
 
     /**
-     * 第二阶段图：素材收集 -> 设计概念生成 -> HTML代码生成 -> 代码审查 -> (条件循环)
-     * 接收前端补充的答案后继续执行
+     * 第二阶段图：素材收集 -> 设计概念生成 -> HTML首页生成 -> 代码审查 -> (条件循环) -> 子页面生成 -> END
+     * 主页审查通过后才进入子页面生成，避免子页面基于有缺陷的主页生成
      */
     @Bean
     public CompiledGraph<ProjectState> resumeGraph() throws GraphStateException {
@@ -84,6 +87,7 @@ public class GraphConfig {
                 .addNode("asset_collector", node_async(assetCollector))
                 .addNode("design_concept_generator", node_async(designConceptGenerator))
                 .addNode("html_generator", node_async(htmlGenerator))
+                .addNode("sub_page_generator", node_async(subPageGenerator))
                 .addNode("code_reviewer", node_async(codeReviewer))
                 .addEdge(StateGraph.START, "asset_collector")
                 .addEdge("asset_collector", "design_concept_generator")
@@ -94,9 +98,11 @@ public class GraphConfig {
                         edge_async(reviewRouter),
                         Map.of(
                                 ReviewRouter.TARGET_END, StateGraph.END,
+                                ReviewRouter.TARGET_SUB_PAGE, "sub_page_generator",
                                 ReviewRouter.TARGET_RETRY, "html_generator"
                         )
-                );
+                )
+                .addEdge("sub_page_generator", StateGraph.END);
 
         return graph.compile();
     }

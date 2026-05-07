@@ -3,6 +3,7 @@ package com.example.websitemother.controller;
 import com.example.websitemother.service.ChatModelService;
 import com.example.websitemother.service.GraphWorkflowService;
 import com.example.websitemother.service.ProjectStorageService;
+import com.example.websitemother.service.ScreenshotService;
 import com.example.websitemother.state.ProjectState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -12,13 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.annotation.Resource;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +42,9 @@ public class GenerateController {
 
     @Resource
     private ProjectStorageService projectStorageService;
+
+    @Resource
+    private ScreenshotService screenshotService;
 
     @Resource
     private ChatModelService chatModelService;
@@ -88,8 +97,23 @@ public class GenerateController {
         SseEmitter emitter = new SseEmitter(0L);
         SseEmitterStore.put(sessionId, emitter);
 
+        ScheduledExecutorService heartbeat = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "sse-heartbeat-" + sessionId);
+            t.setDaemon(true);
+            return t;
+        });
+
         executor.execute(() -> {
             try {
+                // 每 15 秒发送一次心跳注释，防止代理/浏览器断开空闲 SSE 连接
+                heartbeat.scheduleAtFixedRate(() -> {
+                    try {
+                        emitter.send(SseEmitter.event().comment("keepalive"));
+                    } catch (Exception e) {
+                        heartbeat.shutdown();
+                    }
+                }, 15, 15, TimeUnit.SECONDS);
+
                 if (sessionId == null || sessionId.isBlank()) {
                     emitter.send(SseEmitter.event().name("error").data("sessionId 不能为空"));
                     emitter.complete();
@@ -113,6 +137,16 @@ public class GenerateController {
 
                 String projectId = projectStorageService.saveProject(finalState);
 
+                // 异步生成截图（不阻塞 SSE 响应）
+                executor.execute(() -> {
+                    try {
+                        Path projectDir = Paths.get("generated-projects").resolve(projectId).toAbsolutePath();
+                        screenshotService.captureProject(projectDir, projectId);
+                    } catch (Exception e) {
+                        log.warn("[GenerateController] 异步截图失败, projectId={}", projectId, e);
+                    }
+                });
+
                 ResumeResponse response = new ResumeResponse();
                 response.setProjectId(projectId);
                 response.setHtmlCode(finalState.htmlCode());
@@ -126,21 +160,56 @@ public class GenerateController {
                 log.info("[GenerateController] /resume-stream 完成, projectId={}, previewUrl={}, pages={}", projectId, response.getPreviewUrl(), response.getPages());
 
                 String json = objectMapper.writeValueAsString(response);
-                emitter.send(SseEmitter.event().name("complete").data(json));
-                emitter.complete();
+                try {
+                    emitter.send(SseEmitter.event().name("complete").data(json));
+                    emitter.complete();
+                } catch (IllegalStateException ex) {
+                    // emitter 已被前端取消关闭，无需发送完成事件
+                    log.info("[GenerateController] /resume-stream emitter 已关闭, 跳过 complete 事件, sessionId={}", sessionId);
+                }
             } catch (Exception e) {
                 log.error("[GenerateController] /resume-stream 执行失败", e);
                 try {
                     emitter.send(SseEmitter.event().name("error").data(e.getMessage()));
                 } catch (Exception ignored) {
                 }
-                emitter.complete();
+                try {
+                    emitter.complete();
+                } catch (Exception ignored) {
+                }
             } finally {
+                heartbeat.shutdown();
                 SseEmitterStore.remove(sessionId);
             }
         });
 
         return emitter;
+    }
+
+    /**
+     * 取消正在进行的生成任务
+     */
+    @PostMapping("/cancel")
+    public void cancel(@RequestBody CancelRequest request) {
+        String sessionId = request.getSessionId();
+        log.info("[GenerateController] /cancel 收到请求: sessionId={}", sessionId);
+
+        if (sessionId == null || sessionId.isBlank()) {
+            return;
+        }
+
+        // 关闭 SSE emitter，使后续发送失败从而终止工作流
+        SseEmitter emitter = SseEmitterStore.get(sessionId);
+        if (emitter != null) {
+            try {
+                emitter.complete();
+            } catch (Exception ignored) {
+            }
+            SseEmitterStore.remove(sessionId);
+        }
+
+        // 注意：保留 sessionStore，让用户可以基于同一套 checklist 重新提交生成
+        log.info("[GenerateController] /cancel 已关闭 emitter, 保留 sessionId={}", sessionId);
     }
 
     /**
@@ -231,6 +300,11 @@ public class GenerateController {
     public static class ResumeRequest {
         private String sessionId;
         private Map<String, Object> answers;
+    }
+
+    @Data
+    public static class CancelRequest {
+        private String sessionId;
     }
 
     @Data
