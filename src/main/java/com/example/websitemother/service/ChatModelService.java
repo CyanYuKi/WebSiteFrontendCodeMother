@@ -53,7 +53,7 @@ public class ChatModelService {
     private final ConcurrentHashMap<String, StreamingChatModel> streamingModelCache = new ConcurrentHashMap<>();
 
     public enum ModelType {
-        FAST,   // qwen-turbo     低成本
+        FAST,   // deepseek-v4-flush  低成本快速
         SMART   // 用户可选核心模型（默认 qwen3.6-plus）
     }
 
@@ -69,13 +69,10 @@ public class ChatModelService {
             log.warn("[ChatModelService] 未配置 API Key，仅 Spring Boot 默认模型可用");
             return;
         }
-        this.fastModel = QwenChatModel.builder()
-                .apiKey(apiKey)
-                .modelName("qwen-turbo")
-                .build();
+        this.fastModel = buildOpenAiChatModel("deepseek-chat", deepseekApiKey, "https://api.deepseek.com/v1");
         this.smartModel = buildOpenAiChatModel("qwen3.6-plus", apiKey);
         this.smartStreamingModel = buildOpenAiStreamingModel("qwen3.6-plus", apiKey);
-        log.info("[ChatModelService] 初始化完成: FAST=qwen-turbo, SMART=qwen3.6-plus");
+        log.info("[ChatModelService] 初始化完成: FAST=deepseek-v4-flush, SMART=qwen3.6-plus");
     }
 
     // ==================== 公共 API ====================
@@ -273,7 +270,7 @@ public class ChatModelService {
 
     private String resolveModelName(ModelType modelType) {
         return switch (modelType) {
-            case FAST -> "qwen-turbo";
+            case FAST -> "deepseek-v4-flush";
             case SMART -> defaultSmartModelName;
         };
     }

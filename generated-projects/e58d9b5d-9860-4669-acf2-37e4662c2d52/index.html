@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>林述白 — 街头摄影</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #2A2B2D;
+  --color-secondary: #8B8C8E;
+  --color-background: #F3F2ED;
+  --color-surface: #FAFAF6;
+  --color-text: #141416;
+  --color-textMuted: #78787C;
+  --color-accent: #9D8B7D;
+  --font-heading: Syne, sans-serif;
+  --font-body: Manrope, sans-serif;
+  --spacing-unit: 1rem;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ========== NAV ========== */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.6s var(--ease-out-expo), backdrop-filter 0.6s;
+}
+
+.site-nav.scrolled {
+  background: rgba(243, 242, 237, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-brand {
+  font-family: var(--font-heading);
+  font-weight: 70;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.nav-links {
+  display: flex;
+  gap: calc(var(--spacing-unit) * 2.5);
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-textMuted);
+  transition: color 0.3s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-text);
+  transition: width 0.4s var(--ease-out-expo);
+}
+
+.nav-links a:hover {
+  color: var(--color-text);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ========== HERO ========== */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20,20,22,0.5) 0%, transparent 50%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3);
+  max-width: 700px;
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--color-surface);
+  letter-spacing: -0.02em;
+  margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: rgba(250,250,246,0.7);
+  letter-spacing: 0.05em;
+  max-width: 400px;
+  text-wrap: pretty;
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: calc(var(--spacing-unit) * 2);
+  right: calc(var(--spacing-unit) * 3);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(250,250,246,0.5);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 48px;
+ background: rgba(250,250,246,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface);
+  animation: scrollDown 2s var(--ease-in-out) infinite;
+}
+
+@keyframes scrollDown {
+  0% { top: -100%; }}
+  50% { top: 100%; }
+  100% { top: 100%; }
+}
+
+/* ========== SECTION COMMON ========== */
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-textMuted);
+  margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(42,43,45,0.1);
+  margin: 0 calc(var(--spacing-unit) * 3);
+}
+
+/* ========== SELECTED WORKS ========== */
+.selected-works {
+  padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 3);
+}
+
+.works-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: calc(var(--spacing-unit) * 4);
+ flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.works-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.works-view-all {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-textMuted);
+  border-bottom: 1px solid var(--color-textMuted);
+  padding-bottom: 2px;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.works-view-all:hover {
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+/* Masonry Grid */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  gap: calc(var(--spacing-unit) * 1.2);
+}
+
+.work-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.work-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease-out-expo), filter 0.8s;
+  filter: grayscale(15%);
+}
+
+.work-item:hover img {
+  transform: scale(1.03);
+  filter: grayscale(0%);
+}
+
+.work-item:nth-child(1) {
+  grid-column: 1 / 8;
+  grid-row: span 5;
+}
+
+.work-item:nth-child(2) {
+  grid-column: 8 / 13;
+  grid-row: span 3;
+}
+
+.work-item:nth-child(3) {
+  grid-column: 8 / 13;
+  grid-row: span 3;
+}
+
+.work-item:nth-child(4) {
+  grid-column: 1 / 5;
+  grid-row: span 4;
+}
+
+.work-item:nth-child(5) {
+  grid-column: 5 / 9;
+  grid-row: span 4;
+}
+
+/* EXIF Overlay */
+.exif-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: calc(var(--spacing-unit) * 1.5);
+  background: linear-gradient(to top, rgba(20,20,22,0.7) 0%, transparent 100%);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.work-item:hover .exif-panel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.exif-title {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-surface);
+  margin-bottom: 0.3rem;
+}
+
+.exif-meta {
+  display: flex;
+  gap: calc(var(--spacing-unit) * 1.2);
+ font-size: 0.65rem;
+  color: rgba(250,250,246,0.6);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+.exif-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ========== LIGHTBOX ========== */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(20, 20, 22, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s var(--ease-out-expo), visibility 0.5s;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+}
+
+.lightbox-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing-unit) * 3);
+}
+
+.lightbox-image {
+  max-width: 75vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.lightbox-info {
+  min-width: 200px;
+  color: var(--color-surface);
+}
+
+.lightbox-info-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+.lightbox-exif-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem 1.5rem;
+}
+
+.lightbox-exif-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(250,250,246,0.4);
+  font-weight: 500;
+}
+
+.lightbox-exif-value {
+  font-size: 0.75rem;
+  color: rgba(250,246,0.8);
+  font-weight: 400;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: calc(var(--spacing-unit) * 2);
+  right: calc(var(--spacing-unit) * 2);
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1px solid rgba(250,250,246,0.2);
+  border-radius: 50%;
+  color: var(--color-surface);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, background 0.3s;
+  z-index: 10;
+}
+
+.lightbox-close:hover {
+  border-color: rgba(250,250,246,0.5);
+  background: rgba(250,246,0.1);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: 1px solid rgba(250,250,246,0.15);
+  border-radius: 50%;
+  color: var(--color-surface);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.lightbox-nav:hover {
+  border-color: rgba(250,250,246,0.4);
+  background: rgba(250,246,0.08);
+}
+
+.lightbox-prev { left: calc(var(--spacing-unit) * 2); }
+.lightbox-next { right: calc(var(--spacing-unit) * 2); }
+
+/* ========== JOURNAL SECTION ========== */
+.journal-section {
+  padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 8);
+}
+
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: calc(var(--spacing-unit) * 4);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.journal-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.journal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--spacing-unit) * 2);
+}
+
+.journal-card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-unit) * 1.2);
+}
+
+.journal-card-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 2px;
+  filter: grayscale(20%);
+  transition: filter 0.6s var(--ease-out-expo);
+}
+
+.journal-card:hover .journal-card-image {
+  filter: grayscale(0%);
+}
+
+.journal-card-date {
+  font-size: 0.65rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.journal-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.journal-card-excerpt {
+  font-size: 0.8rem;
+  color: var(--color-textMuted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.journal-card-link {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 0.3s;
+  align-self: flex-start;
+}
+
+.journal-card-link:hover {
+  border-color: var(--color-accent);
+}
+
+/* ========== ABOUT STRIP ========== */
+.about-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+}
+
+.about-image-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.about-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(30%);
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 5);
+  gap: calc(var(--spacing-unit) * 2);
+}
+
+.about-name {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.about-desc {
+  font-size: 0.85rem;
+  color: var(--color-textMuted);
+  line-height: 1.7;
+  max-width: 420px;
+  text-wrap: pretty;
+}
+
+.about-stats {
+  display: flex;
+  gap: calc(var(--spacing-unit) * 3);
+  margin-top: calc(var(--spacing-unit) * 1);
+}
+
+.about-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.about-stat-number {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.about-stat-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-textMuted);
+  font-weight: 500;
+}
+
+.about-link {
+  display: inline-block;
+  margin-top: calc(var(--spacing-unit) * 1);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-text);
+  padding-bottom: 2px;
+  transition: color 0.3s, border-color 0.3s;
+  align-self: flex-start;
+}
+
+.about-link:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* ========== FOOTER ========== */
+.site-footer {
+  padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3);
+  border-top: 1px solid rgba(42,43,45,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-copy {
+  font-size: 0.7rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.03em;
+}
+
+.footer-links {
+  display: flex;
+  gap: calc(var(--spacing-unit) * 2);
+  list-style: none;
+}
+
+.footer-links a {
+  font-size: 0.7rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.05em;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--color-text);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .works-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .work-item:nth-child(1) { grid-column: 1 / 4; grid-row: span 4; }
+  .work-item:nth-child(2) { grid-column: 4 / 7; grid-row: span 4; }
+  .work-item:nth-child(3) { grid-column: 1 / 4; grid-row: span 4; }
+  .work-item:nth-child(4) { grid-column: 4 / 7; grid-row: span 4; }
+  .work-item:nth-child(5) { grid-column: 1 / 7; grid-row: span 3; }
+
+  .journal-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .about-strip {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .about-image-wrap {
+    aspect-ratio: 16/9;
+  }
+
+  .lightbox-content {
+    flex-direction: column;
+  }
+
+  .lightbox-image {
+    max-width: 90vw;
+    max-height: 60vh;
+  }
+
+  .lightbox-info {
+    min-width: auto;
+    text-align: center;
+  }
+
+  .lightbox-exif-grid {
+    justify-items: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-nav {
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+  }
+
+  .nav-links {
+    gap: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .hero-content {
+    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 1.5);
+  }
+
+  .selected-works,
+  .journal-section {
+    padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 1.5);
+  }
+
+  .works-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .work-item:nth-child(1),
+  .work-item:nth-child(2),
+  .work-item:nth-child(3),
+  .work-item:nth-child(4),
+  .work-item:nth-child(5) {
+    grid-column: span 1;
+    grid-row: span 3;
+  }
+
+  .journal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-content {
+    padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 1.5);
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 1.5);
+  }
+
+  .lightbox-nav { display: none; }
+}
+
+/* ========== ANIMATIONS ========== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ========== DATA ========== */
+const worksData = [
+  {
+    id: 1,
+    title: "十字路口的影子",
+    url: "https://images.pexels.com/photos/34853016/pexels-photo-34853016.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    camera: "Leica Q2",
+    lens: "28mm f/1.7",
+    aperture: "f/2.8",
+    shutter: "1/500s",
+    iso: "ISO 200",
+    location: "东京·涩谷"
+  },
+  {
+    id: 2,
+    title: "雨后的橱窗",
+    url: "https://images.pexels.com/photos/3653772/pexels-photo-3653772.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    camera: "Fujifilm X100V",
+    lens: "23mm f/2",
+    aperture: "f/4",
+    shutter: "1/125s",
+    iso: "ISO 400",
+    location: "上海·法租界"
+  },
+  {
+    id: 3,
+    title: "末班地铁",
+    url: "https://images.pexels.com/photos/8114057/pexels-photo-8114057.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    camera: "Sony A7III",
+    lens: "35mm f/1.4",
+    aperture: "f/1.8",
+    shutter: "1/60s",
+    iso: "ISO 1600",
+    location: "北京·10号线"
+  },
+  {
+    id: 4,
+    title: "午后的修车铺",
+    url: "https://images.pexels.com/photos/25881987/pexels-photo-25881987.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    camera: "Ricoh GR III",
+    lens: "18.3mm f/2.8",
+    aperture: "f/5.6",
+    shutter: "1/320s",
+    iso: "ISO 100",
+    location: "广州·荔湾"
+  },
+  {
+    id: 5,
+    title: "天桥上的风",
+    url: "https://images.pexels.com/photos/30281992/pexels-photo-30281992.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+    camera: "Leica M10",
+    lens: "50mm f/2",
+    aperture: "f/2.8",
+    shutter: "1/1000s",
+    iso: "ISO 100",
+    location: "重庆·解放碑"
+  }
+];
+
+const journalData = [
+  {
+    date: "2024.12.18",
+    title: "在街头等待光线",
+    excerpt: "关于耐心与偶然性——为什么最好的照片往往来自最漫长的等待。",
+    image: "https://images.pexels.com/photos/10276050/pexels-photo-10276050.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+  },
+  {
+    date: "2024.11.03",
+    title: "胶片与数码之间",
+    excerpt: "在两种媒介的缝隙中寻找纪实的温度，技术从来不是答案。",
+    image: "https://images.pexels.com/photos/36933577/pexels-photo-36933577.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+  },
+  {
+    date: "2024.09.21",
+    title: "城市褶皱",
+    excerpt: "那些被忽略的日常角落，藏着城市最真实的表情与呼吸。",
+    image: "https://images.pexels.com/photos/9329047/pexels-photo-9329047.jpeg?auto=compress&cs=tinysrgb&h=350"
+  }
+];
+
+/* ========== NAV ========== */
+function SiteNav() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <nav className={`site-nav ${scrolled ? 'scrolled' : ''}`}>
+      <a href="index.html" className="nav-brand">林述白</a>
+      <ul className="nav-links">
+        <li><a href="gallery.html">作品</a></li>
+        <li><a href="blog.html">日志</a></li>
+        <li><a href="about.html">关于</a></li>
+      </ul>
+    </nav>
+  );
+}
+
+/* ========== LIGHTBOX ========== */
+function Lightbox({ works, currentIndex, onClose, onPrev, onNext }) {
+  const work = works[currentIndex];
+  if (!work) return null;
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight') onNext();
+    };
+    document.addEventListener('keydown', handleKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose, onPrev, onNext]);
+
+  return (
+    <div className="lightbox-overlay active" onClick={onClose}>
+      <button className="lightbox-close" onClick={onClose} aria-label="关闭">✕</button>
+      <button className="lightbox-nav lightbox-prev" onClick={(e) => { e.stopPropagation(); onPrev(); }} aria-label="上一张">‹</button>
+      <button className="lightbox-nav lightbox-next" onClick={(e) => { e.stopPropagation(); onNext(); }} aria-label="下一张">›</button>
+      <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+        <img
+          className="lightbox-image"
+          src={work.url}
+          alt={work.title}
+          loading="eager"
+        />
+        <div className="lightbox-info">
+          <div className="lightbox-info-title">{work.title}</div>
+          <div className="lightbox-exif-grid">
+            <span className="lightbox-exif-label">相机</span>
+            <span className="lightbox-exif-value">{work.camera}</span>
+            <span className="lightbox-exif-label">镜头</span>
+            <span

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于 — 林述白</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #2A2B2D;
+      --color-secondary: #8B8C8E;
+      --color-background: #F3F2ED;
+      --color-surface: #FAFAF6;
+      --color-text: #141416;
+      --color-textMuted: #78787C;
+      --color-accent: #9D8B7D;
+      --font-heading: Syne, sans-serif;
+      --font-body: Manrope, sans-serif;
+      --spacing-unit: 1rem;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s var(--ease-out-expo), filter 0.8s;
+      filter: grayscale(15%);
+    }
+    img:hover {
+      transform: scale(1.03);
+      filter: grayscale(0%);
+    }
+
+    /* Navigation */
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    .site-nav.scrolled {
+      background: rgba(243, 242, 237, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--color-text);
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: calc(var(--spacing-unit) * 2.5);
+    }
+    .nav-links li a {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links li a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-text);
+      transition: width 0.4s var(--ease-out-expo);
+    }
+    .nav-links li a:hover::after,
+    .nav-links li a.active::after {
+      width: 100%;
+    }
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--color-text);
+    }
+
+    /* About Hero */
+    .about-hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 4);
+      gap: calc(var(--spacing-unit) * 4);
+    }
+    .about-image-wrap {
+      position: relative;
+      height: 75vh;
+      overflow: hidden;
+    }
+    .about-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .about-image-label {
+      position: absolute;
+      bottom: calc(var(--spacing-unit) * 1.5);
+      left: calc(var(--spacing-unit) * 1.5);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(250, 250, 246, 0.7);
+      font-weight: 400;
+    }
+    .about-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: calc(var(--spacing-unit) * 2) 0;
+    }
+    .about-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      color: var(--color-text);
+    }
+    .about-heading span {
+      display: block;
+      color: var(--color-accent);
+    }
+    .about-bio {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--color-textMuted);
+      max-width: 440px;
+      margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .about-meta {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 0.6);
+    }
+    .about-meta-item {
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+      font-weight: 500;
+    }
+    .about-meta-item strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    /* Philosophy Section */
+    .philosophy-section {
+      padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 4);
+      display: flex;
+      justify-content: center;
+    }
+    .philosophy-inner {
+      max-width: 680px;
+      text-align: center;
+    }
+    .philosophy-quote {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--color-text);
+      letter-spacing: 0.01em;
+    }
+    .philosophy-quote em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+    .philosophy-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--color-accent);
+      margin: calc(var(--spacing-unit) * 3) auto;
+    }
+    .philosophy-note {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      font-weight: 400;
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(42, 43, 45, 0.08);
+      border-bottom: 1px solid rgba(42, 43, 45, 0.08);
+    }
+    .stat-item {
+      padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 2);
+      text-align: center;
+      position: relative;
+    }
+    .stat-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 25%;
+      height: 50%;
+      width: 1px;
+      background: rgba(42, 43, 45, 0.08);
+    }
+    .stat-number {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1;
+      margin-bottom: calc(var(--spacing-unit) * 0.8);
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      font-weight: 500;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 70vh;
+    }
+    .contact-image-wrap {
+      overflow: hidden;
+    }
+    .contact-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .contact-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: calc(var(--spacing-unit) * 6);
+      background: var(--color-surface);
+    }
+    .contact-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      font-weight: 500;
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .contact-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: calc(var(--spacing-unit) * 2);
+      color: var(--color-text);
+    }
+    .contact-desc {
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--color-textMuted);
+      max-width: 380px;
+      margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 1.2);
+    }
+    .contact-link {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.8);
+    }
+    .contact-link:hover {
+      color: var(--color-text);
+    }
+    .contact-link::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width 0.3s var(--ease-out-expo);
+    }
+    .contact-link:hover::before {
+      width: 36px;
+    }
+
+    /* Footer */
+    .site-footer {
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(42, 43, 45, 0.08);
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      color: var(--color-textMuted);
+      font-weight: 400;
+    }
+    .footer-links {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+    }
+    .footer-links a:hover {
+      color: var(--color-text);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .about-hero {
+        grid-template-columns: 1fr;
+        padding-top: calc(var(--spacing-unit) * 10);
+      }
+      .about-image-wrap {
+        height: 50vh;
+      }
+      .contact-section {
+        grid-template-columns: 1fr;
+      }
+      .contact-image-wrap {
+        height: 40vh;
+      }
+      .stats-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-item:nth-child(2)::after {
+        display: none;
+      }
+    }
+    @media (max-width: 600px) {
+      .site-nav {
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+      }
+      .nav-links {
+        gap: calc(var(--spacing-unit) * 1.5);
+      }
+      .about-hero {
+        padding: calc(var(--spacing-unit) * 7) calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+      }
+      .philosophy-section {
+        padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 2);
+      }
+      .contact-content {
+        padding: calc(var(--spacing-unit) * 3);
+      }
+      .site-footer {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 1.5);
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <a href="index.html" class="nav-brand">林述白</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">作品</a></li>
+      <li><a href="blog.html">日志</a></li>
+      <li><a href="about.html" class="active">关于</a></li>
+    </ul>
+  </nav>
+
+  <section class="about-hero">
+    <div class="about-image-wrap">
+      <img src="https://images.pexels.com/photos/36933577/pexels-photo-36933577.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="林述白 — 街头摄影师">
+      <span class="about-image-label">Portrait, 2024</span>
+    </div>
+    <div class="about-text">
+      <h1 class="about-heading">
+        关于
+        <span>林述白</span>
+      </h1>
+      <p class="about-bio">
+        行走在城市的褶皱之间，用镜头捕捉那些被忽略的瞬间。街头不是背景，而是叙事本身。每一帧画面，都是与偶然相遇的默契。
+      </p>
+      <div class="about-meta">
+        <div class="about-meta-item"><strong>驻地</strong> — 中国·杭州</div>
+        <div class="about-meta-item"><strong>方向</strong> — 街头 / 人文纪实</div>
+        <div class="about-meta-item"><strong>器材</strong> — Fujifilm X-T5 / 23mm f1.4</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="philosophy-section">
+    <div class="philosophy-inner">
+      <p class="philosophy-quote">
+        "我相信<em>决定性瞬间</em>之外的另一种真实——那些未被编排的、散落在城市边缘的<em>沉默叙事</em>。"
+      </p>
+      <div class="philosophy-divider"></div>
+      <span class="philosophy-note">— 林述白，摄影手记</span>
+    </div>
+  </section>
+
+  <section class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-number">8+</div>
+      <div class="stat-label">年摄影经验</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">12</div>
+      <div class="stat-label">座城市记录</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">3</div>
+      <div class="stat-label">次个展</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">∞</div>
+      <div class="stat-label">个瞬间</div>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="contact-image-wrap">
+      <img src="https://images.pexels.com/photos/16802933/pexels-photo-16802933.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系">
+    </div>
+    <div class="contact-content">
+      <span class="contact-label">Contact</span>
+      <h2 class="contact-heading">一起创造<br>些什么</h2>
+      <p class="contact-desc">
+        无论是商业合作、展览邀约，还是单纯想聊聊摄影与城市，都欢迎联系。
+      </p>
+      <div class="contact-links">
+        <a href="mailto:hello@linshubai.com" class="contact-link" target="_blank" rel="noopener noreferrer">hello@linshubai.com</a>
+        <a href="https://instagram.com" class="contact-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://weibo.com" class="contact-link" target="_blank" rel="noopener noreferrer">微博</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <span class="footer-copy">© 2024 林述白</span>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="gallery.html">作品</a>
+      <a href="blog.html">日志</a>
+      <a href="about.html">关于</a>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.querySelector('.site-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  </script>
+
+</body>
+</html>

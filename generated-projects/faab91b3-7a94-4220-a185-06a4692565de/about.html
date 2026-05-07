@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 - 个人摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1C1C1E;
+            --color-secondary: #E8E4DF;
+            --color-background: #F7F6F3;
+            --color-surface: #FFFFFF;
+            --color-text: #0F0F10;
+            --color-textMuted: #6E6E73;
+            --color-accent: #B89A7A;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Manrope', sans-serif;
+            --spacing-unit: 1rem;
+            --radius-sm: 0.25rem;
+            --radius-md: 0.5rem;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 1.5rem 2rem;
+            background: rgba(247, 246, 243, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .main-nav a {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .main-nav a:hover {
+            color: var(--color-text);
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .main-nav a.active {
+            color: var(--color-text);
+        }
+
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        /* Split Layout */
+        .about-split {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 6rem;
+        }
+
+        @media (min-width: 900px) {
+            .about-split {
+                flex-direction: row;
+            }
+        }
+
+        .about-image {
+            flex: 1;
+            position: relative;
+            min-height: 50vh;
+            overflow: hidden;
+        }
+
+        @media (min-width: 900px) {
+            .about-image {
+                min-height: 100vh;
+            }
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .about-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 2rem;
+            background-color: var(--color-surface);
+        }
+
+        @media (min-width: 900px) {
+            .about-content {
+                padding: 4rem 5rem;
+                overflow-y: auto;
+                max-height: 100vh;
+            }
+        }
+
+        .about-content-inner {
+            max-width: 520px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .about-section-label {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        .about-heading {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 400;
+            line-height: 1.15;
+            color: var(--color-text);
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .about-heading {
+                font-size: 3.5rem;
+            }
+        }
+
+        .about-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-textMuted);
+            margin-bottom: 2.5rem;
+        }
+
+        .about-description strong {
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .about-philosophy {
+            border-left: 2px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .about-philosophy p {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (min-width: 768px) {
+            .about-philosophy p {
+                font-size: 1.5rem;
+            }
+        }
+
+        .brands-section {
+            margin-top: 1rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-secondary);
+        }
+
+        .brands-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            margin-bottom: 1rem;
+        }
+
+        .brands-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem 2.5rem;
+            align-items: center;
+        }
+
+        .brand-item {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .brand-item:hover {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .site-footer {
+            background-color: var(--color-primary);
+            color: var(--color-secondary);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-secondary);
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            letter-spacing: 0.03em;
+        }
+
+        @media (max-width: 899px) {
+            .about-content {
+                padding: 2.5rem 1.5rem;
+            }
+            .about-heading {
+                font-size: 2.4rem;
+            }
+            .about-philosophy p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html">首页</a>
+        <a href="portfolio.html">作品集</a>
+        <a href="about.html" class="active">关于</a>
+        <a href="contact.html">联系</a>
+    </nav>
+
+    <main class="about-split">
+        <div class="about-image">
+            <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师肖像与工作环境" loading="lazy">
+        </div>
+        <div class="about-content">
+            <div class="about-content-inner">
+                <span class="about-section-label">About</span>
+                <h1 class="about-heading">以镜头<br>捕捉真实</h1>
+                <div class="about-description">
+                    <p><strong>陈逸</strong>，一位常驻上海的独立摄影师，拥有超过十年的商业与艺术创作经验。</p>
+                    <p>从纪实报道到高端商业广告，我的镜头始终聚焦于人与环境之间最微妙的情绪流动。我相信，一张好的照片并非来自完美的布光，而是源于对瞬间的敬畏与对故事的挖掘。</p>
+                </div>
+                <div class="about-philosophy">
+                    <p>“摄影是唯一能让时间停止的语言。我的使命，就是为你凝固那些值得铭记一生的一秒。”</p>
+                </div>
+                <div class="brands-section">
+                    <span class="brands-label">合作品牌</span>
+                    <div class="brands-list">
+                        <span class="brand-item">Cartier</span>
+                        <span class="brand-item">Louis Vuitton</span>
+                        <span class="brand-item">VOGUE</span>
+                        <span class="brand-item">Hermès</span>
+                        <span class="brand-item">Apple</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="portfolio.html">作品集</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <p class="footer-copy">&copy; 2025 陈逸摄影 · 静候光影</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal | LENS & VOID</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,300..700;1,300..700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #EAEAEA;
+  --color-secondary: #2A2A2D;
+  --color-background: #0B0B0D;
+  --color-surface: #161618;
+  --color-text: #F5F5F5;
+  --color-textMuted: #88888A;
+  --color-accent: #C8956C;
+  --font-heading: 'Syne', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+  --spacing-unit: 1rem;
+  --spacing-sm: calc(var(--spacing-unit) * 0.5);
+  --spacing-md: calc(var(--spacing-unit) * 1.5);
+  --spacing-lg: calc(var(--spacing-unit) * 2.5);
+  --spacing-xl: calc(var(--spacing-unit) * 4);
+  --transition-base: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --container-width: 1400px;
+  --nav-height: 80px;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  text-wrap: pretty;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.navbar {
+ position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  z-index: 1000;
+  background: rgba(11, 11, 13, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,0.05);
+  transition: background var(--transition-base);
+}
+.navbar.scrolled {
+  background: rgba(11, 11, 13, 0.98);
+}
+.brand {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.08em;
+}
+.nav-links {
+  display: flex;
+  gap: var(--spacing-lg);
+  list-style: none;
+}
+.nav-link {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--color-accent);
+}
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+}
+
+.page-wrapper {
+  padding-top: var(--nav-height);
+  max-width: var(--container-width);
+  margin: 0 auto;
+ padding-left: var(--spacing-xl);
+  padding-right: var(--spacing-xl);
+}
+.blog-header {
+  padding-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+.blog-hero {
+  width: 100%;
+  height: 65vh;
+  margin-bottom: var(--spacing-xl);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.blog-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7) contrast(1.05);
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.blog-hero:hover img {
+  transform: scale(1.03);
+}
+.article-meta {
+  margin-bottom: var(--spacing-md);
+  color: var(--color-textMuted);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+.accent-line {
+  display: block;
+  width: 50px;
+  height: 2px;
+  background: var(--color-accent);
+  margin-bottom: var(--spacing-sm);
+}
+.article-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 1.05;
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.article-excerpt {
+  font-size: 1.2rem;
+  color: var(--color-textMuted);
+  max-width: 85ch;
+  line-height: 1.8;
+  margin-bottom: var(--spacing-lg);
+}
+
+.blog-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 30px;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+.article-body {
+  font-size: 1.08rem;
+  line-height: 1.95;
+  color: #D5D5D7;
+}
+.article-body p {
+  margin-bottom: var(--spacing-lg);
+}
+.article-body h2 {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+ margin: var(--spacing-xl) 0 var(--spacing-md);
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+.article-body h3 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  margin: var(--spacing-lg) 0 var(--spacing-md);
+  color: var(--color-text);
+}
+.article-body blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--spacing-md);
+  margin: var(--spacing-xl) 0;
+  font-style: italic;
+  color: var(--color-textMuted);
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+.article-body .media-block {
+  width: 100%;
+  margin: var(--spacing-lg) 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.article-body .media-block img {
+  height: 550px;
+  width: 100%;
+  filter: brightness(0.9);
+}
+.article-body ul {
+  margin-bottom: var(--spacing-lg);
+  padding-left: var(--spacing-md);
+  list-style-type: none;
+}
+.article-body li {
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  padding-left: var(--spacing-md);
+}
+.article-body li::before {
+  content: "•";
+  color: var(--color-accent);
+  position: absolute;
+  left: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--spacing-lg));
+  align-self: start;
+}
+.author-card {
+  background: var(--color-surface);
+  padding: var(--spacing-lg);
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,0.05);
+ margin-bottom: var(--spacing-lg);
+}
+.author-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  margin-bottom: var(--spacing-md);
+  object-fit: cover;
+  border: 2px solid var(--color-surface);
+  outline: 2px solid var(--color-accent);
+}
+.author-name {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+.author-bio {
+  font-size: 0.9rem;
+  color: var(--color-textMuted);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-md);
+}
+.author-socials {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+.author-socials a {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+.author-socials a:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.tags-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+.tag {
+  font-size: 0.75rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(255,255,0.05);
+  border-radius: 20px;
+  color: var(--color-textMuted);
+  transition: all var(--transition-base);
+}
+.tag:hover {
+  background: var(--color-accent);
+  color: var(--color-background);
+}
+
+.list-section {
+  border-top: 1px solid rgba(255,255,0.08);
+  padding-top: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+.section-heading {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  margin-bottom: var(--spacing-lg);
+  letter-spacing: -0.02em;
+}
+.related-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+.related-item {
+  background: var(--color-surface);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.related-item:hover {
+  transform: translateY(-5px);
+ box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+.related-img {
+  height: 220px;
+  width: 100%;
+}
+.related-img img {
+  transition: transform var(--transition-base);
+}
+.related-item:hover .related-img img {
+  transform: scale(1.04);
+}
+.related-content {
+  padding: var(--spacing-md);
+}
+.related-date {
+  font-size: 0.75rem;
+  color: var(--color-textMuted);
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.related-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.related-title:hover {
+  color: var(--color-accent);
+}
+
+.comments-area {
+  background: var(--color-surface);
+  padding: var(--spacing-xl);
+  border-radius: 4px;
+  margin-top: var(--spacing-xl);
+}
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+}
+.input-field {
+  background: var(--color-background);
+  border: 1px solid rgba(255,255,0.1);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  border-radius: 2px;
+  min-height: 48px;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+.textarea-field {
+  min-height: 150px;
+  padding-top: var(--spacing-sm);
+  resize: vertical;
+}
+.btn-submit {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  font-family: var(--font-heading);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-radius: 2px;
+}
+.btn-submit:hover {
+  background: var(--color-accent);
+  color: var(--color-background);
+}
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+.comment-item {
+  padding: var(--spacing-md);
+  background: rgba(255,255,0.03);
+  border-radius: 4px;
+  border-left: 2px solid var(--color-surface);
+  transition: border-color var(--transition-base);
+}
+.comment-item:hover {
+  border-left-color: var(--color-accent);
+}
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.85rem;
+}
+.comment-author {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.comment-time {
+  color: var(--color-textMuted);
+}
+.comment-body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #C1C1C3;
+}
+
+.site-footer {
+  border-top: 1px solid rgba(255,0.05);
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-textMuted);
+  font-size: 0.85rem;
+}
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  list-style: none;
+  flex-wrap: wrap;
+}
+.footer-nav a {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+}
+.footer-nav a:hover {
+  color: var(--color-accent);
+}
+
+@media (max-width: 1100px) {
+  .blog-layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    order: 2;
+    margin-top: var(--spacing-lg);
+  }
+}
+@media (max-width: 850px) {
+  .related-list {
+    grid-template-columns: 1fr 1fr;
+  }
+  .navbar { padding: 0 var(--spacing-lg); }
+  .nav-links { display: none; flex-direction: column; position: absolute; top: var(--nav-height); left: 0; width: 100%; background: var(--color-background); padding: var(--spacing-lg); border-bottom: 1px solid rgba(255,255,0.1); }
+  .nav-links.open { display: flex; }
+  .menu-toggle { display: block; }
+  .blog-hero { height: 40vh; }
+ .article-title { font-size: clamp(2rem, 5vw, 3.5rem); }
+}
+@media (max-width: 600px) {
+  .related-list { grid-template-columns: 1fr; }
+  .comments-area { padding: var(--spacing-lg); }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="brand">LENS & VOID</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="gallery.html" class="nav-link">Work</a></li>
+    <li><a href="blog.html" class="nav-link active">Journal</a></li>
+    <li><a href="about.html" class="nav-link">About</a></li>
+    <li><a href="contact.html" class="nav-link">Contact</a></li>
+  </ul>
+  <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+</nav>
+
+<header class="blog-header page-wrapper">
+  <div class="article-meta">
+    <span class="accent-line"></span>
+    <span class="category">Technical Analysis / 幕后纪实</span> &bull; <span class="date">2024.11.12</span>
+  </div>
+  <h1 class="article-title">光影的解构：暗房与数字后期的对话</h1>
+  <p class="article-excerpt">在银盐颗粒与像素阵列的交界处，探索当代艺术摄影的创作逻辑。本文深入解析本次「裂隙」系列拍摄的光比控制、胶片冲洗流程与数字暗房合成技术。</p>
+</header>
+
+<main class="page-wrapper">
+  <div class="blog-layout">
+    <article class="article-body">
+      <p>摄影的本质并非记录，而是提取。当快门按下的一刹那，光线被切割、重组、固化。本次系列作品试图在极简的几何构图中，寻找情绪与形式的共振点。不同于传统的风光纪实，我将创作重心前移至光线的“雕刻”阶段。</p>
+      
+      <h2>一、 现场光比与测光策略</h2>
+      <p>拍摄环境设定于废弃的工业厂房，自然光通过破损的屋顶以 45 度角切入。为了保留高光区域的细节同时让暗部保持深邃的层次，我采用了分区测光法。以点测光读取最亮处（Zone VII）为基准，主动降曝光补偿 1.5 档。这确保了高光不被溢出，为后期的数字暗房留出了充足的容错空间。</p>
+      <blockquote>"摄影是减法的艺术。每一次对杂光的遮蔽，都是对主体的一次提纯。"</blockquote>
+      <p>使用偏振滤镜消除金属表面的反光干扰，配合 ND 滤镜控制进光量，快门速度被拉长至 1/4 秒。动态模糊与静态结构的对比，赋予了画面一种时间停滞的错觉。</p>
+
+      <div class="media-block">
+        <img src="https://images.pexels.com/photos/12096473/pexels-photo-12096473.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="现场光影布局">
+        <p style="font-size:0.8rem; color:var(--color-textMuted); margin-top:var(--spacing-sm); text-align:center;">图 1：主光源入射角度与构图分割线示意</p>
+      </div>
+
+      <h2>二、 胶片冲洗与数字化过渡</h2>
+      <p>前期采用 Kodak Portra 400 中画幅胶片。显影阶段选择 Push +1 工艺，增强对比度与颗粒质感。冲洗后的底片通过哈苏 Flextight X5 扫描仪进行数字化，扫描时特意关闭了所有的色彩配置文件与锐化算法，保留最原始的线性数据。</p>
+      <ul>
+        <li><strong>显影液：</strong>HC-110 Dilution B，温度 20°C，时间 9 分钟</li>
+        <li><strong>定影：</strong>Ilford Rapid Fixer 5+1，停留时间减半以保留高光层次</li>
+        <li><strong>扫描分辨率：</strong>200 DPI，16-bit TIFF 无损格式</li>
+      </ul>
+      <p>这种工作流的取舍在于：数字传感器虽然动态范围极高，但往往缺乏胶片特有的非线性响应曲线。通过物理介质捕捉光影，再以数字手段进行精准裁剪与调色，实现了“感性与理性”的闭环。</p>
+
+      <h2>三、 数字暗房：图层混合与色彩分级</h2>
+      <p>后期处理在 Capture One 与 Photoshop 中交替完成。核心步骤并非简单的“调色”，而是重建现场的光影逻辑。利用亮度蒙版（Luminosity Masks）分离高光、中间调与阴影，分别赋予冷调的蓝灰（高光区）与暖调的铜色（阴影区），模拟传统暗房中的双色调相纸效果。</p>
+      <div class="media-block">
+        <img src="https://images.pexels.com/photos/8685553/pexels-photo-8685553.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="后期调色工作区">
+        <p style="font-size:0.8rem; color:var(--color-textMuted); margin-top:var(--spacing-sm); text-align:center;">图 2：亮度蒙版分离与局部色彩映射</p>
+      </div>
+      <p>最后阶段的输出，遵循“所见即所得”的印刷标准。通过 Soft Proofing 模拟艺术微喷在纯棉相纸上的显色特性，微调 CMYK 通道曲线，确保实体作品与屏幕呈现的视觉权重一致。</p>
+      <p>摄影是一场漫长的等待与瞬间的决断。在按下快门前的一百次试错，与后期桌前的十次推翻，都是为了抵达那张无可挑剔的最终画面。技术只是桥梁，真正的核心始终是观看的方式。</p>
+    </article>
+
+    <aside class="sidebar">
+      <div class="author-card">
+        <img src="https://images.pexels.com/photos/30132143/pexels-photo-30132143.jpeg?auto=compress&cs=tinysrgb&h=350&w=350" alt="Author Avatar" class="author-avatar">
+        <h3 class="author-name">Elias Vance</h3>
+        <p class="author-bio">独立摄影师 / 视觉研究者。专注于建筑几何与自然光线的抽象表达。作品曾刊登于 PDN, Aperture, C-Type Magazine。</p>
+        <div class="author-socials">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">TW</a>
+          <a href="https://behance.net" target="_blank" rel="noopener noreferrer" aria-label="Behance">BE</a>
+        </div>
+      </div>
+      <h4 style="font-family:var(--font-heading); margin-bottom:var(--spacing-sm); font-size:1rem;">标签</h4>
+      <div class="tags-card">
+        <a href="#" class="tag">Architecture</a>
+        <a href="#" class="tag">Film Photography</a>
+        <a href="#" class="tag">Post Processing</a>
+        <a href="#" class="tag">Light Study</a>
+        <a href="#" class="tag">Minimalism</a>
+      </div>
+    </aside>
+  </div>
+
+  <section class="list-section related-section">
+    <h2 class="section-heading">相关文章推荐</h2>
+    <div class="related-list">
+      <a href="#" class="related-item">
+        <div class="related-img">
+          <img src="https://images.pexels.com/photos/36570930/pexels-photo-36570930.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Related 1">
+        </div>
+        <div class="related-content">
+          <span class="related-date">2024.10.08</span>
+          <h3 class="related-title">负空间的重量：极简构图的边界探索</h3>
+        </div>
+      </a>
+      <a href="#" class="related-item">
+        <div class="related-img">
+          <img src="https://images.pexels.com/photos/1466181/pexels-photo-1466181.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Related 2">
+        </div>
+        <div class="related-content">
+          <span class="related-date">2024.09.15</span>
+          <h3 class="related-title">中画幅胶片机的机械美学与拍摄手感</h3>
+        </div>
+      </a>
+      <a href="#" class="related-item">
+        <div class="related-img">
+          <img src="https://images.pexels.com/photos/2449364/pexels-photo-2449364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Related 3">
+        </div>
+        <div class="related-content">
+          <span class="related-date">2024.08.22</span>
+          <h3 class="related-title">从 RAW 到印刷：色彩管理的全流程指南</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="list-section comments-section">
+    <h2 class="section-heading">评论与交流</h2>
+    <form class="comment-form" onsubmit="event.preventDefault();">
+      <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+        <input type="text" placeholder="您的称呼" class="input-field" style="flex:1; min-width:200px;">
+        <input type="email" placeholder="电子邮箱" class="input-field" style="flex:1; min-width:200px;">
+      </div>
+      <textarea placeholder="分享您的观点或提问..." class="input-field textarea-field"></textarea>
+      <button type="submit" class="btn-submit">发布评论</button>
+    </form>
+    <div class="comment-list">
+      <div class="comment-item">
+        <div class="comment-header">
+          <span class="comment-author">Alex Chen</span>
+          <span class="comment-time">2 天前</span>
+        </div>
+        <p class="comment-body">非常详实的技术拆解！特别是关于 Push 显影后保留高光细节的部分，解决了我在高反差场景下经常遇到的溢出问题。期待后续关于扫描曲线校准的教程。</p>
+      </div>
+      <div class="comment-item">
+        <div class="comment-header">
+          <span class="comment-author">Mia Ross</span>
+          <span class="comment-time">1 周前</span>
+        </div>
+        <p class="comment-body">光影分割的构图太惊艳了。数字暗房的双色调模拟非常精准，既有胶片的温润又不失现代摄影的锐利。请问输出打印时使用的是哪种介质？</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <ul class="footer-nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Work</a></li>
+    <li><a href="blog.html">Journal</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <p>&copy; 2024 LENS & VOID. All rights reserved. Designed for visual storytelling.</p>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  document.querySelectorAll('.nav-link, .footer-nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

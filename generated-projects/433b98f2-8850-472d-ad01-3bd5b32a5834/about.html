@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于 — 静帧</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #6B7A6E;
+      --color-secondary: #A89E8F;
+      --color-background: #F4F0E8;
+      --color-surface: #EAE5DB;
+      --color-text: #3D3C38;
+      --color-textMuted: #8F8A82;
+      --color-accent: #B89A7A;
+      --font-heading: Cormorant Garamond, serif;
+      --font-body: Source Sans 3, sans-serif;
+      --spacing-unit: 1rem;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.7;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.75) contrast(1.02);
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===== Navigation ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: calc(var(--spacing-unit) * 1.5) 0;
+      background: rgba(244, 240, 232, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(169, 158, 143, 0.15);
+      transition: padding 0.4s ease;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 calc(var(--spacing-unit) * 2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 2.5);
+    }
+
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--color-text);
+      transition: color 0.3s ease;
+    }
+
+    .nav-brand:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 18px;
+      background-color: var(--color-secondary);
+      opacity: 0.4;
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: var(--color-textMuted);
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--color-accent);
+      transition: width 0.4s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--color-text);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active {
+      color: var(--color-text);
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+      background-color: var(--color-accent);
+    }
+
+    /* ===== Hero Section ===== */
+    .hero-about {
+      margin-top: 72px;
+      width: 100%;
+      height: 55vh;
+      min-height: 380px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-about img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.6) contrast(1.05) brightness(0.85);
+    }
+
+    .hero-about-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(244, 240, 232, 0.1) 0%,
+        rgba(61, 60, 56, 0.45) 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: calc(var(--spacing-unit) * 5);
+    }
+
+    .hero-about-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 300;
+      color: #F4F0E8;
+      letter-spacing: 0.15em;
+      text-align: center;
+    }
+
+    /* ===== Detail Content Layout ===== */
+    .detail-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 2);
+    }
+
+    .detail-section + .detail-section {
+      border-top: 1px solid rgba(169, 158, 143, 0.2);
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+
+    .section-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 300;
+      color: var(--color-text);
+      line-height: 1.3;
+      margin-bottom: calc(var(--spacing-unit) * 2.5);
+      letter-spacing: 0.03em;
+    }
+
+    .section-text {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      line-height: 1.9;
+      max-width: 720px;
+    }
+
+    .section-text p + p {
+      margin-top: calc(var(--spacing-unit) * 1.5);
+    }
+
+    /* ===== Philosophy Section (Two Column) ===== */
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 5);
+      align-items: start;
+    }
+
+    .philosophy-image {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .philosophy-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.65) contrast(1.04) brightness(0.93);
+    }
+
+    .philosophy-content {
+      padding-top: calc(var(--spacing-unit) * 2);
+    }
+
+    .philosophy-quote {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--color-primary);
+      line-height: 1.6;
+      margin-bottom: calc(var(--spacing-unit) * 2.5);
+      padding-left: calc(var(--spacing-unit) * 2);
+      border-left: 2px solid var(--color-accent);
+    }
+
+    /* ===== Exhibition Timeline ===== */
+    .timeline {
+      max-width: 720px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: calc(var(--spacing-unit) * 3);
+      padding: calc(var(--spacing-unit) * 2) 0;
+      border-bottom: 1px solid rgba(169, 158, 143, 0.15);
+    }
+
+    .timeline-year {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--color-accent);
+      padding-top: 2px;
+    }
+
+    .timeline-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .timeline-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+    }
+
+    .timeline-venue {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+    }
+
+    .timeline-desc {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* ===== Equipment Section ===== */
+    .equipment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: calc(var(--spacing-unit) * 2.5);
+      max-width: 720px;
+    }
+
+    .equipment-card {
+      background-color: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 2);
+      border-radius: 2px;
+      transition: background-color 0.3s ease;
+    }
+
+    .equipment-card:hover {
+      background-color: rgba(184, 154, 122, 0.12);
+    }
+
+    .equipment-type {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: calc(var(--spacing-unit) * 0.8);
+    }
+
+    .equipment-name {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .equipment-note {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      margin-top: calc(var(--spacing-unit) * 0.5);
+      line-height: 1.5;
+    }
+
+    /* ===== Contact Section ===== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 5);
+      align-items: center;
+    }
+
+    .contact-image {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .contact-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.6) contrast(1.03) brightness(0.92);
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .contact-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .contact-value {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      transition: color 0.3s ease;
+    }
+
+    .contact-value:hover {
+      color: var(--color-text);
+    }
+
+    .contact-social {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 1.5);
+      margin-top: calc(var(--spacing-unit) * 1);
+    }
+
+    .social-link {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--color-textMuted);
+      padding: 6px 14px;
+      border: 1px solid rgba(169, 158, 143, 0.3);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      color: var(--color-text);
+      border-color: var(--color-accent);
+      background-color: rgba(184, 154, 122, 0.08);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      border-top: 1px solid rgba(169, 158, 143, 0.2);
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2);
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-text {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+
+    .footer-link {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--color-accent);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .philosophy-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3);
+      }
+
+      .philosophy-image {
+        aspect-ratio: 16 / 9;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 3);
+      }
+
+      .contact-image {
+        aspect-ratio: 16 / 9;
+      }
+
+      .equipment-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 1);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-inner {
+        gap: calc(var(--spacing-unit) * 1.2);
+        padding: 0 calc(var(--spacing-unit) * 1);
+      }
+
+      .nav-link {
+        font-size: 0.75rem;
+      }
+
+      .hero-about {
+        height: 40vh;
+        min-height: 280px;
+      }
+
+      .detail-section {
+        padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 1.2);
+      }
+
+      .equipment-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-item {
+        grid-template-columns: 70px 1fr;
+        gap: calc(var(--spacing-unit) * 1.5);
+      }
+
+      .philosophy-quote {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">静帧</a>
+      <span class="nav-divider"></span>
+      <a href="gallery.html" class="nav-link">作品</a>
+      <a href="blog.html" class="nav-link">手记</a>
+      <a href="about.html" class="nav-link active">关于</a>
+      <a href="contact.html" class="nav-link">联络</a>
+    </div>
+  </nav>
+
+  <section class="hero-about">
+    <img src="https://images.pexels.com/photos/29979175/pexels-photo-29979175.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="关于摄影师">
+    <div class="hero-about-overlay">
+      <h1 class="hero-about-title">关于</h1>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <div class="philosophy-grid">
+      <div class="philosophy-image">
+        <img src="https://images.pexels.com/photos/35874785/pexels-photo-35874785.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="创作理念">
+      </div>
+      <div class="philosophy-content">
+        <p class="section-label">创作理念</p>
+        <h2 class="section-heading">在光影之间<br>寻找时间的纹理</h2>
+        <div class="philosophy-quote">
+          "摄影不是捕捉瞬间，而是让瞬间在胶片上缓慢生长。"
+        </div>
+        <div class="section-text">
+          <p>
+            我相信每一帧画面都承载着时间的重量。使用胶片拍摄并非怀旧，而是对"观看"这一行为本身的尊重——当你只有三十六次按下快门的机会，每一次构图都成为一次慎重的对话。
+          </p>
+          <p>
+            我的镜头倾向于那些被日常忽略的角落：晨光中尘埃的轨迹、旧墙面上剥落的色块、雨后街面积水中倒映的天空。这些微不足道的瞬间，恰恰是生活最诚实的切片。
+          </p>
+          <p>
+            作品试图在纪实与抽象之间找到一条窄路——足够真实以唤起共鸣，又足够疏离以留出想象的空间。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <p class="section-label">参展经历</p>
+    <h2 class="section-heading">展览与出版</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="timeline-year">2024</span>
+        <div class="timeline-detail">
+          <span class="timeline-title">「光的褶皱」个人摄影展</span>
+          <span class="timeline-venue">上海 · M50 艺术空间</span>
+          <span class="timeline-desc">展出 42 幅中画幅胶片作品，探讨城市空间中光线的物质性。</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-year">2023</span>
+        <div class="timeline-detail">
+          <span class="timeline-title">「无声的风景」群展</span>
+          <span class="timeline-venue">东京 · Zen Foto Gallery</span>
+          <span class="timeline-desc">与三位亚洲摄影师联展，呈现东亚语境下的风景摄影实践。</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-year">2023</span>
+        <div class="timeline-detail">
+          <span class="timeline-title">摄影画册《间歇》出版</span>
+          <span class="timeline-venue">独立出版 · 限量 500 册</span>
+          <span class="timeline-desc">收录 2019—2022 年间拍摄的 68 幅作品，以季节更迭为叙事线索。</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-year">2022</span>
+        <div class="timeline-detail">
+          <span class="timeline-title">「日常的边缘」双人展</span>
+          <span class="timeline-venue">北京 · 三影堂摄影艺术中心</span>
+          <span class="timeline-desc">与画家林默合作，探索摄影与绘画在表现日常主题时的边界。</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-year">2021</span>
+        <div class="timeline-detail">
+          <span class="timeline-title">新锐摄影奖入围展</span>
+          <span class="timeline-venue">成都 · 当代影像馆</span>
+          <span class="timeline-desc">系列作品《余白》获年度新锐摄影奖提名。</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-year">2020</span>
+        <div class="timeline-detail">
+          <span class="timeline-title">「显影」个人摄影展</span>
+          <span class="timeline-venue">杭州 · 天目里</span>
+          <span class="timeline-desc">首次个展，展出暗房手工放银盐作品 28 幅。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <p class="section-label">使用器材</p>
+    <h2 class="section-heading">工具与媒介</h2>
+    <div class="section-text" style="margin-bottom: calc(var(--spacing-unit) * 3);">
+      <p>
+        器材是手的延伸。我倾向于使用结构简单、操作纯粹的机械相机——它们迫使你在按下快门前思考，而非在事后筛选。
+      </p>
+    </div>
+    <div class="equipment-grid">
+      <div class="equipment-card">
+        <span class="equipment-type">中画幅</span>
+        <h3 class="equipment-name">Hasselblad 503CW</h3>
+        <p class="equipment-note">主力机型，搭配 80mm f/2.8 标准镜头</p>
+      </div>
+      <div class="equipment-card">
+        <span class="equipment-type">135 胶片</span>
+        <h3 class="equipment-name">Leica M6</h3>
+        <p class="equipment-note">随身机，搭配 Summicron 35mm f/2</p>
+      </div>
+      <div class="equipment-card">
+        <span class="equipment-type">大画幅</span>
+        <h3 class="equipment-name">Linhof Technika V</h3>
+        <p class="equipment-note">4×5 画幅，用于建筑与静物拍摄</p>
+      </div>
+      <div class="equipment-card">
+        <span class="equipment-type">胶片</span>
+        <h3 class="equipment-name">Kodak Portra 400</h3>
+        <p class="equipment-note">日常彩色负片首选，色调温润</p>
+      </div>
+      <div class="equipment-card">
+        <span class="equipment-type">胶片</span>
+        <h3 class="equipment-name">Ilford HP5 Plus</h3>
+        <p class="equipment-note">黑白拍摄主力，宽容度出色</p>
+      </div>
+      <div class="equipment-card">
+        <span class="equipment-type">扫描</span>
+        <h3 class="equipment-name">Hasselblad Flextight X5</h3>
+        <p class="equipment-note">底片数字化，保留胶片颗粒质感</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <div class="contact-grid">
+      <div class="contact-image">
+        <img src="https://images.pexels.com/photos/35136018/pexels-photo-35136018.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系方式">
+      </div>
+      <div class="contact-info">
+        <p class="section-label">联系方式</p>
+        <h2 class="section-heading">期待与你交流</h2>
+        <div class="section-text">
+          <p>
+            无论是展览合作、商业委托，还是单纯关于摄影的对话，都欢迎来信。
+          </p>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">电子邮件</span>
+          <a href="mailto:hello@stillframe.art" class="contact-value">hello@stillframe.art</a>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">工作室地址</span>
+          <span class="contact-value">上海市普陀区莫干山路 50 号</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">工作时间</span>
+          <span class="contact-value">周二至周六 10:00 — 18:00</span>
+        </div>
+        <div class="contact-social">
+          <a href="https://www.instagram.com" class="social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://www.behance.net" class="social-link" target="_blank" rel="noopener noreferrer">Behance</a>
+          <a href="https://weibo.com" class="social-link" target="_blank" rel="noopener noreferrer">微博</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-text">© 2024 静帧 Still Frame</span>
+      <div class="footer-links">
+        <a href="index.html" class="footer-link">首页</a>
+        <a href="gallery.html" class="footer-link">作品</a>
+        <a href="blog.html" class="footer-link">手记</a>
+        <a href="about.html" class="footer-link">关于</a>
+        <a href="contact.html" class="footer-link">联络</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

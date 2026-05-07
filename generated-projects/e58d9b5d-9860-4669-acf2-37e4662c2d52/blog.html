@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日志 — 林述白</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #2A2B2D;
+      --color-secondary: #8B8C8E;
+      --color-background: #F3F2ED;
+      --color-surface: #FAFAF6;
+      --color-text: #141416;
+      --color-textMuted: #78787C;
+      --color-accent: #9D8B7D;
+      --font-heading: Syne, sans-serif;
+      --font-body: Manrope, sans-serif;
+      --spacing-unit: 1rem;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* ===== NAV ===== */
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(var(--spacing-unit) * 1.8) calc(var(--spacing-unit) * 3);
+      transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+    }
+    .site-nav.scrolled {
+      background: rgba(243, 242, 237, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: calc(var(--spacing-unit) * 1.2) calc(var(--spacing-unit) * 3);
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--color-text);
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2.5);
+    }
+    .nav-links li a {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--color-text);
+    }
+    .nav-links li a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--color-text);
+    }
+
+    /* ===== BLOG PAGE HEADER ===== */
+    .blog-header {
+      min-height: 45vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .blog-header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--color-text);
+    }
+    .blog-header .subtitle {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--color-textMuted);
+      letter-spacing: 0.06em;
+      margin-top: calc(var(--spacing-unit) * 1.5);
+      max-width: 480px;
+      line-height: 1.7;
+    }
+    .header-line {
+      width: 48px;
+      height: 1px;
+      background: var(--color-accent);
+      margin-top: calc(var(--spacing-unit) * 2);
+    }
+
+    /* ===== BLOG ENTRIES ===== */
+    .blog-entries {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 8);
+    }
+
+    .blog-entry {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 4);
+      margin-bottom: calc(var(--spacing-unit) * 10);
+      align-items: center;
+    }
+    .blog-entry:nth-child(even) {
+      direction: rtl;
+    }
+    .blog-entry:nth-child(even) > * {
+      direction: ltr;
+    }
+    .blog-entry:last-child {
+      margin-bottom: 0;
+    }
+
+    .entry-image-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3 / 4;
+      cursor: pointer;
+    }
+    .entry-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s var(--ease-out-expo), filter 0.8s;
+      filter: grayscale(15%);
+      transform: scale(1.03);
+    }
+    .entry-image-wrap:hover img {
+      transform: scale(1);
+      filter: grayscale(0%);
+    }
+
+    .entry-exif-badge {
+      position: absolute;
+      bottom: calc(var(--spacing-unit) * 1.5);
+      left: calc(var(--spacing-unit) * 1.5);
+      background: rgba(20, 22, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: calc(var(--spacing-unit) * 0.6) calc(var(--spacing-unit) * 1);
+      border-radius: 2px;
+      display: flex;
+      gap: calc(var(--spacing-unit) * 1.2);
+    }
+    .entry-exif-badge span {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: rgba(250, 250, 246, 0.6);
+      text-transform: uppercase;
+    }
+
+    .entry-content {
+      padding: calc(var(--spacing-unit) * 2) 0;
+    }
+    .entry-date {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: calc(var(--spacing-unit) * 1.2);
+    }
+    .entry-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 1.2);
+    }
+    .entry-excerpt {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--color-textMuted);
+      line-height: 1.8;
+      max-width: 440px;
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .entry-link {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.6);
+    }
+    .entry-link:hover {
+      color: var(--color-text);
+    }
+    .entry-link .arrow {
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: currentColor;
+      position: relative;
+      transition: width 0.3s var(--ease-out-expo);
+    }
+    .entry-link .arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid currentColor;
+      border-top: 1px solid currentColor;
+      transform: rotate(45deg);
+    }
+    .entry-link:hover .arrow {
+      width: 28px;
+    }
+
+    /* ===== BLOG MINI JOURNAL SECTION ===== */
+    .journal-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 10);
+      border-top: 1px solid rgba(42, 43, 45, 0.08);
+    }
+    .journal-section .section-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: calc(var(--spacing-unit) * 2);
+    }
+    .journal-card {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      cursor: pointer;
+    }
+    .journal-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s var(--ease-out-expo), filter 0.8s;
+      filter: grayscale(20%);
+      transform: scale(1.03);
+    }
+    .journal-card:hover img {
+      transform: scale(1);
+      filter: grayscale(0%);
+    }
+    .journal-card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+      background: linear-gradient(to top, rgba(20,20,22,0.7) 0%, transparent 100%);
+    }
+    .journal-card-date {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(250, 250, 246, 0.5);
+      margin-bottom: calc(var(--spacing-unit) * 0.4);
+    }
+    .journal-card-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      color: rgba(250, 250, 246, 0.9);
+      line-height: 1.3;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 3);
+      border-top: 1px solid rgba(42, 43, 45, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-left {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: var(--color-textMuted);
+      letter-spacing: 0.04em;
+    }
+    .footer-links {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+    }
+    .footer-links a:hover {
+      color: var(--color-text);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .blog-entry {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 2);
+      }
+      .blog-entry:nth-child(even) {
+        direction: ltr;
+      }
+      .entry-image-wrap {
+        aspect-ratio: 4 / 3;
+      }
+      .journal-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .site-nav {
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+      }
+      .blog-header {
+        padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+      }
+      .blog-entries {
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 6);
+      }
+      .journal-section {
+        padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 6);
+      }
+      .site-footer {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 1.5);
+        align-items: flex-start;
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 1.5);
+      }
+    }
+    @media (max-width: 560px) {
+      .journal-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        gap: calc(var(--spacing-unit) * 1.5);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" id="siteNav">
+    <a href="index.html" class="nav-brand">林述白</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">作品</a></li>
+      <li><a href="blog.html" class="active">日志</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+  </nav>
+
+  <header class="blog-header">
+    <h1>幕后日志</h1>
+    <p class="subtitle">镜头之外的叙事——关于每一次快门的动机、等待与偶然。</p>
+    <div class="header-line"></div>
+  </header>
+
+  <section class="blog-entries">
+
+    <article class="blog-entry">
+      <div class="entry-image-wrap">
+        <img src="https://images.pexels.com/photos/34853016/pexels-photo-34853016.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="雨天的十字路口">
+        <div class="entry-exif-badge">
+          <span>35mm</span>
+          <span>f/2.0</span>
+          <span>1/250s</span>
+          <span>ISO 400</span>
+        </div>
+      </div>
+      <div class="entry-content">
+        <div class="entry-date">2025 · 06 · 12</div>
+        <h2 class="entry-title">雨天的十字路口</h2>
+        <p class="entry-excerpt">傍晚六点的积雨云压得很低，我站在斑马线对角等待第三个绿灯。伞沿的水滴在取景器边缘形成光斑，那一刻行人同时迈步——像某种未经编排的仪式。</p>
+        <a href="#" class="entry-link">
+          阅读全文 <span class="arrow"></span>
+        </a>
+      </div>
+    </article>
+
+    <article class="blog-entry">
+      <div class="entry-image-wrap">
+        <img src="https://images.pexels.com/photos/3653772/pexels-photo-3653772.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="旧城褶皱">
+        <div class="entry-exif-badge">
+          <span>50mm</span>
+          <span>f/1.8</span>
+          <span>1/500s</span>
+          <span>ISO 200</span>
+        </div>
+      </div>
+      <div class="entry-content">
+        <div class="entry-date">2025 · 05 · 28</div>
+        <h2 class="entry-title">旧城褶皱</h2>
+        <p class="entry-excerpt">拆迁区的最后一栋楼还立着，墙面上残留的瓷砖拼出半张九十年代的审美图谱。一位老人坐在门洞的阴影里剥蒜，阳光刚好切开她脚前的地面。</p>
+        <a href="#" class="entry-link">
+          阅读全文 <span class="arrow"></span>
+        </a>
+      </div>
+    </article>
+
+    <article class="blog-entry">
+      <div class="entry-image-wrap">
+        <img src="https://images.pexels.com/photos/8114057/pexels-photo-8114057.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="末班地铁">
+        <div class="entry-exif-badge">
+          <span>28mm</span>
+          <span>f/2.8</span>
+          <span>1/60s</span>
+          <span>ISO 1600</span>
+        </div>
+      </div>
+      <div class="entry-content">
+        <div class="entry-date">2025 · 05 · 03</div>
+        <h2 class="entry-title">末班地铁</h2>
+        <p class="entry-excerpt">23:47 的站台，荧光灯管发出轻微的嗡鸣。穿校服的男孩靠在柱子上睡着了，手里的漫画书翻到第 142 页。列车进站的风掀起他额前的头发，他没有醒。</p>
+        <a href="#" class="entry-link">
+          阅读全文 <span class="arrow"></span>
+        </a>
+      </div>
+    </article>
+
+    <article class="blog-entry">
+      <div class="entry-image-wrap">
+        <img src="https://images.pexels.com/photos/25881987/pexels-photo-25881987.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="天台上的风筝">
+        <div class="entry-exif-badge">
+          <span>85mm</span>
+          <span>f/4.0</span>
+          <span>1/1000s</span>
+          <span>ISO 100</span>
+        </div>
+      </div>
+      <div class="entry-content">
+        <div class="entry-date">2025 · 04 · 19</div>
+        <h2 class="entry-title">天台上的风筝</h2>
+        <p class="entry-excerpt">老城区的屋顶连成一片不规则的几何体。一个穿红色外套的小孩在晾衣绳之间奔跑，手里的塑料袋被风灌满，像一面粗糙的旗帜。远处新建的玻璃幕墙反射着整片天空。</p>
+        <a href="#" class="entry-link">
+          阅读全文 <span class="arrow"></span>
+        </a>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="journal-section">
+    <p class="section-label">碎片记录</p>
+    <div class="journal-grid">
+      <div class="journal-card">
+        <img src="https://images.pexels.com/photos/30281992/pexels-photo-30281992.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="晨光中的巷口">
+        <div class="journal-card-overlay">
+          <div class="journal-card-date">2025 · 04 · 07</div>
+          <div class="journal-card-title">晨光中的巷口</div>
+        </div>
+      </div>
+      <div class="journal-card">
+        <img src="https://images.pexels.com/photos/10276050/pexels-photo-10276050.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="桥下的修车人">
+        <div class="journal-card-overlay">
+          <div class="journal-card-date">2025 · 03 · 22</div>
+          <div class="journal-card-title">桥下的修车人</div>
+        </div>
+      </div>
+      <div class="journal-card">
+        <img src="https://images.pexels.com/photos/16802933/pexels-photo-16802933.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="夜市的最后一盏灯">
+        <div class="journal-card-overlay">
+          <div class="journal-card-date">2025 · 03 · 11</div>
+          <div class="journal-card-title">夜市的最后一盏灯</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-left">© 2025 林述白 — 街头摄影</div>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="gallery.html">作品</a>
+      <a href="blog.html">日志</a>
+      <a href="about.html">关于</a>
+    </div>
+  </footer>
+
+  <script>
+    var nav = document.getElementById('siteNav');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  </script>
+
+</body>
+</html>

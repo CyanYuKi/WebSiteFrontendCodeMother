@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集 - 人像摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2C3E50;
+            --color-secondary: #D4AF37;
+            --color-background: #F8F9FA;
+            --color-surface: #FFFFFF;
+            --color-text: #2D3436;
+            --color-textMuted: #636E72;
+            --color-accent: #E17055;
+            --font-heading: 'Playfair Display', Georgia, serif;
+            --font-body: 'Lato', system-ui, sans-serif;
+            --spacing-unit: 8px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.6;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 3);
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(44, 62, 80, 0.08);
+            z-index: 1000;
+            padding: calc(var(--spacing-unit) * 2) 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 4);
+        }
+
+        .navbar a {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            color: var(--color-textMuted);
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .navbar a:hover {
+            color: var(--color-primary);
+        }
+
+        .navbar a.active {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .navbar a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-secondary);
+        }
+
+        /* ===== 页面标题区 ===== */
+        .page-header {
+            padding-top: 120px;
+            padding-bottom: calc(var(--spacing-unit) * 6);
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 0.04em;
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+        }
+
+        .page-header p {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: var(--color-textMuted);
+            max-width: 560px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* ===== 作品集网格 ===== */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 3);
+            padding-bottom: calc(var(--spacing-unit) * 12);
+        }
+
+        .portfolio-item {
+            background-color: var(--color-surface);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(44, 62, 80, 0.12);
+        }
+
+        .portfolio-item .image-wrapper {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.6s;
+        }
+
+        .portfolio-item img:hover {
+            opacity: 0.85;
+        }
+
+        .portfolio-item .item-info {
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
+        }
+
+        .portfolio-item .item-info h3 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: calc(var(--spacing-unit) * 0.5);
+            letter-spacing: 0.02em;
+        }
+
+        .portfolio-item .item-info p {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        /* ===== Footer ===== */
+        .site-footer {
+            border-top: 1px solid rgba(44, 62, 80, 0.1);
+            padding: calc(var(--spacing-unit) * 6) 0 calc(var(--spacing-unit) * 4);
+            background-color: var(--color-surface);
+        }
+
+        .site-footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 2);
+        }
+
+        .site-footer .footer-nav {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 4);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .site-footer .footer-nav a {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .site-footer .footer-nav a:hover {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-secondary);
+        }
+
+        .site-footer .footer-nav a.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-secondary);
+        }
+
+        .site-footer .copyright {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.04em;
+            font-weight: 300;
+            margin-top: calc(var(--spacing-unit) * 1);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 2.5);
+            }
+
+            .navbar .container {
+                gap: calc(var(--spacing-unit) * 2);
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
+                padding: 0 calc(var(--spacing-unit) * 2);
+            }
+
+            .site-footer .footer-nav {
+                gap: calc(var(--spacing-unit) * 2.5);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 calc(var(--spacing-unit) * 2);
+            }
+
+            .navbar .container {
+                gap: calc(var(--spacing-unit) * 1.5);
+            }
+
+            .navbar a {
+                font-size: 0.85rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html">首页</a>
+            <a href="portfolio.html" class="active">作品集</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <section class="page-header container">
+        <h1>精选作品</h1>
+        <p>每一帧光影，都是对灵魂的温柔叙事。</p>
+    </section>
+
+    <!-- 作品集双列网格 -->
+    <section class="portfolio-grid container">
+        <!-- 作品项 1 -->
+        <div class="portfolio-item">
+            <div class="image-wrapper">
+                <img src="https://images.pexels.com/photos/19610436/pexels-photo-19610436.jpeg?auto=compress&cs=tinysrgb&h=350" alt="光影低语" loading="lazy">
+            </div>
+            <div class="item-info">
+                <h3>光影低语</h3>
+                <p>柔和侧光下的情绪捕捉，自然光与人像的细腻对话。</p>
+            </div>
+        </div>
+
+        <!-- 作品项 2 -->
+        <div class="portfolio-item">
+            <div class="image-wrapper">
+                <img src="https://images.pexels.com/photos/10217707/pexels-photo-10217707.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="都市剪影" loading="lazy">
+            </div>
+            <div class="item-info">
+                <h3>都市剪影</h3>
+                <p>在城市肌理中寻找人物的轮廓，现代感与温度的平衡。</p>
+            </div>
+        </div>
+
+        <!-- 作品项 3 -->
+        <div class="portfolio-item">
+            <div class="image-wrapper">
+                <img src="https://images.pexels.com/photos/36823594/pexels-photo-36823594.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="花园私语" loading="lazy">
+            </div>
+            <div class="item-info">
+                <h3>花园私语</h3>
+                <p>自然花丛中的浪漫人像，色彩与情感一同绽放。</p>
+            </div>
+        </div>
+
+        <!-- 作品项 4 -->
+        <div class="portfolio-item">
+            <div class="image-wrapper">
+                <img src="https://images.pexels.com/photos/11199663/pexels-photo-11199663.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="黑白叙事" loading="lazy">
+            </div>
+            <div class="item-info">
+                <h3>黑白叙事</h3>
+                <p>去除色彩干扰，用纯粹光影讲述人物内心故事。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-nav">
+                <a href="index.html">首页</a>
+                <a href="portfolio.html" class="active">作品集</a>
+                <a href="about.html">关于</a>
+                <a href="contact.html">联系</a>
+            </div>
+            <p class="copyright">&copy; 2025 人像摄影工作室 版权所有</p>
+        </div>
+    </footer>
+
+</body>
+</html>

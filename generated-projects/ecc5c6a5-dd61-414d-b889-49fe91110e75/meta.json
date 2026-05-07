@@ -1,0 +1,9 @@
+{
+  "projectId" : "ecc5c6a5-dd61-414d-b889-49fe91110e75",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>街头摄影 | Street Photography</title>\n<style>\n:root {\n  --color-bg: #0a0a0a;\n  --color-text: #f5f5f5;\n  --color-text-muted: #888;\n  --color-accent: #e2e2e2;\n  --font-main: \"Helvetica Neue\", Helvetica, \"PingFang SC\", \"Microsoft YaHei\", sans-serif;\n  --spacing-unit: 8px;\n}\n*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\nbody { backgro...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#7A523A\",\n    \"secondary\": \"#D2B48C\",\n    \"background\": \"#F8F5EF\",\n    \"surface\": \"#EDE6DA\",\n    \"text\": \"#2A1F16\",\n    \"textMuted\": \"#7D6B58\",\n    \"accent\": \"#B86B45\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Source Sans 3, sans-serif\",\n    \"scale\": 1.333\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全屏Hero轮播+非对称图文混排简介+双栏响应式瀑布流作品墙\",\n  \"mood\": \"复古纪实、温暖人文、杂志质感\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 3,
+  "createdAt" : [ 2026, 4, 29, 18, 14, 22, 27912300 ]
+}

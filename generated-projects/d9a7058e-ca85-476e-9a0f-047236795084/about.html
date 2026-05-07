@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 摄影师与工作室</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1C1C1E;
+            --color-secondary: #4A5D50;
+            --color-background: #F5F5F0;
+            --color-surface: #FFFFFF;
+            --color-text: #1A1A1A;
+            --color-textMuted: #6E6E72;
+            --color-accent: #C8A47A;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --spacing-xs: calc(0.5 * var(--spacing-unit));
+            --spacing-sm: calc(0.75 * var(--spacing-unit));
+            --spacing-md: calc(1.25 * var(--spacing-unit));
+            --spacing-lg: calc(2 * var(--spacing-unit));
+            --spacing-xl: calc(3 * var(--spacing-unit));
+            --spacing-2xl: calc(4.5 * var(--spacing-unit));
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+            --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        a { text-decoration: none; color: inherit; transition: opacity var(--transition); }
+        ul { list-style: none; padding: 0; margin: 0; }
+        img { display: block; max-width: 100%; height: auto; }
+
+        /* ---- 导航 (复制首页结构) ---- */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3.5rem;
+            padding: 1.2rem 2rem;
+            background: rgba(245,245,240,0.92);
+            backdrop-filter: blur(6px);
+            border-bottom: 1px solid rgba(28,28,30,0.04);
+        }
+        .main-nav a {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--color-textMuted);
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color var(--transition);
+        }
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width var(--transition);
+        }
+        .main-nav a:hover { color: var(--color-primary); }
+        .main-nav a:hover::after { width: 100%; }
+        .main-nav a.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+        .main-nav a.active::after { width: 100%; }
+
+        /* ---- 通用按钮 (匹配首页) ---- */
+        .btn-outline {
+            display: inline-block;
+            border: 1px solid var(--color-secondary);
+            color: var(--color-secondary);
+            padding: 0.6rem 2rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            background: transparent;
+            cursor: pointer;
+            transition: background var(--transition), color var(--transition);
+        }
+        .btn-outline:hover {
+            background: var(--color-secondary);
+            color: #fff;
+        }
+        .btn-accent {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-accent);
+            color: #fff;
+            padding: 0.7rem 1.8rem;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            border: none;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+        }
+        .btn-accent:hover {
+            background: #b8956a;
+            transform: translateY(-1px);
+        }
+
+        /* ---- detail 布局 (about页面) ---- */
+        .page-about {
+            padding-top: 6rem; /* 导航高度补偿 */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: var(--spacing-lg);
+            padding-right: var(--spacing-lg);
+            padding-bottom: var(--spacing-2xl);
+        }
+
+        /* 顶部 intro 区: 文字 + 肖像/团队图 */
+        .about-intro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            align-items: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+        .about-intro-text h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            letter-spacing: 0.01em;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        .about-intro-text h1 span {
+            color: var(--color-accent);
+            font-style: italic;
+        }
+        .about-intro-text p {
+            font-size: 1.05rem;
+            color: var(--color-textMuted);
+            margin-bottom: var(--spacing-lg);
+            max-width: 480px;
+        }
+        .about-intro-image {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            height: 520px;
+            background: var(--color-surface);
+        }
+        .about-intro-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .about-intro-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 创作理念 + 设备信息 双列 */
+        .about-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+        .detail-card {
+            background: var(--color-surface);
+            padding: var(--spacing-lg) var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition);
+        }
+        .detail-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .detail-card h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--color-accent);
+            display: inline-block;
+            padding-bottom: 0.3rem;
+        }
+        .detail-card p, .detail-card li {
+            color: var(--color-textMuted);
+            font-size: 0.98rem;
+            line-height: 1.7;
+        }
+        .detail-card ul {
+            margin-top: var(--spacing-sm);
+        }
+        .detail-card ul li {
+            padding: 0.3rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+        .detail-card ul li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+        }
+
+        /* 展览经历区域 */
+        .about-exhibition {
+            margin-bottom: var(--spacing-2xl);
+        }
+        .about-exhibition h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .exhibition-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+        .exhibition-item {
+            background: var(--color-surface);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .exhibition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .exhibition-item .year {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        .exhibition-item .venue {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 400;
+        }
+        .exhibition-item .location {
+            font-size: 0.85rem;
+            color: var(--color-textMuted);
+            margin-top: 0.2rem;
+        }
+
+        /* 团队风采图 (全宽) */
+        .about-team-image {
+            width: 100%;
+            height: 420px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-2xl);
+        }
+        .about-team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .about-team-image:hover img {
+            transform: scale(1.04);
+        }
+
+        /* 底部与页脚 (参考首页简约风格) */
+        .about-footer {
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(28,28,30,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        .about-footer .footer-links {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        .about-footer .footer-links a {
+            color: var(--color-textMuted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color var(--transition);
+        }
+        .about-footer .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        .about-footer .copyright {
+            color: rgba(28,28,30,0.35);
+            font-size: 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        /* ---- 响应式 ---- */
+        @media (max-width: 900px) {
+            .about-intro {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+            .about-intro-image {
+                height: 380px;
+                order: -1;
+            }
+            .about-details {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+            .exhibition-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .main-nav {
+                gap: 2rem;
+                padding: 1rem 1.5rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .exhibition-grid {
+                grid-template-columns: 1fr;
+            }
+            .about-intro-text h1 {
+                font-size: 2.2rem;
+            }
+            .about-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .main-nav {
+                gap: 1.2rem;
+                padding: 0.8rem 1rem;
+            }
+            .main-nav a {
+                font-size: 0.75rem;
+            }
+            .page-about {
+                padding-left: var(--spacing-md);
+                padding-right: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 固定导航 (与首页完全一致的结构) -->
+    <nav class="main-nav" id="mainNav">
+        <a href="index.html">首页</a>
+        <a href="gallery.html">作品集</a>
+        <a href="about.html" class="active">关于</a>
+        <a href="contact.html">联系</a>
+    </nav>
+
+    <main class="page-about">
+
+        <!-- intro: 摄影师工作室故事 + 肖像/团队图 -->
+        <section class="about-intro">
+            <div class="about-intro-text">
+                <h1>用光影<br>讲述<span>大地的故事</span></h1>
+                <p>
+                    我们是一群痴迷于自然之美的影像记录者。工作室创立于2018年，从冰岛的黑沙滩到川西的雪山圣湖，始终追寻着光线与土地最诚实的对话。
+                </p>
+                <a href="contact.html" class="btn-outline">预约拍摄</a>
+            </div>
+            <div class="about-intro-image">
+                <img src="https://images.pexels.com/photos/15601395/pexels-photo-15601395.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师肖像与自然融合" loading="lazy">
+            </div>
+        </section>
+
+        <!-- 创作理念 + 设备信息 双列 -->
+        <section class="about-details">
+            <div class="detail-card">
+                <h2>创作理念</h2>
+                <p>
+                    风景不是被征服的，而是被聆听的。我们相信每一帧画面都应该保留风的速度、土壤的温度和时间的褶皱。拒绝过度修饰，追求在自然光与原生色彩中捕捉最动人的瞬间。
+                </p>
+                <p style="margin-top: 1rem;">
+                    长期关注气候变化与生态保护，通过影像记录正在消失的景观，让作品成为自然与人类之间的桥梁。
+                </p>
+            </div>
+            <div class="detail-card">
+                <h2>设备与工艺</h2>
+                <ul>
+                    <li>Hasselblad H6D-100c 中画幅系统</li>
+                    <li>Fujifilm GFX 100S 搭配 GF 系列移轴镜头</li>
+                    <li>大疆 Inspire 3 专业航拍平台</li>
+                    <li>全流程 DCI-P3 色域校色 &amp; 专业级微喷输出</li>
+                    <li>36 道色彩管理工作流，确保从拍摄到展览的色彩精准</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 展览经历 -->
+        <section class="about-exhibition">
+            <h2>近年展览</h2>
+            <div class="exhibition-grid">
+                <div class="exhibition-item">
+                    <div class="year">2024</div>
+                    <div class="venue">「寂静的纬度」个人摄影展</div>
+                    <div class="location">上海 · 西岸艺术中心</div>
+                </div>
+                <div class="exhibition-item">
+                    <div class="year">2023</div>
+                    <div class="venue">UNDER THE SAME SKY 国际群展</div>
+                    <div class="location">东京 · 国立新美术馆</div>
+                </div>
+                <div class="exhibition-item">
+                    <div class="year">2022</div>
+                    <div class="venue">「山色有无」三人群展</div>
+                    <div class="location">成都 · 当代影像馆</div>
+                </div>
+                <div class="exhibition-item">
+                    <div class="year">2021</div>
+                    <div class="venue">风景之外 · 青年摄影师联展</div>
+                    <div class="location">北京 · 三影堂摄影艺术中心</div>
+                </div>
+                <div class="exhibition-item">
+                    <div class="year">2020</div>
+                    <div class="venue">NATURE'S VOICE 环保影像巡展</div>
+                    <div class="location">深圳 · 坪山美术馆</div>
+                </div>
+                <div class="exhibition-item">
+                    <div class="year">2019</div>
+                    <div class="venue">「初见」工作室成立首展</div>
+                    <div class="location">杭州 · 良渚文化艺术中心</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 团队风采图 -->
+        <div class="about-team-image">
+            <img src="https://images.pexels.com/photos/16029827/pexels-photo-16029827.jpeg?auto=compress&cs=tinysrgb&h=350" alt="工作室团队风采" loading="lazy">
+        </div>
+
+        <!-- 底部区域 (对称联系/页脚) 与首页风格一致 -->
+        <footer class="about-footer">
+            <div class="footer-links">
+                <a href="gallery.html">作品集</a>
+                <a href="contact.html" target="_blank" rel="noopener noreferrer">工作联系</a>
+                <a href="about.html">关于我们</a>
+            </div>
+            <span class="copyright">© 2025 光影叙事 · 摄影工作室</span>
+        </footer>
+
+    </main>
+</body>
+</html>

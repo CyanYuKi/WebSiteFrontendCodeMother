@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 人像摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #D4AF37;
+            --color-secondary: #B89A2B;
+            --color-background: #0A0A0A;
+            --color-surface: #141414;
+            --color-text: #F8F8F8;
+            --color-textMuted: #7A7A7A;
+            --color-accent: #E6C200;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Source Sans Pro', sans-serif;
+            --spacing-unit: 1rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-weight: 300;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        /* ---------- 导航 ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li a {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .navbar-links li a:hover {
+            color: var(--color-primary);
+        }
+
+        .navbar-links li a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-primary);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-links li a:hover::after {
+            width: 100%;
+        }
+
+        .navbar-links li a[href="about.html"] {
+            color: var(--color-primary);
+        }
+
+        .navbar-links li a[href="about.html"]::after {
+            width: 100%;
+        }
+
+        #lang-switcher {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: var(--color-textMuted);
+            cursor: default;
+            padding-left: 1rem;
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* ---------- detail 布局 ---------- */
+        .page-wrapper {
+            padding-top: 64px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        /* 大图展示区 */
+        .about-hero {
+            margin: 3rem 0 4rem 0;
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 480px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .about-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.15) brightness(0.7);
+            transition: filter 0.8s ease;
+        }
+
+        .about-hero:hover img {
+            filter: grayscale(0) brightness(1);
+        }
+
+        .about-hero .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            background: linear-gradient(transparent, rgba(10,10,10,0.85));
+        }
+
+        .about-hero .hero-overlay h1 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 3.5rem;
+            letter-spacing: 0.08em;
+            color: var(--color-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .about-hero .hero-overlay p {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+        }
+
+        /* 内容网格 */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem 3rem;
+            margin-top: 2rem;
+        }
+
+        .about-text h2 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 2.2rem;
+            letter-spacing: 0.04em;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .about-text h3 {
+            font-family: var(--font-heading);
+            font-weight: 300;
+            font-size: 1.4rem;
+            color: var(--color-accent);
+            margin: 2rem 0 0.8rem 0;
+            letter-spacing: 0.03em;
+        }
+
+        .about-text p {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-text);
+            margin-bottom: 1.2rem;
+        }
+
+        .about-text .muted {
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+        }
+
+        .exhibition-list {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .exhibition-list li {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            letter-spacing: 0.02em;
+        }
+
+        .exhibition-list li::before {
+            content: '—';
+            color: var(--color-primary);
+            margin-right: 0.8rem;
+            font-weight: 400;
+        }
+
+        .contact-block {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .contact-block a {
+            color: var(--color-primary);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            transition: color 0.3s;
+        }
+
+        .contact-block a:hover {
+            color: var(--color-accent);
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            border-top: 1px solid rgba(212, 175, 55, 0.08);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            background: var(--color-background);
+        }
+
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        footer .footer-links a {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s;
+        }
+
+        footer .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        footer p {
+            font-size: 0.7rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+            opacity: 0.6;
+        }
+
+        /* ---------- 响应式 ---------- */
+        @media (max-width: 900px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .about-hero {
+                height: 50vh;
+                min-height: 320px;
+            }
+            .about-hero .hero-overlay h1 {
+                font-size: 2.3rem;
+            }
+            .navbar-links {
+                gap: 1.2rem;
+            }
+            nav {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-wrapper {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .about-hero .hero-overlay {
+                padding: 1.5rem;
+            }
+            .about-hero .hero-overlay h1 {
+                font-size: 1.8rem;
+            }
+            .navbar-links li a {
+                font-size: 0.7rem;
+                letter-spacing: 0.1em;
+            }
+            #lang-switcher {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== 导航 ========== -->
+    <nav>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="gallery.html">作品集</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><span id="lang-switcher">EN / 中文</span></li>
+        </ul>
+    </nav>
+
+    <!-- ========== 主体内容 ========== -->
+    <div class="page-wrapper">
+
+        <!-- 大图展示区 -->
+        <div class="about-hero">
+            <img src="https://images.pexels.com/photos/36697260/pexels-photo-36697260.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师肖像与环境" loading="lazy">
+            <div class="hero-overlay">
+                <h1>关于我</h1>
+                <p>人像写真 · 光影叙事 · 情感瞬间</p>
+            </div>
+        </div>
+
+        <!-- 内容网格 -->
+        <div class="about-grid">
+            <!-- 左侧：简介 & 理念 -->
+            <div class="about-text">
+                <h2>个人简介</h2>
+                <p>我是林逸，人像摄影师，现居上海。十年专注人像写真，擅长用光影刻画情绪，在静谧与张力之间捕捉属于每个人的独特瞬间。我相信每一张面孔背后都藏着故事，而我的镜头就是那个安静的聆听者。</p>
+                <p class="muted">从胶片时代到数字影像，我始终追求一种克制而富有质感的视觉语言——不刻意修饰，不喧宾夺主，让真实成为最美的滤镜。</p>
+
+                <h3>创作理念</h3>
+                <p>摄影对我来说，不是记录，而是对话。与光线对话，与空间对话，更与镜头前的人对话。我偏爱自然光与环境的融合，在平凡的场景中发现不平凡的美。每一组人像都是一次亲密合作，我希望画面里既有被摄者的本色，也有我作为观察者的温度。</p>
+                <p class="muted">「让照片呼吸」—— 简洁的构图、柔和的对比、克制的后期，一切为了保留那一刻的真实情绪。</p>
+            </div>
+
+            <!-- 右侧：荣誉 & 展览 + 联系信息 -->
+            <div class="about-text">
+                <h2>荣誉与展览</h2>
+                <ul class="exhibition-list">
+                    <li>2024 · 上海国际摄影艺术节 · 人像单元金奖</li>
+                    <li>2023 ·「面孔」个展 · 外滩艺术中心</li>
+                    <li>2023 · 东京国际摄影大赛 · 肖像类银奖</li>
+                    <li>2022 · 平遥国际摄影大展 · 受邀参展</li>
+                    <li>2021 · 中国摄影报年度十佳人像摄影师</li>
+                    <li>2020 ·「内在风景」联展 · 北京三影堂</li>
+                </ul>
+
+                <div class="contact-block">
+                    <h3>联系与预约</h3>
+                    <p style="margin-bottom:0.5rem;">商业合作 / 个人写真预约</p>
+                    <p><a href="mailto:hello@linyiphoto.com" target="_blank" rel="noopener noreferrer">hello@linyiphoto.com</a></p>
+                    <p style="margin-top:0.3rem;"><a href="https://instagram.com/linyiphotography" target="_blank" rel="noopener noreferrer">Instagram @linyiphotography</a></p>
+                    <p style="margin-top:0.3rem; color:var(--color-textMuted); font-size:0.9rem;">微信: linyi_photo</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========== Footer ========== -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="gallery.html">作品集</a>
+            <a href="blog.html">博客</a>
+            <a href="about.html">关于</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="mailto:hello@linyiphoto.com" target="_blank" rel="noopener noreferrer">联系</a>
+        </div>
+        <p>© 2025 林逸 · 人像摄影 · 所有影像保留权利</p>
+    </footer>
+
+</body>
+</html>

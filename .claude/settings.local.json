@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vite *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(npm run *)",
+      "Bash(timeout 30 ./mvnw spring-boot:run)",
+      "Bash(./mvnw spring-boot:run -q)",
+      "Bash(curl -s -X POST http://localhost:8080/api/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"admin\",\"password\":\"admin123\"}')",
+      "Bash(curl -s http://localhost:8080/api/auth/me)",
+      "Bash(curl -s http://localhost:8080/api/auth/me -H 'Authorization: Bearer 306fef2f-beb0-46bd-a78a-0e3cd403ed61')",
+      "Bash(curl -s http://localhost:8080/api/users -H 'Authorization: Bearer 306fef2f-beb0-46bd-a78a-0e3cd403ed61')",
+      "Bash(curl -s -X POST http://localhost:8080/api/auth/register -H \"Content-Type: application/json\" -d '{\"username\":\"testuser\",\"password\":\"test123\",\"email\":\"test@test.com\"}')",
+      "Bash(curl -s -X POST http://localhost:8080/api/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"testuser\",\"password\":\"test123\"}')",
+      "Bash(mysql --version)",
+      "Bash(mysql *)",
+      "Bash(taskkill //F //IM java.exe)",
+      "Bash(sed -i '956s/.*/      <template v-if=\"authToken\">\\\\n&/' App.vue)",
+      "Bash(sed -n '955,960p' App.vue)",
+      "Bash(./mvnw compile *)",
+      "Bash(curl *)",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -r taskkill -f -pid {})",
+      "Bash(./mvnw spring-boot:run)",
+      "Bash(./mvnw spring-boot:run *)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}

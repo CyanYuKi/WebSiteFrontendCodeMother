@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LENS & VOID | Visual Narratives</title>
+  <meta name="description" content="Contemporary photography portfolio exploring light, form, and atmosphere.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Syne:wght@400;700&display=swap" rel="stylesheet">
+  
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --color-primary: #EAEAEA;
+      --color-secondary: #2A2A2D;
+      --color-background: #0B0B0D;
+      --color-surface: #161618;
+      --color-text: #F5F5F5;
+      --color-textMuted: #88888A;
+      --color-accent: #C8956C;
+      
+      --font-heading: 'Syne', system-ui, sans-serif;
+      --font-body: 'Instrument Sans', system-ui, sans-serif;
+      
+      --spacing-unit: 1rem;
+      --spacing-sm: calc(var(--spacing-unit) * 0.5);
+      --spacing-md: calc(var(--spacing-unit) * 1.5);
+      --spacing-lg: calc(var(--spacing-unit) * 2.5);
+      --spacing-xl: calc(var(--spacing-unit) * 4);
+      
+      --transition-base: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --container-width: 1400px;
+      --nav-height: 80px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      text-wrap: pretty;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--transition-base);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      padding: 0 var(--spacing-md);
+      transition: background-color var(--transition-base), backdrop-filter var(--transition-base);
+    }
+
+    .navbar.scrolled {
+      background-color: rgba(11, 11, 13, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(234, 234, 234, 0.05);
+    }
+
+    .brand {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      z-index: 101;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: var(--spacing-lg);
+      list-style: none;
+    }
+
+    .nav-link {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-textMuted);
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--color-accent);
+      transition: width var(--transition-base);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      z-index: 101;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 600px;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: var(--spacing-xl);
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      filter: brightness(0.65) contrast(1.05);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--color-textMuted);
+      max-width: 480px;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: var(--spacing-md);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+      opacity: 0.6;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--color-text), transparent);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }}
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* Section General */
+    section {
+      padding: var(--spacing-xl) 0;
+    }
+
+    .section-header {
+      margin-bottom: var(--spacing-xl);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      border-bottom: 1px solid var(--color-secondary);
+      padding-bottom: var(--spacing-md);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+    }
+
+    .section-link {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-accent);
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 2px;
+    }
+
+    .section-link:hover {
+      opacity: 0.8;
+    }
+
+    /* Asymmetric Gallery Grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--spacing-md);
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      background-color: var(--color-surface);
+    }
+
+    .gallery-item:nth-child(1) { grid-column: span 7; aspect-ratio: 4/5; }
+    .gallery-item:nth-child(2) { grid-column: span 5; aspect-ratio: 16/10; }
+    .gallery-item:nth-child(3) { grid-column: span 5; aspect-ratio: 3/4; }
+    .gallery-item:nth-child(4) { grid-column: span 7; aspect-ratio: 21/9; }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      transition: transform var(--transition-base);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(11, 11, 13, 0.8), transparent 60%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: var(--spacing-md);
+      opacity: 0;
+      transition: opacity var(--transition-base);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    .gallery-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .gallery-meta {
+      font-size: 0.8rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+    }
+
+    /* Journal Preview */
+    .journal-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .journal-card {
+      background-color: var(--color-surface);
+      padding: var(--spacing-md);
+      transition: transform var(--transition-base);
+    }
+
+    .journal-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .journal-image {
+      aspect-ratio: 16/10;
+      margin-bottom: var(--spacing-md);
+      overflow: hidden;
+    }
+
+    .journal-image img {
+      width: 100%;
+      height: 100%;
+      transition: transform var(--transition-base);
+    }
+
+    .journal-card:hover .journal-image img {
+      transform: scale(1.04);
+    }
+
+    .journal-date {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: var(--spacing-sm);
+      display: block;
+    }
+
+    .journal-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.3;
+    }
+
+    .journal-excerpt {
+      color: var(--color-textMuted);
+      font-size: 0.95rem;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .read-more {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+    }
+
+    /* CTA Section */
+    .cta-section {
+      text-align: center;
+      padding: var(--spacing-xl) 0;
+      border-top: 1px solid var(--color-secondary);
+    }
+
+    .cta-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      margin-bottom: var(--spacing-md);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 14px 32px;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.85rem;
+      transition: all var(--transition-base);
+    }
+
+    .cta-button:hover {
+      background-color: var(--color-accent);
+      color: var(--color-background);
+    }
+
+    /* Footer */
+    footer {
+      padding: var(--spacing-lg) 0;
+      border-top: 1px solid var(--color-secondary);
+      background-color: var(--color-surface);
+      margin-top: var(--spacing-lg);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--color-textMuted);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: var(--spacing-md);
+    }
+
+    .social-link {
+      font-size: 0.85rem;
+      color: var(--color-textMuted);
+    }
+
+    .social-link:hover {
+      color: var(--color-primary);
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(11, 11, 13, 0.98);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacing-lg);
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform var(--transition-base);
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .mobile-menu a {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .menu-toggle { display: block; }
+      
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(2),
+      .gallery-item:nth-child(3),
+      .gallery-item:nth-child(4) {
+        grid-column: span 12;
+        aspect-ratio: 4/5;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: var(--spacing-md);
+      }
+      .footer-social { justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+  const { useState, useEffect } = React;
+
+  const Navbar = () => {
+    const [scrolled, setScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    useEffect(() => {
+      const handleScroll = () => setScrolled(window.scrollY > 40);
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    return (
+      <>
+        <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+          <a href="/" className="brand">LENS & VOID</a>
+          <ul className="nav-links">
+            <li><a href="gallery.html" className="nav-link">Work</a></li>
+            <li><a href="blog.html" className="nav-link">Journal</a></li>
+            <li><a href="about.html" className="nav-link">About</a></li>
+            <li><a href="contact.html" className="nav-link">Contact</a></li>
+          </ul>
+          <button className="menu-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </nav>
+        <div className={`mobile-menu ${menuOpen ? 'active' : ''}`}>
+          <button className="close-btn" onClick={() => setMenuOpen(false)} aria-label="Close menu">✕</button>
+          <a href="gallery.html" onClick={() => setMenuOpen(false)}>Work</a>
+          <a href="blog.html" onClick={() => setMenuOpen(false)}>Journal</a>
+          <a href="about.html" onClick={() => setMenuOpen(false)}>About</a>
+          <a href="contact.html" onClick={() => setMenuOpen(false)}>Contact</a>
+        </div>
+      </>
+    );
+  };
+
+  const Hero = () => (
+    <section className="hero" id="hero">
+      <div className="hero-bg">
+        <img src="https://images.pexels.com/photos/29148428/pexels-photo-29148428.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Cinematic landscape" loading="eager" width="940" height="528" />
+      </div>
+      <div className="container hero-content">
+        <h1 className="hero-title">Light as a<br/>Visual Language</h1>
+        <p className="hero-subtitle">Exploring the intersection of architecture, atmosphere, and human emotion through fine art photography.</p>
+      </div>
+      <div className="scroll-indicator">
+        <span className="scroll-line"></span>
+      </div>
+    </section>
+  );
+
+  const GalleryPreview = () => (
+    <section id="gallery-preview">
+      <div className="container">
+        <header className="section-header">
+          <h2 className="section-title">Selected Works</h2>
+          <a href="gallery.html" className="section-link">View Archive</a>
+        </header>
+        <div className="gallery-grid">
+          <div className="gallery-item">
+            <img src="https://images.pexels.com/photos/20368176/pexels-photo-20368176.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Abstract geometry" loading="lazy" width="940" height="627" />
+            <div className="gallery-overlay">
+              <span className="gallery-title">Monolithic Shadows</span>
+              <span className="gallery-meta">Tokyo, 2024</span>
+            </div>
+          </div>
+          <div className="gallery-item">
+            <img src="https://images.pexels.com/photos/12096473/pexels-photo-12096473.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Moody landscape" loading="lazy" width="940" height="564" />
+            <div className="gallery-overlay">
+              <span className="gallery-title">Northern Drift</span>
+              <span className="gallery-meta">Iceland, 2023</span>
+            </div>
+          </div>
+          <div className="gallery-item">
+            <img src="https://images.pexels.com/photos/8685553/pexels-photo-8685553.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Portrait study" loading="lazy" width="940" height="627" />
+            <div className="gallery-overlay">
+              <span className="gallery-title">Silent Dialogues</span>
+              <span className="gallery-meta">Series A, 2023</span>
+            </div>
+          </div>
+          <div className="gallery-item">
+            <img src="https://images.pexels.com/photos/36570930/pexels-photo-36570930.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Urban texture" loading="lazy" width="940" height="627" />
+            <div className="gallery-overlay">
+              <span className="gallery-title">Concrete Veins</span>
+              <span className="gallery-meta">Berlin, 2022</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  const JournalPreview = () => (
+    <section id="journal-preview">
+      <div className="container">
+        <header className="section-header">
+          <h2 className="section-title">From the Journal</h2>
+          <a href="blog.html" className="section-link">Read Entries</a>
+        </header>
+        <div className="journal-list">
+          <article className="journal-card">
+            <div className="journal-image">
+              <img src="https://images.pexels.com/photos/1466181/pexels-photo-1466181.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Behind the scenes" loading="lazy" width="940" height="587" />
+            </div>
+            <span className="journal-date">Nov 12, 2024</span>
+            <h3 className="journal-card-title">Chasing the Blue Hour in Oslo</h3>
+            <p className="journal-excerpt">Notes on navigating low-light environments and the technical choices required to preserve atmospheric depth without compromising grain structure.</p>
+            <a href="blog.html" className="read-more">Continue Reading →</a>
+          </article>
+          <article className="journal-card">
+            <div className="journal-image">
+              <img src="https://images.pexels.com/photos/2449364/pexels-photo-2449364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Camera lens detail" loading="lazy" width="940" height="587" />
+            </div>
+            <span className="journal-date">Oct 08, 2024</span>
+            <h3 className="journal-card-title">Why I Switched to Manual Focus</h3>
+            <p className="journal-excerpt">Reclaiming intentionality in composition. How slowing down the process changes the relationship between subject, frame, and final image.</p>
+            <a href="blog.html" className="read-more">Continue Reading →</a>
+          </article>
+          <article className="journal-card">
+            <div className="journal-image">
+              <img src="https://images.pexels.com/photos/1545297/pexels-photo-15545297.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Darkroom workspace" loading="lazy" width="350" height="525" />
+            </div>
+            <span className="journal-date">Sep 21, 2024</span>
+            <h3 className="journal-card-title">Printing for Texture</h3>
+            <p className="journal-excerpt">Exploring the transition from digital sensor to physical paper. A breakdown of paper stocks, ink profiles, and archival considerations for gallery prints.</p>
+            <a href="blog.html" className="read-more">Continue Reading →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+
+  const CTASection = () => (
+    <section className="cta-section">
+      <div className="container">
+        <h2 className="cta-title">Let's create something lasting.</h2>
+        <a href="contact.html" className="cta-button">Get in Touch</a>
+      </div>
+    </section>
+  );
+
+  const Footer = () => (
+    <footer>
+      <div className="container footer-grid">
+        <p className="footer-copy">© {new Date().getFullYear()} LENS & VOID. All rights reserved. Artistic direction by Alex Mercer.</p>
+        <nav className="footer-social">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">Instagram</a>
+          <a href="https://vimeo.com" target="_blank" rel="noopener noreferrer" className="social-link">Vimeo</a>
+          <a href="https://behance.net" target="_blank" rel="noopener noreferrer" className="social-link">Behance</a>
+        </nav>
+      </div>
+    </footer>
+  );
+
+  const App = () => (
+    <>
+      <Navbar />
+      <Hero />
+      <GalleryPreview />
+      <JournalPreview />
+      <CTASection />
+      <Footer />
+    </>
+  );
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<!-- PAGES_PLAN: [{"name":"gallery.html","title":"作品集画廊","overview":"展示完整摄影作品档案，提供分类筛选（风景/人像/建筑/纪实）与灯箱查看功能，采用全屏沉浸式网格布局，支持高清大图浏览。","layout":"grid"},{"name":"blog.html","title":"摄影日志","overview":"发布深度摄影文章、拍摄幕后故事与技术解析。采用留白式长文排版，包含作者侧边栏、相关文章推荐与评论区域，适合长篇阅读。","layout":"list"},{"name":"about.html","title":"关于摄影师","overview":"展示摄影师个人简介、艺术理念陈述、参展履历与合作品牌。包含肖像照与工作室环境图，采用双栏叙事排版。","layout":"detail"},{"name":"contact.html","title":"合作联系","overview":"提供商务合作表单、邮箱直链与社交媒体入口。包含常见问题解答与拍摄档期说明，采用极简表单布局。","layout":"form"}] -->
+
+</body>
+</html>

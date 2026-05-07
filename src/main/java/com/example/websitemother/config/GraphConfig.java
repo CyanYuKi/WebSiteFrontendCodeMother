@@ -1,13 +1,19 @@
 package com.example.websitemother.config;
 
 import com.example.websitemother.edge.IntentRouter;
+import com.example.websitemother.edge.ModifyReviewRouter;
+import com.example.websitemother.edge.NewPageRouter;
 import com.example.websitemother.edge.ReviewRouter;
+import com.example.websitemother.node.AppQueryResponder;
 import com.example.websitemother.node.AssetCollector;
 import com.example.websitemother.node.ChecklistBuilder;
 import com.example.websitemother.node.CodeReviewer;
 import com.example.websitemother.node.DesignConceptGenerator;
 import com.example.websitemother.node.HtmlGenerator;
+import com.example.websitemother.node.HtmlModifier;
 import com.example.websitemother.node.IntentAnalyzer;
+import com.example.websitemother.node.ModifyPlanner;
+import com.example.websitemother.node.NewPageDetector;
 import com.example.websitemother.node.SubPageGenerator;
 import com.example.websitemother.state.ProjectState;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +48,12 @@ public class GraphConfig {
     @Resource
     private HtmlGenerator htmlGenerator;
     @Resource
+    private HtmlModifier htmlModifier;
+    @Resource
+    private ModifyPlanner modifyPlanner;
+    @Resource
+    private AppQueryResponder appQueryResponder;
+    @Resource
     private SubPageGenerator subPageGenerator;
     @Resource
     private CodeReviewer codeReviewer;
@@ -49,6 +61,12 @@ public class GraphConfig {
     private IntentRouter intentRouter;
     @Resource
     private ReviewRouter reviewRouter;
+    @Resource
+    private ModifyReviewRouter modifyReviewRouter;
+    @Resource
+    private NewPageDetector newPageDetector;
+    @Resource
+    private NewPageRouter newPageRouter;
 
     /**
      * 第一阶段图：意图分析 -> 清单生成
@@ -61,16 +79,19 @@ public class GraphConfig {
         StateGraph<ProjectState> graph = new StateGraph<>(ProjectState::new)
                 .addNode("intent_analyzer", node_async(intentAnalyzer))
                 .addNode("checklist_builder", node_async(checklistBuilder))
+                .addNode("app_query_responder", node_async(appQueryResponder))
                 .addEdge(StateGraph.START, "intent_analyzer")
                 .addConditionalEdges(
                         "intent_analyzer",
                         edge_async(intentRouter),
                         Map.of(
                                 IntentRouter.TARGET_CHAT, StateGraph.END,
-                                IntentRouter.TARGET_CREATE, "checklist_builder"
+                                IntentRouter.TARGET_CREATE, "checklist_builder",
+                                IntentRouter.TARGET_QUERY, "app_query_responder"
                         )
                 )
-                .addEdge("checklist_builder", StateGraph.END);
+                .addEdge("checklist_builder", StateGraph.END)
+                .addEdge("app_query_responder", StateGraph.END);
 
         return graph.compile();
     }
@@ -100,6 +121,45 @@ public class GraphConfig {
                                 ReviewRouter.TARGET_END, StateGraph.END,
                                 ReviewRouter.TARGET_SUB_PAGE, "sub_page_generator",
                                 ReviewRouter.TARGET_RETRY, "html_generator"
+                        )
+                )
+                .addEdge("sub_page_generator", StateGraph.END);
+
+        return graph.compile();
+    }
+
+    /**
+     * 修改阶段图：修改规划 -> HTML修改 -> 代码审查 -> (条件循环) -> 新页面检测 -> (可选子页面生成) -> END
+     * 使用专用的 ModifyReviewRouter 在审查通过后进入新页面检测流程。
+     */
+    @Bean
+    public CompiledGraph<ProjectState> modifyGraph() throws GraphStateException {
+        log.info("[GraphConfig] 构建 modifyGraph");
+
+        StateGraph<ProjectState> graph = new StateGraph<>(ProjectState::new)
+                .addNode("modify_planner", node_async(modifyPlanner))
+                .addNode("html_modifier", node_async(htmlModifier))
+                .addNode("code_reviewer", node_async(codeReviewer))
+                .addNode("new_page_detector", node_async(newPageDetector))
+                .addNode("sub_page_generator", node_async(subPageGenerator))
+                .addEdge(StateGraph.START, "modify_planner")
+                .addEdge("modify_planner", "html_modifier")
+                .addEdge("html_modifier", "code_reviewer")
+                .addConditionalEdges(
+                        "code_reviewer",
+                        edge_async(modifyReviewRouter),
+                        Map.of(
+                                ModifyReviewRouter.TARGET_END, StateGraph.END,
+                                ModifyReviewRouter.TARGET_NEW_PAGE_CHECK, "new_page_detector",
+                                ModifyReviewRouter.TARGET_RETRY, "html_modifier"
+                        )
+                )
+                .addConditionalEdges(
+                        "new_page_detector",
+                        edge_async(newPageRouter),
+                        Map.of(
+                                NewPageRouter.TARGET_SUB_PAGE, "sub_page_generator",
+                                NewPageRouter.TARGET_END, StateGraph.END
                         )
                 )
                 .addEdge("sub_page_generator", StateGraph.END);

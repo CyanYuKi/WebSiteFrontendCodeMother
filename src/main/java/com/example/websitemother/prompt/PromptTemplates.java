@@ -12,13 +12,22 @@ public final class PromptTemplates {
 
     public static final String INTENT_ANALYZER_SYSTEM =
             "你是一个意图分析专家。请判断用户的输入属于以下哪种类型：\n" +
-            "- chat：用户只是在闲聊、打招呼、问问题，没有明确提到想创建一个网站/网页/页面。\n" +
+            "- chat：用户只是在闲聊、打招呼、问问题，没有明确提到想创建或修改网站/网页/页面，也没有在询问当前项目的信息。\n" +
             "- create：用户表达了想要创建、生成、制作一个网站、网页、页面、前端界面的意图。\n" +
+            "- modify：用户想要修改、调整、改变已有的网站或页面的某些部分（如颜色、布局、内容、文字等），而非创建全新网站。\n" +
+            "- query：用户正在询问当前已有项目/网站的信息或详情（如\"这个网站有哪些页面\"、\"首页的设计风格是什么\"、\"导航栏有哪些链接\"、\"配色方案是什么\"等），用户想了解项目本身而非修改它。\n" +
+            "注意：如果用户使用了'修改'、'改成'、'调整'、'换成'、'换为'、'变为'、'不要'、'把...变成'等词来描述对现有页面的改动，或上下文明显是在已有项目基础上做调整，则为modify。\n" +
+            "注意：如果用户在已有项目上下文中问问题（如'有哪些页面'、'设计是什么风格'、'首页长什么样'、'介绍一下这个网站'），则为query而非chat。\n" +
             "请严格按照以下格式输出，不要包含任何额外解释：\n" +
-            "INTENT: chat|create\n" +
-            "REPLY: <如果是chat，给出友好回复；如果是create，输出null>";
+            "INTENT: chat|create|modify|query\n" +
+            "REPLY: <如果是chat，给出友好回复；如果是modify，简短确认修改意图；如果是query，简短回应对项目的查询；如果是create，输出null>";
 
-    public static String intentAnalyzerUser(String input) {
+    public static String intentAnalyzerUser(String input, boolean hasExistingProject) {
+        if (hasExistingProject) {
+            return "【重要上下文】当前用户正在查看一个已生成的项目网站，用户的所有输入都是针对该已有项目的操作。\n" +
+                   "因此，禁止判定为 create（创建新网站）。用户想新增/添加/扩展内容时，应判定为 modify。\n" +
+                   "用户输入：\"" + input + "\"";
+        }
         return "用户输入：\"" + input + "\"";
     }
 
@@ -290,6 +299,93 @@ public final class PromptTemplates {
         sb.append("4. 导航栏 CSS 类名必须与首页一致\n");
         sb.append("5. 内容严格按照【页面内容规划】的 overview 执行，不要偏离\n");
         sb.append("6. 不要输出任何解释文字\n");
+        return sb.toString();
+    }
+
+    // ==================== HtmlModifier ====================
+
+    // ==================== ModifyPlanner ====================
+
+    public static final String MODIFY_PLANNER_SYSTEM =
+            "你是一个前端架构分析专家。请分析用户提供的项目结构摘要和修改需求，生成一份精准的修改计划。\n\n" +
+            "===== 分析步骤 =====\n" +
+            "1. 阅读项目结构摘要，理解整个网站的页面组成、各页面的主要区块和导航关系\n" +
+            "2. 根据用户修改需求，判断需要修改哪些页面（可能是一个或多个）\n" +
+            "3. 判断修改是否涉及导航栏变更，如果是，需要判断是否需要新增子页面\n" +
+            "4. 制定每个目标页面的具体修改方案\n\n" +
+            "===== 输出格式 =====\n" +
+            "PLAN_SUMMARY: <一句话概述修改方案>\n" +
+            "TARGET_PAGES: <要修改的页面文件名，逗号分隔，如 index.html, about.html>\n" +
+            "PAGE_SECTIONS: <每页要修改的DOM区域，格式：页面名: 选择器列表>\n" +
+            "CHANGES:\n" +
+            "<每行一个具体修改步骤，使用 - 开头>\n" +
+            "NEW_PAGES_NEEDED: <如果修改涉及新增子页面，列出新页面文件名，逗号分隔；否则写 none>\n" +
+            "STYLE_CHANGES: <需要变动的CSS规则，没有则写无>\n" +
+            "RISK: <修改风险评估：低/中/高>\n\n" +
+            "不要输出任何其他内容。";
+
+    public static String modifyPlannerUser(String structuralSummary, String userRequest, String currentPage) {
+        return "【当前用户正在查看的页面】\n" + currentPage + "\n\n" +
+               "【项目结构摘要】\n" + structuralSummary + "\n\n" +
+               "【修改需求】\n" + userRequest;
+    }
+
+    // ==================== HtmlModifier ====================
+
+    public static final String HTML_MODIFIER_SYSTEM =
+            "你是一个专业的HTML代码修改专家。你会收到指定页面的完整HTML代码和用户的修改需求。\n" +
+            "请根据用户的需求精确修改该页面的HTML代码。\n\n" +
+            "===== 修改规则 =====\n" +
+            "1. 只修改用户明确要求的部分，保持其他部分完全不变\n" +
+            "2. 严格保持原有的设计系统（:root CSS变量、字体、颜色方案、间距系统）\n" +
+            "3. 保持原有的页面结构和布局方式（CSS Grid/Flexbox使用方式）\n" +
+            "4. 如果修改涉及颜色，必须使用项目中已有的CSS变量（如var(--primary)），不要硬编码新颜色值\n" +
+            "5. 如果修改内容需要新的CSS规则，请使用项目已有的CSS变量\n" +
+            "6. 如果修改的是首页（index.html）且用户要求新增页面，可以在导航栏中添加新的页面链接\n" +
+            "7. 如果修改的是首页，保持已有的PAGES_PLAN注释（如果有的话）\n" +
+            "8. 代码必须保持合理的换行和缩进格式\n\n" +
+            "===== 输出格式 =====\n" +
+            "直接输出修改后的完整HTML代码。不要包裹markdown代码块标记（```html或```），不要添加任何解释文字，不要使用BLOCK:格式。\n\n" +
+            "===== 链接安全规范 =====\n" +
+            "- 所有外部链接必须保留或添加 target=\"_blank\" rel=\"noopener noreferrer\"\n" +
+            "- 内部页面导航链接不要添加 target=\"_blank\"\n\n" +
+            "===== 自检清单 =====\n" +
+            "□ 是否只修改了用户要求的部分\n" +
+            "□ 是否保持了原有的设计系统和CSS变量\n" +
+            "□ 是否保持了原有的页面结构\n" +
+            "□ 是否包含完整的<!DOCTYPE html>和<html><head><body>\n" +
+            "□ 如果是首页，是否保持了PAGES_PLAN注释（如果原代码有的话）\n" +
+            "□ 代码是否可直接在浏览器打开运行";
+
+    public static String htmlModifierUser(String existingHtmlCode, String userRequest, String reviewFeedback, String plan, String targetPage) {
+        StringBuilder sb = new StringBuilder();
+
+        if (reviewFeedback != null && !reviewFeedback.isBlank()) {
+            sb.append("【重要】上一次修改后的代码存在以下问题，请修复后重新输出：\n");
+            sb.append(reviewFeedback).append("\n\n");
+            sb.append("请根据以下信息重新修改代码，确保上述问题已被彻底修复。\n\n");
+        }
+
+        if (plan != null && !plan.isBlank()) {
+            sb.append("【修改计划】请严格按照以下计划执行修改：\n");
+            sb.append(plan).append("\n\n");
+        }
+
+        sb.append("【要修改的文件】").append(targetPage != null ? targetPage : "index.html").append("\n\n");
+        sb.append("【现有HTML代码】\n");
+        if (existingHtmlCode.length() > 60000) {
+            sb.append(existingHtmlCode.substring(0, 60000));
+            sb.append("\n... [代码过长，已截断，请基于可见部分进行修改]\n");
+        } else {
+            sb.append(existingHtmlCode);
+        }
+        sb.append("\n\n");
+        sb.append("【修改需求】\n");
+        sb.append(userRequest).append("\n\n");
+        sb.append("【输出要求】\n");
+        sb.append("1. 只输出修改后的完整HTML代码\n");
+        sb.append("2. 不要输出任何解释文字\n");
+        sb.append("3. 不要包裹markdown代码块标记\n");
         return sb.toString();
     }
 

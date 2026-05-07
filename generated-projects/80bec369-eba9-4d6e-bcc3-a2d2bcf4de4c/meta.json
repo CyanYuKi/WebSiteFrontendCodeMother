@@ -1,0 +1,9 @@
+{
+  "projectId" : "80bec369-eba9-4d6e-bcc3-a2d2bcf4de4c",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n    <title>静默之境 · 风光摄影</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Work+Sans:wght@300;400;500&display=swap\" rel=\"styl...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#4D6B5F\",\n    \"secondary\": \"#A88B72\",\n    \"background\": \"#FAF8F5\",\n    \"surface\": \"#F3EFE8\",\n    \"text\": \"#333635\",\n    \"textMuted\": \"#7A7F7D\",\n    \"accent\": \"#C79B71\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Work Sans, sans-serif\",\n    \"scale\": 1.333\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.618\n  },\n  \"layoutDirection\": \"全屏居中Hero视觉+非对称瀑布流网格布局+全屏手势交互灯箱\",\n  \"mood\": \"静谧自然·柔和复古·极简呼吸·沉浸优雅\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 29, 17, 9, 36, 190444400 ]
+}

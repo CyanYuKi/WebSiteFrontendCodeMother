@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>关于 · 静默影像</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #1A1A1A;
+      --color-secondary: #6B7280;
+      --color-background: #F9F8F6;
+      --color-surface: #FFFFFF;
+      --color-text: #111;
+      --color-textMuted: #666;
+      --color-accent: #C8A97E;
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --spacing-unit: 1rem;
+      --space-xs: calc(var(--spacing-unit) * 0.5);
+      --space-sm: var(--spacing-unit);
+      --space-md: calc(var(--spacing-unit) * 1.5);
+      --space-lg: calc(var(--spacing-unit) * 2.5);
+      --space-xl: calc(var(--spacing-unit) * 4);
+      --space-2xl: calc(var(--spacing-unit) * 6);
+      --max-width: 1200px;
+      --nav-height: 72px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    /* --- 顶部导航 (与首页一致) --- */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: transparent;
+      z-index: 100;
+      transition: background 0.3s;
+    }
+
+    .site-header.scrolled {
+      background: rgba(249, 248, 246, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--color-text);
+    }
+
+    .site-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .nav-links a {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 500;
+      transition: color 0.25s;
+      color: var(--color-text);
+      padding: 0.25rem 0;
+    }
+
+    .nav-links a:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-links a.active {
+      color: var(--color-accent);
+      border-bottom: 1px solid var(--color-accent);
+    }
+
+    .nav-cta-li {
+      margin-left: var(--space-sm);
+    }
+
+    .nav-cta {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-text) !important;
+      padding: 0.5rem 1.5rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 0;
+    }
+
+    .nav-cta:hover {
+      background: var(--color-accent);
+      color: var(--color-surface) !important;
+    }
+
+    /* --- 页面主容器 --- */
+    .page-wrap {
+      padding-top: var(--nav-height);
+    }
+
+    /* --- about 特有 layout (list风格) --- */
+    .about-hero {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      min-height: 400px;
+      overflow: hidden;
+      background-color: var(--color-primary);
+    }
+
+    .about-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+    }
+
+    .about-hero-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: var(--space-2xl) var(--space-md) var(--space-xl);
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    }
+
+    .about-hero-overlay h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 500;
+      color: var(--color-surface);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+
+    .about-hero-overlay p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.75);
+      margin-top: var(--space-sm);
+      max-width: 520px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* list 区块：纵向排列，左右交替图文 */
+    .about-list {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-md) var(--space-xl);
+    }
+
+    .list-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-2xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .list-item.reverse {
+      flex-direction: row-reverse;
+    }
+
+    .list-image {
+      flex: 1;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .list-image img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      transition: transform 0.5s ease, filter 0.4s;
+      filter: grayscale(0.1) brightness(0.97);
+    }
+
+    .list-image img:hover {
+      transform: scale(1.02);
+      filter: grayscale(0) brightness(1);
+    }
+
+    .list-text {
+      flex: 1;
+      padding: var(--space-md) 0;
+    }
+
+    .list-text h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 500;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+      margin-bottom: var(--space-sm);
+      line-height: 1.2;
+    }
+
+    .list-text h2 span {
+      display: block;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      font-weight: 400;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: var(--space-xs);
+    }
+
+    .list-text p {
+      color: var(--color-textMuted);
+      line-height: 1.8;
+      margin-bottom: var(--space-md);
+      font-size: 0.95rem;
+    }
+
+    .list-text .meta-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm) var(--space-lg);
+      margin-top: var(--space-sm);
+      border-top: 1px solid rgba(0,0,0,0.06);
+      padding-top: var(--space-md);
+    }
+
+    .meta-list dt {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-textMuted);
+      font-weight: 500;
+    }
+
+    .meta-list dd {
+      font-size: 0.95rem;
+      color: var(--color-text);
+    }
+
+    /* 客户评价精选 (list 的一部分) */
+    .testimonial-section {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md) var(--space-2xl);
+    }
+
+    .testimonial-section h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 500;
+      margin-bottom: var(--space-lg);
+      letter-spacing: 0.02em;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .testimonial-card {
+      background: var(--color-surface);
+      padding: var(--space-lg);
+      border-radius: 2px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+      transition: box-shadow 0.25s;
+    }
+
+    .testimonial-card:hover {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+    }
+
+    .testimonial-card blockquote {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--color-textMuted);
+      line-height: 1.7;
+      margin-bottom: var(--space-md);
+      quotes: "“" "”" "‘" "’";
+    }
+
+    .testimonial-card blockquote::before {
+      content: "“";
+      font-family: var(--font-heading);
+      font-size: 2.4rem;
+      color: var(--color-accent);
+      line-height: 0;
+      vertical-align: -0.4em;
+      margin-right: 0.1em;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .testimonial-author img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .testimonial-author .author-info {
+      font-size: 0.85rem;
+    }
+
+    .author-info strong {
+      display: block;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .author-info span {
+      color: var(--color-textMuted);
+      font-size: 0.75rem;
+    }
+
+    /* --- Footer (与首页一致) --- */
+    .site-footer {
+      background: var(--color-primary);
+      color: rgba(255,255,255,0.7);
+      padding: var(--space-2xl) var(--space-md) var(--space-xl);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-lg);
+    }
+
+    .footer-brand {
+      flex: 0 0 240px;
+    }
+
+    .footer-brand .logo-small {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: var(--color-surface);
+      margin-bottom: var(--space-sm);
+    }
+
+    .footer-brand .logo-small img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .footer-brand p {
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: var(--space-2xl);
+      flex-wrap: wrap;
+    }
+
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--color-surface);
+      margin-bottom: var(--space-sm);
+      letter-spacing: 0.04em;
+    }
+
+    .footer-col ul li {
+      margin-bottom: var(--space-xs);
+    }
+
+    .footer-col ul a {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.85rem;
+      transition: color 0.25s;
+    }
+
+    .footer-col ul a:hover {
+      color: var(--color-accent);
+    }
+
+    .footer-bottom {
+      max-width: var(--max-width);
+      margin: var(--space-xl) auto 0;
+      padding-top: var(--space-md);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.75rem;
+      text-align: center;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* --- 响应式 --- */
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: var(--space-md);
+      }
+      .nav-links a {
+        font-size: 0.7rem;
+      }
+      .list-item {
+        flex-direction: column !important;
+        gap: var(--space-md);
+      }
+      .list-image img {
+        height: 280px;
+      }
+      .about-hero {
+        height: 45vh;
+        min-height: 320px;
+      }
+      .about-hero-overlay h1 {
+        font-size: 2.6rem;
+      }
+      .testimonial-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .footer-links {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-inner {
+        padding: 0 var(--space-sm);
+      }
+      .nav-links li:not(.nav-cta-li) {
+        display: none;
+      }
+      .nav-cta-li {
+        margin-left: 0;
+      }
+      .about-hero-overlay p {
+        font-size: 0.9rem;
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <!-- 顶部导航 (与首页一致) -->
+ <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/20/20260507/c70535fc/2a7ae863-8da6-4ebd-83ef-02d0f49a8b77-1.png?Expires=1778209526&OSSAccessKeyId=STS.NYmRVWhNpTrjEZCaPr1AQYmdg&Signature=niki87VfnnnyxuuF1Dp5eequo7o%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rYGezjhZFR47CBR3zyhVAnPc59tqjPhTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb41ZINBSM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGQmyf5Bgcansbe4QdDgFERdQX%2BIMAZtfUovgr615%2BKZEDu95Cknl8CWBcOuAWsL6QFrHRT7I%2BM8bCuU5wGoABTPMDcxn6l67PuFYL11X3ia3qcHVdg4sRFpDFqLYSA9wyDUxIzfl%2BRx%2BfxNntHBXGmBqFb1IxX3LS7F9pZvFxpPY5SXlNGVdFMq79X2YuGZsqqdSAhlcLLCEZLprB2KU7cJNqGPuP8oKjD6d2PrVzTxtp%2BYWoyHp6I401vFOTKp4gAA%3D%3D" alt="静默影像" loading="eager" width="36" height="36">
+        静默影像
+      </a>
+      <ul class="nav-links">
+        <li><a href="gallery.html">作品</a></li>
+        <li><a href="about.html" class="active">关于</a></li>
+        <li><a href="contact.html">联系</a></li>
+        <li class="nav-cta-li"><a href="contact.html" class="nav-cta">预约拍摄</a></li>
+      </ul>
+    </div>
+ </header>
+
+ <div class="page-wrap">
+
+    <!-- Hero 区 (工作照) -->
+    <section class="about-hero">
+      <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="林曦工作照" loading="eager">
+      <div class="about-hero-overlay">
+        <h1>关于林曦</h1>
+        <p>用镜头丈量世界的温柔与真实 · 专注影像叙事第十年</p>
+      </div>
+    </section>
+
+    <!-- list 区块：创作理念 / 职业经历 / 展览与合作品牌 -->
+    <section class="about-list">
+
+      <!-- 创作理念 -->
+      <div class="list-item">
+        <div class="list-image">
+          <img src="https://images.pexels.com/photos/12162522/pexels-photo-12162522.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="创作理念工作场景" loading="lazy">
+        </div>
+        <div class="list-text">
+          <h2>
+            <span>理念</span>
+            静谧中看见力量
+          </h2>
+          <p>我相信每一帧光影里都藏着一个等待被倾听的故事。不刻意造作，不追求浮华，只记录那些真实而微妙的瞬间——一个眼神、一道斜阳、一阵风过后的静默。摄影于我，不是炫技，而是凝视世界的方式。</p>
+          <dl class="meta-list">
+            <dt>风格</dt>
+            <dd>自然光 · 纪实感 · 电影色调</dd>
+            <dt>擅长</dt>
+            <dd>肖像 / 品牌叙事 / 空间氛围</dd>
+          </dl>
+        </div>
+      </div>
+
+      <!-- 职业经历 (reverse) -->
+      <div class="list-item reverse">
+        <div class="list-image">
+          <img src="https://images.pexels.com/photos/16029826/pexels-photo-16029826.jpeg?auto=compress&cs=tinysrgb&h=350" alt="团队工作花絮" loading="lazy">
+        </div>
+        <div class="list-text">
+          <h2>
+            <span>经历</span>
+            十年专注 从心出发
+          </h2>
+          <p>2015 年于上海成立个人工作室，先后为超过 200 位客户提供定制影像服务。从独立纪录片拍摄到时尚品牌大片，林曦始终坚持“少即是多”的创作哲学。2020 年入选亚洲青年摄影师计划，作品多次在平遥、丽水摄影节展出。</p>
+          <dl class="meta-list">
+            <dt>入选</dt>
+            <dd>亚洲青年摄影师计划 (2020)</dd>
+            <dt>展出</dt>
+            <dd>平遥国际摄影节 · 丽水摄影节</dd>
+          </dl>
+        </div>
+      </div>
+
+      <!-- 展览与合作品牌 -->
+      <div class="list-item">
+        <div class="list-image">
+          <img src="https://images.pexels.com/photos/10879787/pexels-photo-10879787.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="展览与品牌合作" loading="lazy">
+        </div>
+        <div class="list-text">
+          <h2>
+            <span>展览 &amp; 合作</span>
+            与美同行
+          </h2>
+          <p>个人项目《无声的对话》系列曾在上海 M50、杭州创意艺术中心举办个展。长期合作品牌包括：山舍民宿、素然服饰、一尚门买手店、西子美术馆。作品亦见于《生活月刊》《Kinfolk》《私家地理》等刊物。</p>
+          <dl class="meta-list">
+            <dt>个展</dt>
+            <dd>《无声的对话》上海 · 杭州</dd>
+            <dt>合作品牌</dt>
+            <dd>山舍 · 素然 · 一尚门 · 西子美术馆</dd>
+          </dl>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 客户评价精选 -->
+    <section class="testimonial-section">
+      <h2>客户评价</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <blockquote>林曦的镜头仿佛能读懂人的情绪。整个拍摄过程自然得像一次午后散步，而成片却让我们所有人都惊艳了。</blockquote>
+          <div class="testimonial-author">
+            <img src="https://images.pexels.com/photos/15004186/pexels-photo-15004186.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户陈女士" loading="lazy">
+            <div class="author-info">
+              <strong>陈女士</strong>
+              <span>品牌创始人 · 山舍民宿</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <blockquote>专业、耐心且充满了艺术直觉。她能捕捉到我们从未注意到的光线和角度，每一张照片都是艺术品。</blockquote>
+          <div class="testimonial-author">
+            <img src="https://images.pexels.com/photos/5849237/pexels-photo-5849237.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="客户张先生" loading="lazy" style="object-position: 50% 30%;">
+            <div class="author-info">
+              <strong>张先生</strong>
+              <span>独立音乐人</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <blockquote>与林曦合作是我们品牌视觉升级中最正确的决定。她的作品不仅有美感，更能传递品牌深处的温度。</blockquote>
+          <div class="testimonial-author">
+            <img src="https://images.pexels.com/photos/3953358/pexels-photo-3953358.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="客户李总监" loading="lazy" style="object-position: 50% 40%;">
+            <div class="author-info">
+              <strong>李总监</strong>
+              <span>素然服饰 创意总监</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+ </div>
+
+ <!-- Footer (与首页一致) -->
+ <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-small">
+          <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/20/20260507/c70535fc/2a7ae863-8da6-4ebd-83ef-02d0f49a8b77-1.png?Expires=1778209526&OSSAccessKeyId=STS.NYmRVWhNpTrjEZCaPr1AQYmdg&Signature=niki87VfnnnyxuuF1Dp5eequo7o%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rYGezjhZFR47CBR3zyhVAnPc59tqjPhTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb41ZINBSM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGQmyf5Bgcansbe4QdDgFERdQX%2BIMAZtfUovgr615%2BKZEDu95Cknl8CWBcOuAWsL6QFrHRT7I%2BM8bCuU5wGoABTPMDcxn6l67PuFYL11X3ia3qcHVdg4sRFpDFqLYSA9wyDUxIzfl%2BRx%2BfxNntHBXGmBqFb1IxX3LS7F9pZvFxpPY5SXlNGVdFMq79X2YuGZsqqdSAhlcLLCEZLprB2KU7cJNqGPuP8oKjD6d2PrVzTxtp%2BYWoyHp6I401vFOTKp4gAA%3D%3D" alt="静默影像" width="36" height="36">
+          静默影像
+        </div>
+        <p>用影像讲述静默的故事 · 杭州 · 上海</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>探索</h4>
+          <ul>
+            <li><a href="gallery.html">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>社交</h4>
+          <ul>
+            <li><a href="#" target="_blank" rel="noopener noreferrer">微信公众号</a></li>
+            <li><a href="#" target="_blank" rel="noopener noreferrer">小红书</a></li>
+            <li><a href="#" target="_blank" rel="noopener noreferrer">微博</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>联系</h4>
+          <ul>
+            <li><a href="mailto:hello@jingmo.com">hello@jingmo.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2025 静默影像 · 林曦 |  浙ICP备2025XXXXXX号
+    </div>
+ </footer>
+
+ <script>
+    // 导航栏滚动变色 (与首页一致)
+    (function() {
+      const header = document.getElementById('siteHeader');
+      if (!header) return;
+      let ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          window.requestAnimationFrame(function() {
+            if (window.scrollY > 20) {
+              header.classList.add('scrolled');
+            } else {
+              header.classList.remove('scrolled');
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    })();
+ </script>
+
+</body>
+</html>

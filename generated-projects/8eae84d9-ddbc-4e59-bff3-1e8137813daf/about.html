@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於 | 光影叙事</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --color-primary: #0E1014;
+            --color-secondary: #1B1E24;
+            --color-background: #090A0D;
+            --color-surface: #14161A;
+            --color-text: #E9E4DC;
+            --color-text-muted: #7C808A;
+            --color-accent: #C99A6E;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Manrope', sans-serif;
+            --spacing-unit: 0.75rem;
+            --max-width: 1400px;
+        }
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding: 1.8rem 1.8rem 2.2rem;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.2rem;
+        }
+
+        /* ------ Header / Nav (same as index) ------ */
+        .header {
+            padding: 0.8rem 0 2.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 1.2rem;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .nav-brand {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--color-text);
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2.2rem;
+        }
+        .nav-links li a {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-links li a:hover {
+            color: var(--color-accent);
+            border-bottom-color: var(--color-accent);
+        }
+        .nav-links li a.active {
+            color: var(--color-text);
+            border-bottom-color: var(--color-accent);
+        }
+
+        /* ------ About Hero ------ */
+        .about-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 3rem 0 2rem;
+        }
+        .about-hero-image {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+        }
+        .about-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7) saturate(0.85);
+            transition: filter 0.5s, transform 0.6s;
+        }
+        .about-hero-image:hover img {
+            filter: brightness(0.9) saturate(1);
+            transform: scale(1.03);
+        }
+        .about-hero-text h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.6rem;
+            color: var(--color-text);
+        }
+        .about-hero-text h1 span {
+            color: var(--color-accent);
+        }
+        .about-hero-text p {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            max-width: 520px;
+            margin-bottom: 1.2rem;
+        }
+
+        /* ------ Philosophy / Bio Grid (雙欄圖文) ------ */
+        .bio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.8rem;
+            align-items: start;
+            padding: 3.5rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin: 1rem 0 2.5rem;
+        }
+        .bio-image-wrap {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+        }
+        .bio-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.65) saturate(0.8);
+            transition: filter 0.5s, transform 0.6s;
+        }
+        .bio-image-wrap:hover img {
+            filter: brightness(0.9) saturate(1);
+            transform: scale(1.03);
+        }
+        .bio-content h2 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.6rem;
+            color: var(--color-text);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1rem;
+        }
+        .bio-content h3 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+            color: var(--color-accent);
+        }
+        .bio-content p {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            line-height: 1.85;
+            margin-bottom: 1rem;
+        }
+        .bio-content .highlight {
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        /* ------ Gear / Experience (可選引用風格) ------ */
+        .gear-experience {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            padding: 2.5rem 0 3.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .gear-item {
+            background: var(--color-surface);
+            padding: 1.8rem 1.5rem;
+            border-left: 2px solid var(--color-accent);
+        }
+        .gear-item h4 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+            color: var(--color-text);
+        }
+        .gear-item p {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+        .gear-item .label {
+            display: inline-block;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.3rem;
+        }
+
+        /* ------ Philosophy Quote (Magnum 風格) ------ */
+        .philosophy-block {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2.5rem;
+            padding: 3rem 0 2rem;
+            align-items: center;
+        }
+        .philosophy-block blockquote {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-style: italic;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--color-accent);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.8rem;
+        }
+        .philosophy-block blockquote cite {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            font-style: normal;
+            color: var(--color-text-muted);
+            font-family: var(--font-body);
+        }
+        .philosophy-block div p {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            line-height: 1.85;
+        }
+
+        /* ------ Footer (same as index) ------ */
+        .footer {
+            padding: 2.5rem 0 1rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 2rem;
+        }
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+        .footer .nav-links {
+            gap: 1.8rem;
+        }
+        .footer .nav-links li a {
+            font-size: 0.7rem;
+        }
+        .footer-copy {
+            font-size: 0.7rem;
+            color: var(--color-text-muted);
+            letter-spacing: 0.05em;
+            opacity: 0.6;
+        }
+
+        /* ------ Responsive ------ */
+        @media (max-width: 900px) {
+            .about-hero {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .bio-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .gear-experience {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .philosophy-block {
+                grid-template-columns: 1fr;
+                gap: 1.8rem;
+            }
+            .header .container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .nav-links {
+                gap: 1.2rem;
+                flex-wrap: wrap;
+            }
+            .footer .container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 1rem 1.5rem;
+            }
+            .about-hero-text h1 {
+                font-size: 2.2rem;
+            }
+            .bio-content h2 {
+                font-size: 1.8rem;
+            }
+            .nav-links {
+                gap: 0.9rem;
+            }
+            .nav-links li a {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (identical to index) -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">光影叙事</div>
+            <ul class="nav-links">
+                <li><a href="index.html#gallery">作品</a></li>
+                <li><a href="index.html#blog">幕後</a></li>
+                <li><a href="about.html" class="active">關於</a></li>
+                <li><a href="index.html#contact">預約</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- About Hero 攝影師簡介 -->
+        <section class="about-hero container">
+            <div class="about-hero-image">
+                <img src="https://images.pexels.com/photos/18880005/pexels-photo-18880005.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="攝影師肖像" loading="lazy">
+            </div>
+            <div class="about-hero-text">
+                <h1>關於 <span>我</span></h1>
+                <p>以鏡頭為筆，光影為墨，記錄那些微醺的日常與史詩般的寂靜。深受 Magnum Photos 紀實美學啟發，在現實與敘事之間尋找詩意的平衡。</p>
+                <p>超過十年跨國拍攝經驗，足跡遍及三十餘國，專注於人文肖像、街頭敘事與環境報導攝影。</p>
+            </div>
+        </section>
+
+        <!-- Bio Grid 創作理念 / 工作經歷 -->
+        <section class="bio-grid container">
+            <div class="bio-image-wrap">
+                <img src="https://images.pexels.com/photos/29850611/pexels-photo-29850611.jpeg?auto=compress&cs=tinysrgb&h=350" alt="創作現場" loading="lazy">
+            </div>
+            <div class="bio-content">
+                <h2>創作理念</h2>
+                <p>我相信攝影是一種共感——不是捕捉決定性瞬間，而是等待畫面自己說話。每一張照片都應該是敘事的種子，帶著觀者走進一個更寬廣的故事。</p>
+                <p>我的風格深受 <span class="highlight">Magnum Photos</span> 傳統薰陶，追求「誠實的詩意」：不刻意美化苦難，也不迴避日常中的光。人文關懷與視覺張力並存，冷靜而內斂。</p>
+                
+                <h3>工作經歷</h3>
+                <p><span class="highlight">2018 – 至今</span> 自由紀實攝影師，合作媒體包括《國家地理》、《時代周刊》中文版、半島電視台。</p>
+                <p><span class="highlight">2015 – 2018</span> 擔任知名戰地攝影師助理，駐點中東及東南亞，參與多項人道主義紀錄片拍攝。</p>
+                <p><span class="highlight">2013 – 2015</span> 台北獨立攝影工作室創辦人，專注於人像與品牌視覺敘事。</p>
+            </div>
+        </section>
+
+        <!-- Gear / 器材偏好 + Experience 格狀 -->
+        <section class="gear-experience container">
+            <div class="gear-item">
+                <span class="label">相機</span>
+                <h4>Leica M11 + Fujifilm GFX100S</h4>
+                <p>數位與中片幅並行，因應不同敘事需求。Leica 的隱匿性讓街拍更貼近真實，GFX 則為商業與環境肖像提供極致的細節層次。</p>
+            </div>
+            <div class="gear-item">
+                <span class="label">鏡頭</span>
+                <h4>Summilux 35mm F1.4 / GF 110mm F2</h4>
+                <p>35mm 是我觀看世界的方式——近距離、寬容且帶有呼吸感；110mm 則用來壓縮空間，提煉出人物與環境的親密張力。</p>
+            </div>
+            <div class="gear-item">
+                <span class="label">哲學</span>
+                <h4>減法與信任</h4>
+                <p>少即是多。不依賴後期修飾，在拍攝當下透過光線、構圖與時機完成敘事。信任直覺，比相信參數更重要。</p>
+            </div>
+        </section>
+
+        <!-- Philosophy Block (Magnum 美學) -->
+        <section class="philosophy-block container">
+            <blockquote>
+                「攝影是一種直覺的慢——你必須讓自己消失，畫面才會浮現。」
+                <cite>— 模仿自 Peter McKinnon 的節奏，致敬 Magnum 的凝視</cite>
+            </blockquote>
+            <div>
+                <p>我與 Magnum Photos 的連結不僅是風格上的參照，更是一種倫理：在觀看與被觀看之間保持尊重。不獵奇、不煽情，用冷靜的鏡頭逼近溫熱的真實。</p>
+                <p>這種視覺敘事哲學，引導我每一次按下快門——無論是街頭轉角的偶然，還是長期跟拍的紀錄項目，都努力讓照片成為一個值得反覆閱讀的句子。</p>
+            </div>
+        </section>
+
+        <!-- Footer (same as index) -->
+        <footer class="footer">
+            <div class="container">
+                <div class="nav-brand" style="font-size:1rem;">光影叙事</div>
+                <ul class="nav-links">
+                    <li><a href="index.html#gallery">作品</a></li>
+                    <li><a href="index.html#blog">幕後</a></li>
+                    <li><a href="about.html">關於</a></li>
+                    <li><a href="index.html#contact">預約</a></li>
+                </ul>
+                <span class="footer-copy">© 2025 光影叙事 · 暗調電影感</span>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>

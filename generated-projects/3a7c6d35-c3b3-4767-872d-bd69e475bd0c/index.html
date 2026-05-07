@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>拂尘 · 胶片摄影</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #8C7A6B;
+      --color-secondary: #D4C5B9;
+      --color-background: #F5F0EB;
+      --color-surface: #E8E0D5;
+      --color-text: #3E3530;
+      --color-textMuted: #8A8078;
+      --color-accent: #C47A5A;
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'Lora', serif;
+      --spacing-unit: 1rem;
+      --space-xs: calc(var(--spacing-unit) * 0.5);
+      --space-sm: var(--spacing-unit);
+      --space-md: calc(var(--spacing-unit) * 1.5);
+      --space-lg: calc(var(--spacing-unit) * 2.5);
+      --space-xl: calc(var(--spacing-unit) * 4);
+      --max-width: 1100px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--color-accent);
+    }
+
+    /* ---------- 设计系统 ---------- */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: var(--color-text);
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      margin-bottom: var(--space-sm);
+    }
+    h3 {
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+    }
+
+    p {
+      margin-bottom: var(--space-sm);
+      text-wrap: pretty;
+      color: var(--color-text);
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-bottom: var(--space-xs);
+      font-weight: 400;
+    }
+
+    .btn {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--color-primary);
+      padding: 0.6rem 2rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      color: var(--color-primary);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--color-primary);
+      color: var(--color-background);
+      border-color: var(--color-primary);
+    }
+
+    .btn--accent {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .btn--accent:hover {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+
+    /* ---------- 头部导航 ---------- */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: var(--space-sm) 0;
+      background: rgba(245, 240, 235, 0.82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--color-secondary);
+    }
+
+    .site-header .container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      color: var(--color-textMuted);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--color-text);
+      border-bottom-color: var(--color-primary);
+    }
+
+    .nav-link--active {
+      color: var(--color-text);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--color-surface);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      opacity: 0.70;
+      mix-blend-mode: multiply;
+      filter: saturate(0.85) contrast(1.05);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(245, 240, 235, 0.75) 0%, rgba(245, 240, 235, 0.1) 60%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: var(--space-xl) var(--space-md) var(--space-lg);
+      max-width: 700px;
+      margin-bottom: 8vh;
+    }
+
+    .hero-content h1 {
+      font-weight: 500;
+      font-style: italic;
+      color: var(--color-text);
+      text-shadow: 0 2px 6px rgba(62, 53, 48, 0.06);
+    }
+
+    .hero-content .subhead {
+      font-size: 1.05rem;
+      color: var(--color-textMuted);
+      margin-top: var(--space-sm);
+      letter-spacing: 0.02em;
+      border-top: 1px solid var(--color-secondary);
+      display: inline-block;
+      padding-top: var(--space-xs);
+    }
+
+    .hero-cta {
+      margin-top: var(--space-md);
+    }
+
+    /* ---------- 关于摄影师 ---------- */
+    .about-section {
+      padding: var(--space-xl) 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+      align-items: center;
+    }
+
+    .about-image {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 2px;
+      filter: sepia(0.2) brightness(0.97);
+      box-shadow: 0 8px 24px rgba(62, 53, 48, 0.08);
+    }
+
+    .about-text {
+      padding: var(--space-md) 0;
+    }
+
+    .about-text h2 {
+      font-style: italic;
+    }
+
+    .about-text .signature {
+      font-family: var(--font-heading);
+      font-style: italic;
+      margin-top: var(--space-md);
+      color: var(--color-primary);
+      font-size: 1.1rem;
+    }
+
+    /* ---------- 精选作品集 (瀑布流) ---------- */
+    .gallery-section {
+      padding: var(--space-xl) 0;
+      background: var(--color-surface);
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .gallery-grid {
+      column-count: 3;
+      column-gap: var(--space-md);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: var(--space-md);
+      background: var(--color-background);
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(62, 53, 48, 0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(62, 53, 48, 0.10);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      filter: sepia(0.15) brightness(0.98);
+    }
+
+    .gallery-item .meta {
+      padding: var(--space-sm) var(--space-sm);
+      font-size: 0.85rem;
+      color: var(--color-textMuted);
+      font-style: italic;
+      border-top: 1px solid var(--color-secondary);
+    }
+
+    .gallery-footer {
+      text-align: center;
+      margin-top: var(--space-lg);
+    }
+
+    /* ---------- 博客/日志 预览 ---------- */
+    .journal-section {
+      padding: var(--space-xl) 0;
+    }
+
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .journal-card {
+      background: var(--color-background);
+      border: 1px solid var(--color-secondary);
+      padding: var(--space-md);
+      transition: border-color 0.25s;
+    }
+
+    .journal-card:hover {
+      border-color: var(--color-primary);
+    }
+
+    .journal-card .date {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--color-textMuted);
+      text-transform: uppercase;
+    }
+
+    .journal-card h3 {
+      font-size: 1.2rem;
+      margin: var(--space-xs) 0 var(--space-xs);
+    }
+
+    .journal-card p {
+      font-size: 0.92rem;
+      color: var(--color-textMuted);
+      margin-bottom: var(--space-sm);
+    }
+
+    .journal-card .read-more {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--color-accent);
+      border-bottom: 1px solid transparent;
+    }
+
+    .journal-card .read-more:hover {
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* ---------- footer ---------- */
+    .site-footer {
+      border-top: 1px solid var(--color-secondary);
+      padding: var(--space-lg) 0 var(--space-md);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--color-textMuted);
+    }
+
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .footer-nav a {
+      font-size: 0.85rem;
+    }
+
+    .site-footer .copyright {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    /* ---------- 响应式 ---------- */
+    @media (max-width: 900px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+      }
+
+      .about-image {
+        max-height: 380px;
+        object-position: center 20%;
+      }
+
+      .gallery-grid {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .site-header .container {
+        justify-content: center;
+        gap: var(--space-md);
+      }
+
+      .hero-content {
+        margin-bottom: 12vh;
+      }
+
+      .gallery-grid {
+        column-count: 1;
+      }
+
+      .journal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 颗粒纹理叠加 (纯css) */
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+ </style>
+</head>
+<body>
+ <!-- 颗粒遮盖 -->
+ <div class="grain-overlay" aria-hidden="true"></div>
+
+ <!-- 固定导航 -->
+ <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="nav-link nav-link--active">首页</a>
+      <a href="gallery.html" class="nav-link">作品</a>
+      <a href="journal.html" class="nav-link">日志</a>
+      <a href="about.html" class="nav-link">关于</a>
+    </div>
+ </header>
+
+ <!-- HERO 全幅大图 -->
+ <section class="hero">
+    <img
+      src="https://images.pexels.com/photos/18325138/pexels-photo-18325138.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+      alt="胶片摄影主视觉"
+      class="hero-bg"
+      loading="eager"
+    >
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="section-label">拂尘 · 胶片叙事</span>
+      <h1>在光与颗粒之间<br>寻找未褪色的真实</h1>
+      <p class="subhead">—— 基于胶片的个人摄影档案 ——</p>
+      <div class="hero-cta">
+        <a href="gallery.html" class="btn btn--accent">浏览作品集</a>
+      </div>
+    </div>
+ </section>
+
+ <!-- 关于摄影师 -->
+ <section class="about-section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <img
+            src="https://images.pexels.com/photos/4985700/pexels-photo-4985700.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+            alt="摄影师肖像"
+            class="about-image"
+            loading="eager"
+          >
+        </div>
+        <div class="about-text">
+          <span class="section-label">关于我</span>
+          <h2>以静默的底色<br>捕获时间褶皱里的光</h2>
+          <p>十余年行走于暗房与街巷之间，坚信银盐颗粒里藏着比数码更诚实的情感。每一帧都是一种缓慢的凝视——不急于被看见，只等待与观者共振的瞬间。</p>
+          <p>目前专注于中画幅胶片肖像与环境叙事，作品曾发表于《光圈》《日本相机》等刊物。</p>
+          <div class="signature">—— Kazuo Lin</div>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- 精选作品集 (瀑布流画廊) -->
+ <section class="gallery-section" id="gallery">
+    <div class="gallery-header container">
+      <span class="section-label">精选作品</span>
+      <h2>暗房淬炼 · 近期帧藏</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/12389809/pexels-photo-12389809.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+          alt="胶片作品 01"
+          loading="eager"
+          style="aspect-ratio: 2560/1748"
+        >
+        <div class="meta">京都雨季 · portra 400</div>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="胶片作品 02"
+          loading="eager"
+          style="aspect-ratio: 2333/3500"
+        >
+        <div class="meta">暗房窗口 · 2024</div>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/8290865/pexels-photo-8290865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="胶片作品 03"
+          loading="lazy"
+          style="aspect-ratio: 5065/3377"
+        >
+        <div class="meta">黄昏在江边 · tri-x</div>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/33109245/pexels-photo-33109245.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="胶片作品 04"
+          loading="lazy"
+          style="aspect-ratio: 2515/1830"
+        >
+        <div class="meta">停格 · 柯达gold 200</div>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/7399857/pexels-photo-7399857.png?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="胶片作品 05"
+          loading="lazy"
+          style="aspect-ratio: 3008/1995"
+        >
+        <div class="meta">静物习作 · 哈苏</div>
+      </div>
+    </div>
+    <div class="gallery-footer">
+      <a href="gallery.html" class="btn">查看完整作品集 →</a>
+    </div>
+ </section>
+
+ <!-- 摄影博客/日志 预览 -->
+ <section class="journal-section" id="journal">
+    <div class="container">
+      <span class="section-label">摄影日志</span>
+      <h2>暗房笔记 · 光线手记</h2>
+      <div class="journal-grid">
+        <article class="journal-card">
+          <div class="date">2025.03.21</div>
+          <h3>自冲C41的一些体会</h3>
+          <p>温度与时间的拉扯，药水新鲜度的执念——在家冲扫色彩并不是玄学，而是另一种慢下来的仪式。</p>
+          <a href="journal.html" class="read-more">继续阅读 →</a>
+        </article>
+        <article class="journal-card">
+          <div class="date">2025.02.08</div>
+          <h3>街头摄影的“负空间”</h3>
+          <p>最近在京都重新思考取景框里那些没有主体的角落，它们像胶片中未曝光的边缘，沉默却充满叙述的可能。</p>
+          <a href="journal.html" class="read-more">继续阅读 →</a>
+        </article>
+        <article class="journal-card">
+          <div class="date">2025.01.12</div>
+          <h3>一台老M6与一卷过期的HP5</h3>
+          <p>十年的机身，五年前的胶卷，按下快门的瞬间像打开一封迟到的信。颗粒与灰阶里，全是时间本来的样子。</p>
+          <a href="journal.html" class="read-more">继续阅读 →</a>
+        </article>
+      </div>
+    </div>
+ </section>
+
+ <!-- Footer -->
+ <footer class="site-footer">
+    <div class="container">
+      <div class="footer-nav">
+        <a href="index.html">首页</a>
+        <a href="gallery.html">作品</a>
+        <a href="journal.html">日志</a>
+        <a href="about.html">关于</a>
+        <a href="contact.html">联系</a>
+      </div>
+      <p class="copyright">© 2025 拂尘·胶片摄影 ｜ 以静默的底色凝视</p>
+    </div>
+ </footer>
+
+ <!-- PAGES_PLAN -->
+ <!-- PAGES_PLAN: [{"name":"gallery.html","title":"作品画廊","overview":"瀑布流展示全部精选胶片作品，每张图片附带胶卷与拍摄参数标签，支持hover放大预览，底部翻页导航","layout":"grid"},{"name":"journal.html","title":"摄影日志","overview":"按日期排列的摄影博客文章列表，包含标题摘要、配图、阅读时间预估，右侧标签云索引","layout":"list"},{"name":"about.html","title":"关于摄影师","overview":"摄影师个人故事、使用器材清单、展览经历、出版与合作信息，附带联系邀约入口","layout":"detail"},{"name":"contact.html","title":"联系与约拍","overview":"包含联系表单（姓名/邮箱/需求类型/详细信息）、社交链接、常见问题FAQ折叠面板","layout":"form"}] -->
+</body>
+</html>

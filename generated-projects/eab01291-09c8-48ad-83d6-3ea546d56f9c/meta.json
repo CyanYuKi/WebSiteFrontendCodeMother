@@ -1,0 +1,9 @@
+{
+  "projectId" : "eab01291-09c8-48ad-83d6-3ea546d56f9c",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>静观 · 摄影</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Outfit:wght@300;400;500;600&display=swap\" rel=\"stylesheet\">\n <style>\n    * {\n     ...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#2A3B32\",\n    \"secondary\": \"#D8CBB9\",\n    \"background\": \"#F9F7F4\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#1A1A1A\",\n    \"textMuted\": \"#75706A\",\n    \"accent\": \"#C48A58\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Fraunces, Georgia, serif\",\n    \"bodyFont\": \"Outfit, system-ui, sans-serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全屏几何分割Hero+非对称错位网格作品流+左侧固定微导航\",\n  \"mood\": \"静谧雅致、几何构成、东方茶韵\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 29, 17, 31, 53, 67807000 ]
+}

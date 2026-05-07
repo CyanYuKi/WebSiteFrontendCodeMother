@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - LENS & VOID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #EAEAEA;
+      --color-secondary: #2A2A2D;
+      --color-background: #0B0B0D;
+      --color-surface: #161618;
+      --color-text: #F5F5F5;
+      --color-textMuted: #88888A;
+      --color-accent: #C8956C;
+      
+      --font-heading: 'Syne', system-ui, sans-serif;
+      --font-body: 'Instrument Sans', system-ui, sans-serif;
+      
+      --spacing-unit: 1rem;
+      --spacing-sm: calc(var(--spacing-unit) * 0.5);
+      --spacing-md: calc(var(--spacing-unit) * 1.5);
+      --spacing-lg: calc(var(--spacing-unit) * 2.5);
+      --spacing-xl: calc(var(--spacing-unit) * 4);
+      
+      --transition-base: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --container-width: 1400px;
+      --nav-height: 80px;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      text-wrap: pretty;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--transition-base);
+    }
+    img {
+      max-width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      filter: brightness(0.65) contrast(1.05);
+      transition: transform var(--transition-base);
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--spacing-xl);
+      z-index: 1000;
+      background: linear-gradient(to bottom, rgba(11,13,0.85), transparent);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition-base), background var(--transition-base);
+    }
+    .brand {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: var(--spacing-lg);
+      list-style: none;
+    }
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0;
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width var(--transition-base);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-text);
+    }
+    .nav-link.active::after, .nav-link:hover::after {
+      width: 100%;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      display: none;
+      padding: var(--spacing-sm);
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .menu-toggle { display: flex; align-items: center; justify-content: center; }
+    }
+    .about-page {
+      padding-top: calc(var(--nav-height) + var(--spacing-xl));
+      min-height: 100vh;
+      padding-bottom: var(--spacing-xl);
+    }
+    .page-header {
+      max-width: 800px;
+      margin: 0 auto var(--spacing-xl);
+      text-align: center;
+      padding: 0 var(--spacing-lg);
+    }
+    .page-header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.1;
+    }
+    .page-header p {
+      color: var(--color-textMuted);
+      font-size: 1.05rem;
+      font-weight: 400;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: var(--spacing-xl);
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
+      align-items: start;
+    }
+    .col-left {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--spacing-lg));
+      padding-right: var(--spacing-md);
+    }
+    .portrait-frame {
+      width: 100%;
+      aspect-ratio: 3/4;
+      margin-bottom: var(--spacing-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .bio-section {
+      margin-bottom: var(--spacing-xl);
+    }
+    .bio-section h2, .detail-block h3 {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-accent);
+      margin-bottom: var(--spacing-sm);
+    }
+    .bio-text {
+      color: var(--color-textMuted);
+      margin-bottom: var(--spacing-md);
+      font-size: 0.95rem;
+    }
+    .statement-block {
+      background: var(--color-surface);
+      border-left: 3px solid var(--color-accent);
+      padding: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+    }
+    .statement-text {
+      font-style: italic;
+      color: var(--color-primary);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .col-right {
+      padding-bottom: var(--spacing-lg);
+    }
+    .studio-frame {
+      width: 100%;
+      aspect-ratio: 16/9;
+      margin-bottom: var(--spacing-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .studio-label {
+      position: absolute;
+      top: var(--spacing-sm);
+      left: var(--spacing-sm);
+      background: rgba(11,11,13,0.6);
+      color: var(--color-text);
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .exhibition-list {
+      list-style: none;
+      border-top: 1px solid var(--color-secondary);
+      margin-bottom: var(--spacing-xl);
+    }
+    .exhibition-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--color-secondary);
+      transition: background var(--transition-base);
+    }
+    .exhibition-item:hover {
+      background: rgba(255,255,0.03);
+    }
+    .year {
+      font-family: var(--font-heading);
+      color: var(--color-accent);
+      font-weight: 500;
+      margin-right: var(--spacing-md);
+      min-width: 80px;
+      font-size: 0.9rem;
+    }
+    .event {
+      color: var(--color-primary);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .location {
+      color: var(--color-textMuted);
+      font-size: 0.85rem;
+      text-align: right;
+    }
+    .brand-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+    }
+    .brand-item {
+      background: var(--color-surface);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-textMuted);
+      font-family: var(--font-heading);
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: transform var(--transition-base), background var(--transition-base);
+    }
+    .brand-item:hover {
+      transform: translateY(-3px);
+      background: var(--color-secondary);
+      color: var(--color-primary);
+    }
+    footer {
+      border-top: 1px solid var(--color-secondary);
+      margin-top: var(--spacing-xl);
+      padding: var(--spacing-lg) var(--spacing-xl);
+      text-align: center;
+      color: var(--color-textMuted);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+    }
+    @media (max-width: 900px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+      .col-left {
+        position: relative;
+        top: 0;
+        padding-right: 0;
+      }
+      .portrait-frame, .studio-frame {
+        aspect-ratio: 4/3;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="brand">LENS & VOID</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html" class="nav-link">Work</a></li>
+      <li><a href="blog.html" class="nav-link">Journal</a></li>
+      <li><a href="about.html" class="nav-link active">About</a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a></li>
+    </ul>
+    <button class="menu-toggle" aria-label="Open menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </nav>
+
+  <main class="about-page">
+    <header class="page-header">
+      <h1>The Observer</h1>
+      <p>Exploring the intersection of light, shadow, and human emotion through a cinematic lens.</p>
+    </header>
+
+    <section class="detail-grid">
+      <div class="col-left">
+        <div class="portrait-frame">
+          <img src="https://images.pexels.com/photos/18880005/pexels-photo-18880005.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Photographer Portrait">
+        </div>
+        <div class="bio-section">
+          <h2>Biography</h2>
+          <p class="bio-text">
+            Based in the quiet intersections of urban landscapes, I have spent the last decade documenting the ephemeral beauty of everyday moments. My work is rooted in fine art photography, where composition and atmosphere take precedence over mere representation.
+          </p>
+          <p class="bio-text">
+            Graduating with honors in Visual Arts, I quickly transitioned into commercial and editorial work, collaborating with publications that value narrative depth. Every frame is an invitation to pause, reflect, and feel the weight of a fleeting second.
+          </p>
+          <div class="statement-block">
+            <h2>Artistic Statement</h2>
+            <p class="statement-text">
+              "Photography is not about capturing what is in front of the lens, but what lies just beyond it. I seek the void between gestures, the silence in crowded rooms, and the poetry of decay. My process is deliberate, slow, and deeply respectful of the subject's inherent dignity."
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="studio-frame">
+          <img src="https://images.pexels.com/photos/1466181/pexels-photo-1466181.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Studio Environment">
+          <span class="studio-label">Workspace</span>
+        </div>
+
+        <div class="detail-block">
+          <h3>Exhibition History</h3>
+          <ul class="exhibition-list">
+            <li class="exhibition-item">
+              <span class="year">2023</span>
+              <span class="event">Fragments of Light: Solo Exhibition</span>
+              <span class="location">MOMA PS1, NY</span>
+            </li>
+            <li class="exhibition-item">
+              <span class="year">2022</span>
+              <span class="event">Contemporary Visions Group Show</span>
+              <span class="location">Tate Modern, London</span>
+            </li>
+            <li class="exhibition-item">
+              <span class="year">2021</span>
+              <span class="event">Urban Shadows Biennale</span>
+              <span class="location">Venice, Italy</span>
+            </li>
+            <li class="exhibition-item">
+              <span class="year">2020</span>
+              <span class="event">Emerging Artists Annual</span>
+              <span class="location">Saatchi Gallery, London</span>
+            </li>
+            <li class="exhibition-item">
+              <span class="year">2019</span>
+              <span class="event">Monochrome Perspectives</span>
+              <span class="location">Centre Pompidou, Paris</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="detail-block">
+          <h3>Collaborating Brands</h3>
+          <div class="brand-grid">
+            <div class="brand-item">LEICA</div>
+            <div class="brand-item">SONY α</div>
+            <div class="brand-item">H&M</div>
+            <div class="brand-item">KINFOLK</div>
+            <div class="brand-item">AERONAUT</div>
+            <div class="brand-item">MONOCLE</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="gallery.html">Work</a>
+      <a href="blog.html">Journal</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <p>&copy; 2024 LENS & VOID. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -24,11 +24,13 @@ public class IntentAnalyzer implements NodeAction<ProjectState> {
     @Override
     public Map<String, Object> apply(ProjectState state) throws Exception {
         String currentInput = state.currentInput();
-        log.info("[IntentAnalyzer] 分析用户输入: {}", currentInput);
+        String htmlCode = state.htmlCode();
+        boolean hasExistingProject = htmlCode != null && !htmlCode.isBlank();
+        log.info("[IntentAnalyzer] 分析用户输入: {}, hasExistingProject={}", currentInput, hasExistingProject);
 
         String response = chatModelService.chat(
                 PromptTemplates.INTENT_ANALYZER_SYSTEM,
-                PromptTemplates.intentAnalyzerUser(currentInput),
+                PromptTemplates.intentAnalyzerUser(currentInput, hasExistingProject),
                 ChatModelService.ModelType.FAST
         );
 
@@ -40,7 +42,11 @@ public class IntentAnalyzer implements NodeAction<ProjectState> {
             line = line.trim();
             if (line.startsWith("INTENT:")) {
                 String value = line.substring("INTENT:".length()).trim().toLowerCase();
-                if (value.contains("create")) {
+                if (value.contains("query")) {
+                    intentType = "query";
+                } else if (value.contains("modify")) {
+                    intentType = "modify";
+                } else if (value.contains("create")) {
                     intentType = "create";
                 }
             } else if (line.startsWith("REPLY:")) {
@@ -49,6 +55,13 @@ public class IntentAnalyzer implements NodeAction<ProjectState> {
                     chatReply = "";
                 }
             }
+        }
+
+        // 硬约束：已有项目上下文中，禁止判定为 create
+        if (hasExistingProject && "create".equals(intentType)) {
+            log.warn("[IntentAnalyzer] 已有项目上下文中 LLM 误判为 create，强制修正为 modify: input={}", currentInput);
+            intentType = "modify";
+            chatReply = "好的，我来修改项目。";
         }
 
         log.info("[IntentAnalyzer] 意图识别结果: intentType={}", intentType);

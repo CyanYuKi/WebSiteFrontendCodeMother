@@ -1,0 +1,9 @@
+{
+  "projectId" : "b6eb98dc-c048-46d7-80a5-f4d568b4ac1e",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>林叙摄影 — 以光为笔，以影为墨</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap\" rel=\"stylesheet\">\n<style>\n:roo...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#A88A75\",\n    \"secondary\": \"#7A8B8C\",\n    \"background\": \"#F4EFEA\",\n    \"surface\": \"#EBE4DA\",\n    \"text\": \"#3D3832\",\n    \"textMuted\": \"#8C7E6F\",\n    \"accent\": \"#C9A86E\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Lora, serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"顶部留白极简导航+全屏沉浸式作品画廊+居中单栏图文博客流\",\n  \"mood\": \"温暖怀旧、沉静叙事、胶片质感\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 30, 14, 3, 17, 37883300 ]
+}

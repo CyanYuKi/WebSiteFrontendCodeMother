@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 · 胶片暗房</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #8C7A6B;
+            --color-secondary: #D4C5B9;
+            --color-background: #F5F0EB;
+            --color-surface: #E8E0D5;
+            --color-text: #3E3530;
+            --color-textMuted: #8A8078;
+            --color-accent: #C47A5A;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lora', serif;
+            --spacing-unit: 1rem;
+            --space-xs: calc(var(--spacing-unit) * 0.5);
+            --space-sm: var(--spacing-unit);
+            --space-md: calc(var(--spacing-unit) * 1.5);
+            --space-lg: calc(var(--spacing-unit) * 2.5);
+            --space-xl: calc(var(--spacing-unit) * 4);
+            --max-width: 1100px;
+        }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        a:hover {
+            color: var(--color-accent);
+        }
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        /* ===== Header / Navigation ===== */
+        .site-header {
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--color-secondary);
+            background-color: var(--color-background);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .site-header .container {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            color: var(--color-textMuted);
+            padding: var(--space-xs) var(--space-sm);
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--color-text);
+            border-bottom-color: var(--color-primary);
+        }
+        .nav-link--active {
+            color: var(--color-text);
+            border-bottom-color: var(--color-primary);
+        }
+
+        /* ===== Contact Page Layout (form) ===== */
+        .page-contact {
+            padding: var(--space-xl) 0 var(--space-lg);
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-lg);
+            }
+        }
+
+        /* --- Left Column: Form --- */
+        .contact-form-section {
+            background-color: var(--color-surface);
+            padding: var(--space-lg);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .contact-form-section h2 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 1.5rem;
+            color: var(--color-text);
+            margin-bottom: var(--space-md);
+            letter-spacing: 0.02em;
+        }
+        .contact-form .form-group {
+            margin-bottom: var(--space-md);
+        }
+        .contact-form label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            margin-bottom: var(--space-xs);
+            font-style: italic;
+        }
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            background-color: var(--color-background);
+            border: 1px solid var(--color-secondary);
+            border-radius: 2px;
+            color: var(--color-text);
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .contact-form input:focus,
+        .contact-form select:focus,
+        .contact-form textarea:focus {
+            border-color: var(--color-primary);
+        }
+        .contact-form textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+        .contact-form .btn-submit {
+            background-color: var(--color-primary);
+            color: var(--color-background);
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            padding: var(--space-sm) var(--space-lg);
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: var(--space-xs);
+        }
+        .contact-form .btn-submit:hover {
+            background-color: var(--color-accent);
+            transform: scale(1.01);
+        }
+
+        /* --- Right Column: Image + Social + FAQ --- */
+        .contact-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+        .contact-image {
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .contact-image img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            filter: sepia(0.15) brightness(0.98);
+            display: block;
+        }
+        .social-links {
+            padding: var(--space-md) 0;
+        }
+        .social-links h3 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 1.15rem;
+            color: var(--color-text);
+            margin-bottom: var(--space-sm);
+        }
+        .social-links ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm) var(--space-md);
+            padding: 0;
+        }
+        .social-links li a {
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 2px;
+        }
+        .social-links li a:hover {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        /* --- FAQ Accordion --- */
+        .faq-section {
+            background-color: var(--color-surface);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: 4px;
+        }
+        .faq-section h3 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 1.15rem;
+            color: var(--color-text);
+            margin-bottom: var(--space-sm);
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--color-secondary);
+            padding: var(--space-sm) 0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text);
+            padding: var(--space-xs) 0;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .faq-question:hover {
+            color: var(--color-accent);
+        }
+        .faq-question::after {
+            content: "+";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--color-primary);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0;
+        }
+        .faq-answer p {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            padding: var(--space-xs) 0 var(--space-sm);
+            line-height: 1.6;
+        }
+        .faq-item.open .faq-question::after {
+            content: "−";
+        }
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+            padding-bottom: var(--space-xs);
+        }
+
+        /* ===== Footer (consistency with index) ===== */
+        .site-footer {
+            border-top: 1px solid var(--color-secondary);
+            padding: var(--space-lg) 0 var(--space-md);
+            margin-top: var(--space-xl);
+            background-color: var(--color-background);
+        }
+        .site-footer .container {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+        .site-footer a {
+            font-size: 0.85rem;
+            color: var(--color-textMuted);
+            font-style: italic;
+            padding: var(--space-sm) var(--space-sm);
+            border-top: 1px solid transparent;
+            transition: color 0.2s;
+        }
+        .site-footer a:hover {
+            color: var(--color-primary);
+            border-top-color: var(--color-primary);
+        }
+
+        /* ===== Utility ===== */
+        .text-muted {
+            color: var(--color-textMuted);
+        }
+        @media (max-width: 640px) {
+            .site-header .container {
+                gap: var(--space-sm);
+            }
+            .contact-form-section {
+                padding: var(--space-md);
+            }
+            .faq-section {
+                padding: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Navigation (identical structure to index) ===== -->
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="nav-link">首页</a>
+            <a href="gallery.html" class="nav-link">作品</a>
+            <a href="journal.html" class="nav-link">日志</a>
+            <a href="about.html" class="nav-link">关于</a>
+            <a href="contact.html" class="nav-link nav-link--active">联系</a>
+        </div>
+    </header>
+
+    <!-- ===== Contact Content ===== -->
+    <section class="page-contact">
+        <div class="container">
+            <div class="contact-grid">
+
+                <!-- Left: Contact Form -->
+                <div class="contact-form-section">
+                    <h2>让我们开始对话</h2>
+                    <form class="contact-form" action="#" method="post">
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" name="name" placeholder="你的名字" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inquiry">需求类型</label>
+                            <select id="inquiry" name="inquiry">
+                                <option value="">请选择</option>
+                                <option value="拍摄委托">拍摄委托</option>
+                                <option value="合作邀请">合作邀请</option>
+                                <option value="器材咨询">器材咨询</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">详细信息</label>
+                            <textarea id="message" name="message" placeholder="请描述你的需求或想法..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">发送 ✦</button>
+                    </form>
+                </div>
+
+                <!-- Right: Image + Social + FAQ -->
+                <div class="contact-sidebar">
+                    <!-- Image -->
+                    <div class="contact-image">
+                        <img src="https://images.pexels.com/photos/7610808/pexels-photo-7610808.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系区配图" loading="lazy">
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="social-links">
+                        <h3>在别处找到我</h3>
+                        <ul>
+                            <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                            <li><a href="https://500px.com" target="_blank" rel="noopener noreferrer">500px</a></li>
+                            <li><a href="https://flickr.com" target="_blank" rel="noopener noreferrer">Flickr</a></li>
+                            <li><a href="mailto:hello@filmnotch.com">Email</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- FAQ Accordion -->
+                    <div class="faq-section">
+                        <h3>常见问题</h3>
+                        <div class="faq-item">
+                            <button class="faq-question">如何预约拍摄？</button>
+                            <div class="faq-answer">
+                                <p>通过上方表单提交详细需求，我会在1-2个工作日内通过邮件与你联系确认档期。</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question">接受商业委托吗？</button>
+                            <div class="faq-answer">
+                                <p>是的，我承接品牌、产品及空间摄影委托，具体费用根据项目规模协商。</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question">可以参观暗房工作室吗？</button>
+                            <div class="faq-answer">
+                                <p>工作室目前仅接受预约拜访，请提前通过邮件或表单预约时间。</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question">作品版权如何归属？</button>
+                            <div class="faq-answer">
+                                <p>所有委托作品的版权在交付后归客户所有，我保留展览及非商业传播权利。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer (identical structure to index) ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <a href="index.html">首页</a>
+            <a href="gallery.html">作品</a>
+            <a href="journal.html">日志</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+    </footer>
+
+    <!-- ===== FAQ Accordion Script ===== -->
+    <script>
+        (function() {
+            const items = document.querySelectorAll('.faq-item');
+            items.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isOpen = item.classList.contains('open');
+                    // close all
+                    items.forEach(el => el.classList.remove('open'));
+                    if (!isOpen) {
+                        item.classList.add('open');
+                    }
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>

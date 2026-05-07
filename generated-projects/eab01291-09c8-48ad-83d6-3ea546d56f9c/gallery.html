@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>作品 · Gallery</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+ <style>
+    /* ===== 设计系统 :root (与首页完全一致) ===== */
+    :root {
+      --color-primary: #2A3B32;
+      --color-secondary: #D8CBB9;
+      --color-background: #F9F7F4;
+      --color-surface: #FFFFFF;
+      --color-text: #1A1A1A;
+      --color-textMuted: #75706A;
+      --color-accent: #C48A58;
+      --font-heading: 'Fraunces', Georgia, serif;
+      --font-body: 'Outfit', system-ui, sans-serif;
+      --spacing-unit: 8px;
+      --spacing-xs: calc(var(--spacing-unit) * 1);
+      --spacing-sm: calc(var(--spacing-unit) * 2);
+      --spacing-md: calc(var(--spacing-unit) * 4);
+      --spacing-lg: calc(var(--spacing-unit) * 8);
+      --spacing-xl: calc(var(--spacing-unit) * 12);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --transition: 0.3s ease;
+    }
+
+    /* ===== 全局样式 ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--color-background);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===== Toolbar / 侧边固定微导航 (布局组件，与首页一致) ===== */
+    .side-nav {
+      position: fixed;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      z-index: 100;
+      align-items: center;
+    }
+
+    .side-nav a {
+      writing-mode: vertical-rl;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--color-textMuted);
+      transition: color var(--transition);
+      text-orientation: mixed;
+      padding: 4px 0;
+    }
+
+    .side-nav a:hover,
+    .side-nav a.active {
+      color: var(--color-primary);
+    }
+
+    .side-nav .nav-dot {
+      width: 20px;
+      height: 20px;
+      background: var(--color-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      color: var(--color-primary);
+      transition: background var(--transition);
+    }
+
+    .side-nav .nav-dot:hover {
+      background: var(--color-accent);
+    }
+
+    /* 响应式：小屏隐藏侧导航，用顶部菜单 */
+    @media (max-width: 768px) {
+      .side-nav {
+        display: none;
+      }
+    }
+
+    /* ===== 顶部导航条 (移动端/平板用) ===== */
+    .top-nav {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(249, 247, 244, 0.85);
+      backdrop-filter: blur(8px);
+      padding: var(--spacing-sm) var(--spacing-md);
+      z-index: 200;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-secondary);
+    }
+
+    .top-nav a {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--color-textMuted);
+      transition: color var(--transition);
+      padding: 4px 0;
+    }
+
+    .top-nav a:hover,
+    .top-nav a.active {
+      color: var(--color-primary);
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        display: flex;
+      }
+    }
+
+    /* ===== 页面头部 ===== */
+    .page-header {
+      padding: 80px var(--spacing-lg) var(--spacing-lg);
+      text-align: center;
+      background: var(--color-background);
+    }
+
+    .page-header h1 {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 2.8rem;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .page-header p {
+      color: var(--color-textMuted);
+      max-width: 480px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ===== 分类筛选按钮 ===== */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+      background: var(--color-background);
+    }
+
+    .filter-btn {
+      font-family: var(--font-body);
+      background: transparent;
+      border: 1px solid var(--color-secondary);
+      color: var(--color-textMuted);
+      padding: 6px 20px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .filter-btn.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-surface);
+    }
+
+    /* ===== 瀑布流网格 (非对称错位网格) ===== */
+    .gallery-grid {
+      --gap: var(--spacing-md);
+      display: columns;
+      column-count: 3;
+      column-gap: var(--gap);
+      padding: 0 var(--spacing-lg) var(--spacing-xl);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: var(--gap);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-surface);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .gallery-item:hover {
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .gallery-item .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+      background: linear-gradient(transparent 0%, rgba(42,59,50,0.7) 90%);
+      color: var(--color-surface);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .gallery-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .gallery-item .overlay h3 {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+
+    .gallery-item .overlay p {
+      font-size: 0.7rem;
+      opacity: 0.8;
+      font-weight: 300;
+    }
+
+    /* 不同宽高比模拟瀑布流错位 */
+    .gallery-item.portrait img {
+      aspect-ratio: 3/4;
+    }
+
+    .gallery-item.landscape img {
+      aspect-ratio: 4/3;
+    }
+
+    .gallery-item.square img {
+      aspect-ratio: 1/1;
+    }
+
+    .gallery-item.wide img {
+      aspect-ratio: 16/9;
+    }
+
+    .gallery-item.tall img {
+      aspect-ratio: 2/3;
+    }
+
+    /* 可见性控制 (筛选) */
+    .gallery-item.hidden {
+      display: none;
+    }
+
+    /* 响应式 */
+    @media (max-width: 1024px) {
+      .gallery-grid {
+        column-count: 2;
+        padding: 0 var(--spacing-md) var(--spacing-xl);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      .gallery-grid {
+        column-count: 1;
+        padding: 0 var(--spacing-sm) var(--spacing-lg);
+      }
+      .filter-bar {
+        padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+      }
+    }
+
+    /* ===== Lightbox 模态框 (点击大图) ===== */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 26, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      padding: var(--spacing-lg);
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-content {
+      max-width: 800px;
+      max-height: 85vh;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }}
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .lightbox-content img {
+      width: 100%;
+      max-height: 65vh;
+      object-fit: cover;
+      display: block;
+    }
+
+    .lightbox-caption {
+      padding: var(--spacing-md);
+      background: var(--color-surface);
+    }
+
+    .lightbox-caption h3 {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      color: var(--color-primary);
+      margin-bottom: 4px;
+    }
+
+    .lightbox-caption p {
+      color: var(--color-textMuted);
+      font-size: 0.85rem;
+      font-weight: 300;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 2.5rem;
+      cursor: pointer;
+      font-weight: 300;
+      transition: opacity var(--transition);
+      line-height: 1;
+    }
+
+    .lightbox-close:hover {
+      opacity: 0.7;
+    }
+
+    /* ===== Footer (与首页一致，保留相对链接) ===== */
+    .footer {
+      background: var(--color-primary);
+      color: var(--color-secondary);
+      padding: var(--spacing-lg) var(--spacing-md);
+      text-align: center;
+      margin-top: var(--spacing-xl);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--color-secondary);
+      transition: opacity var(--transition);
+      opacity: 0.8;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+    }
+
+    .footer p {
+      font-size: 0.6rem;
+      opacity: 0.6;
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 600px) {
+      .footer-links a {
+        font-size: 0.65rem;
+      }
+    }
+
+    /* 侧边导航在小屏隐藏时，用 top-nav 占位，内容上移 */
+    @media (max-width: 768px) {
+      .page-header {
+        padding-top: 100px;
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <!-- ===== 左侧固定微导航 (与首页完全一致) ===== -->
+ <nav class="side-nav" aria-label="主导航">
+    <a href="/">首页</a>
+    <a href="gallery.html" class="active">作品</a>
+    <a href="about.html">关于</a>
+    <a href="contact.html">联系</a>
+    <span class="nav-dot">·</span>
+ </nav>
+
+ <!-- ===== 顶部导航 (移动端) ===== -->
+ <nav class="top-nav" aria-label="移动导航">
+    <a href="/">首页</a>
+    <a href="gallery.html" class="active">作品</a>
+    <a href="about.html">关于</a>
+    <a href="contact.html">联系</a>
+ </nav>
+
+ <!-- ===== 页面头部 ===== -->
+ <header class="page-header">
+    <h1>作品集</h1>
+    <p>每一帧都是山水的呼吸，从茶山晨雾到器物静默，光影之间，遇见东方的静谧。</p>
+ </header>
+
+ <!-- ===== 分类筛选 ===== -->
+ <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="teamountain">茶山</button>
+    <button class="filter-btn" data-filter="humanity">人文</button>
+    <button class="filter-btn" data-filter="stilllife">静物</button>
+ </div>
+
+ <!-- ===== 瀑布流网格 ===== -->
+ <div class="gallery-grid" id="galleryGrid">
+
+    <!-- 茶山 1 -->
+    <div class="gallery-item teamountain tall" data-category="teamountain">
+      <img src="https://images.pexels.com/photos/2059265/pexels-photo-2059265.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="茶山晨雾" loading="lazy">
+      <div class="overlay">
+        <h3>云雾茶山</h3>
+        <p>茶山 · 清晨</p>
+      </div>
+    </div>
+
+    <!-- 人文 1 -->
+    <div class="gallery-item humanity portrait" data-category="humanity">
+      <img src="https://images.pexels.com/photos/9909073/pexels-photo-9909073.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="采茶人" loading="lazy">
+      <div class="overlay">
+        <h3>采茶人</h3>
+        <p>人文 · 劳作</p>
+      </div>
+    </div>
+
+    <!-- 静物 1 -->
+    <div class="gallery-item stilllife landscape" data-category="stilllife">
+      <img src="https://images.pexels.com/photos/19074066/pexels-photo-19074066.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶器静物" loading="lazy">
+      <div class="overlay">
+        <h3>器·韵</h3>
+        <p>静物 · 茶器</p>
+      </div>
+    </div>
+
+    <!-- 茶山 2 (wide) -->
+    <div class="gallery-item teamountain wide" data-category="teamountain">
+      <img src="https://images.pexels.com/photos/14539605/pexels-photo-14539605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶园远眺" loading="lazy">
+      <div class="overlay">
+        <h3>远山茶园</h3>
+        <p>茶山 · 层叠</p>
+      </div>
+    </div>
+
+    <!-- 人文 2 (square) -->
+    <div class="gallery-item humanity square" data-category="humanity">
+      <img src="https://images.pexels.com/photos/9909066/pexels-photo-9909066.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶市一角" loading="lazy">
+      <div class="overlay">
+        <h3>茶市</h3>
+        <p>人文 · 市集</p>
+      </div>
+    </div>
+
+    <!-- 静物 2 (portrait) -->
+    <div class="gallery-item stilllife tall" data-category="stilllife">
+      <img src="https://images.pexels.com/photos/8290865/pexels-photo-8290865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶汤光影" loading="lazy">
+      <div class="overlay">
+        <h3>汤色</h3>
+        <p>静物 · 茶汤</p>
+      </div>
+    </div>
+
+    <!-- 茶山 3 (landscape) -->
+    <div class="gallery-item teamountain landscape" data-category="teamountain">
+      <img src="https://images.pexels.com/photos/37200532/pexels-photo-37200532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="山间茶田" loading="lazy">
+      <div class="overlay">
+        <h3>山间茶田</h3>
+        <p>茶山 · 绿浪</p>
+      </div>
+    </div>
+
+    <!-- 人文 3 (tall) -->
+    <div class="gallery-item humanity portrait" data-category="humanity">
+      <img src="https://images.pexels.com/photos/15380338/pexels-photo-15380338.jpeg?auto=compress&cs=tinysrgb&h=350" alt="茶艺表演" loading="lazy">
+      <div class="overlay">
+        <h3>茶艺</h3>
+        <p>人文 · 传承</p>
+      </div>
+    </div>
+
+    <!-- 静物 3 (square) -->
+    <div class="gallery-item stilllife square" data-category="stilllife">
+      <img src="https://images.pexels.com/photos/9458996/pexels-photo-9458996.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶点与器" loading="lazy">
+      <div class="overlay">
+        <h3>茶点</h3>
+        <p>静物 · 食器</p>
+      </div>
+    </div>
+
+    <!-- 茶山 4 (portrait) -->
+    <div class="gallery-item teamountain portrait" data-category="teamountain">
+      <img src="https://images.pexels.com/photos/14020937/pexels-photo-14020937.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶树特写" loading="lazy">
+      <div class="overlay">
+        <h3>叶脉</h3>
+        <p>茶山 · 生命</p>
+      </div>
+    </div>
+
+ </div>
+
+ <!-- ===== Lightbox ===== -->
+ <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <div class="lightbox-content">
+      <img id="lightboxImg" src="" alt="">
+      <div class="lightbox-caption">
+        <h3 id="lightboxTitle"></h3>
+        <p id="lightboxDesc"></p>
+      </div>
+    </div>
+ </div>
+
+ <!-- ===== Footer (与首页一致) ===== -->
+ <footer class="footer">
+    <div class="footer-links">
+      <a href="/">首页</a>
+      <a href="gallery.html">作品</a>
+      <a href="about.html">关于</a>
+      <a href="contact.html">联系</a>
+    </div>
+    <p>&copy; 2025 山景摄影 · 静谧茶韵</p>
+ </footer>
+
+ <script>
+    (function() {
+      // 筛选功能
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const items = document.querySelectorAll('.gallery-item');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          items.forEach(item => {
+            if (filter === 'all' || item.dataset.category === filter) {
+              item.classList.remove('hidden');
+            } else {
+              item.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // Lightbox
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+      const lightboxDesc = document.getElementById('lightboxDesc');
+      const lightboxClose = document.getElementById('lightboxClose');
+
+      items.forEach(item => {
+        item.addEventListener('click', function(e) {
+          const img = this.querySelector('img');
+          const overlay = this.querySelector('.overlay');
+          let title = '';
+          let desc = '';
+          if (overlay) {
+            const h = overlay.querySelector('h3');
+            const p = overlay.querySelector('p');
+            if (h) title = h.textContent;
+            if (p) desc = p.textContent;
+          }
+          if (img) {
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt || title;
+            lightboxTitle.textContent = title;
+            lightboxDesc.textContent = desc;
+            lightbox.classList.add('active');
+          }
+        });
+      });
+
+      lightboxClose.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+
+      lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox) {
+          lightbox.classList.remove('active');
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+          lightbox.classList.remove('active');
+        }
+      });
+    })();
+ </script>
+</body>
+</html>

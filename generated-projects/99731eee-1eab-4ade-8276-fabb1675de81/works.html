@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Works · Studio Nuan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Root Design System ===== */
+        :root {
+            --color-primary: #222;
+            --color-secondary: #4A4A4A;
+            --color-background: #F7F6F4;
+            --color-surface: #FFFFFF;
+            --color-text: #1A1A1A;
+            --color-textMuted: #7D7D7D;
+            --color-accent: #B89A7B;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Manrope', sans-serif;
+            --spacing-unit: 8px;
+            --spacing-xs: calc(var(--spacing-unit) * 1);
+            --spacing-sm: calc(var(--spacing-unit) * 2);
+            --spacing-md: calc(var(--spacing-unit) * 4);
+            --spacing-lg: calc(var(--spacing-unit) * 8);
+            --spacing-xl: calc(var(--spacing-unit) * 12);
+            --spacing-2xl: calc(var(--spacing-unit) * 18);
+        }
+
+        /* ===== Reset & Base ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-weight: 300;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== Navigation (同首页) ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(247, 246, 244, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            padding: 0 var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .nav-brand {
+            font-family: var(--font-heading);
+            font-size: 1.45rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--color-primary);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: var(--spacing-xl);
+            align-items: center;
+        }
+
+        .nav-links li a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--color-secondary);
+            transition: color 0.2s;
+            position: relative;
+            padding: 0 0 4px 0;
+        }
+
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-links li a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links li a.active {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .nav-links li a.active::after {
+            width: 100%;
+            background: var(--color-accent);
+        }
+
+        /* ===== Page Header ===== */
+        .page-header {
+            padding-top: 120px;
+            padding-bottom: var(--spacing-lg);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-left: var(--spacing-md);
+            padding-right: var(--spacing-md);
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 0.02em;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .page-header p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            font-weight: 300;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ===== Filter Bar ===== */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) var(--spacing-md) var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 12px 36px;
+            background: var(--color-primary);
+            color: var(--color-background);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            background: transparent;
+            color: var(--color-secondary);
+            border: 1px solid rgba(74, 74, 74, 0.15);
+            border-radius: 0;
+            padding: 10px 32px;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: none;
+        }
+
+        .filter-btn:hover {
+            background: rgba(34, 34, 34, 0.04);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--color-primary);
+            color: var(--color-background);
+            border-color: var(--color-primary);
+        }
+
+        /* ===== Masonry Grid (瀑布流) ===== */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--spacing-md);
+            padding: 0 var(--spacing-lg) var(--spacing-xl);
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .work-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--color-surface);
+            transition: box-shadow 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .work-item:hover {
+            box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+            transform: translateY(-4px);
+        }
+
+        .work-thumb {
+            width: 100%;
+            height: 0;
+            padding-bottom: 75%;
+            position: relative;
+            overflow: hidden;
+            background: #ecebe9;
+        }
+
+        .work-thumb img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .work-item:hover .work-thumb img {
+            transform: scale(1.04);
+        }
+
+        .work-info {
+            padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .work-info h3 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            letter-spacing: 0.01em;
+        }
+
+        .work-info .category {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+            font-weight: 400;
+        }
+
+        .work-info .description {
+            font-size: 0.85rem;
+            color: var(--color-secondary);
+            font-weight: 300;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== Lightbox / Modal (点击查看大图 & 详情) ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96); }}
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            background: #eceae7;
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .modal-details .modal-category {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-textMuted);
+            font-weight: 400;
+        }
+
+        .modal-details h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            letter-spacing: 0.01em;
+        }
+
+        .modal-details p {
+            font-size: 0.95rem;
+            color: var(--color-secondary);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .modal-close {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 12px 36px;
+            background: var(--color-primary);
+            color: var(--color-background);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            align-self: flex-start;
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            padding: 10px 28px;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: none;
+        }
+
+        .modal-close:hover {
+            background: var(--color-primary);
+            color: var(--color-background);
+        }
+
+        /* ===== Footer (同首页风格) ===== */
+        footer {
+            border-top: 1px solid rgba(0,0,0,0.04);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: var(--spacing-md);
+            background: var(--color-background);
+            margin-top: var(--spacing-2xl);
+        }
+
+        footer .footer-brand {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            letter-spacing: 0.02em;
+        }
+
+        footer .footer-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        footer .footer-links a {
+            font-family: var(--font-heading);
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--color-primary);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            color: var(--color-secondary);
+            transition: color 0.2s;
+        }
+
+        footer .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        footer .footer-copy {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--color-secondary);
+            transition: color 0.2s;
+            width: 100%;
+            margin-top: var(--spacing-sm);
+            text-align: center;
+            color: var(--color-textMuted);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+            }
+            .modal-image {
+                min-height: 300px;
+            }
+            .works-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                padding: 0 var(--spacing-md) var(--spacing-xl);
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 0 var(--spacing-md);
+                height: 64px;
+            }
+            .nav-links {
+                gap: var(--spacing-md);
+            }
+            .nav-links li a {
+                font-size: 0.75rem;
+            }
+            .page-header h1 {
+                font-size: 2.4rem;
+            }
+            .works-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+                padding: 0 var(--spacing-sm) var(--spacing-lg);
+            }
+            .filter-bar {
+                gap: var(--spacing-xs);
+                padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+            }
+            .filter-btn {
+                padding: 8px 20px;
+                font-size: 0.78rem;
+            }
+            footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+            footer .footer-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Navigation ===== -->
+    <nav>
+        <div class="nav-brand">Studio Nuan</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="works.html" class="active">Works</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== Page Header ===== -->
+    <header class="page-header">
+        <h1>Selected Works</h1>
+        <p>Commercial product photography — still life, e‑commerce &amp; editorial. Each image is crafted to elevate the object, balancing light, texture and form.</p>
+    </header>
+
+    <!-- ===== Filter Bar ===== -->
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="still-life">Still Life</button>
+        <button class="filter-btn" data-filter="ecommerce">E‑commerce</button>
+        <button class="filter-btn" data-filter="editorial">Editorial</button>
+    </div>
+
+    <!-- ===== Works Grid (瀑布流) ===== -->
+    <section class="works-grid" id="worksGrid">
+        <!-- 作品项将通过 JavaScript 动态生成 -->
+    </section>
+
+    <!-- ===== Modal / Lightbox ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-image">
+                <img id="modalImg" src="" alt="">
+            </div>
+            <div class="modal-details">
+                <span class="modal-category" id="modalCategory"></span>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDesc"></p>
+                <button class="modal-close" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="footer-brand">Studio Nuan</div>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="works.html">Works</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-copy">© 2025 Studio Nuan · all works</div>
+    </footer>
+
+    <script>
+        (function() {
+            // ===== 作品数据 (模拟商业产品摄影) =====
+            const worksData = [
+                {
+                    id: 1,
+                    title: 'Aurora Vessel',
+                    category: 'still-life',
+                    categoryLabel: 'Still Life',
+                    description: 'Hand‑thrown ceramic pitcher with matte glaze, captured against soft northern light.',
+                    thumb: 'https://images.pexels.com/photos/12944654/pexels-photo-12944654.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
+                    full: 'https://images.pexels.com/photos/12944654/pexels-photo-12944654.jpeg?auto=compress&cs=tinysrgb&w=1200&h=900&fit=crop'
+                },
+                {
+                    id: 2,
+                    title: 'Brass Compass',
+                    category: 'still-life',
+                    categoryLabel: 'Still Life',
+                    description: 'Antique brass compass on aged paper — detail, reflection and patina.',
+                    thumb: 'https://images.pexels.com/photos/19893582/pexels-photo-19893582.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop',
+                    full: 'https://images.pexels.com/photos/19893582/pexels-photo-19893582.jpeg?auto=compress&cs=tinysrgb&w=1200&h=900&fit=crop'
+                },
+                {
+                    id: 3,
+                    title: 'Linen & Wool',
+                    category: 'editorial',
+                    categoryLabel: 'Editorial',
+                    description: 'Textile study for a Scandinavian lifestyle magazine — folds, fibers and quiet palette.',
+                    thumb: 'https://picsum.photos/seed/works_editorial_01/600/750',
+                    full: 'https://picsum.photos/seed/works_editorial_full_01/1200/900'
+                },
+                {
+                    id: 4,
+                    title: 'Minimal Pour',
+                    category: 'ecommerce',
+                    categoryLabel: 'E‑commerce',
+                    description: 'Product hero for a premium olive oil brand — golden liquid, clean background, high detail.',
+                    thumb: 'https://picsum.photos/seed/works_ecom_02/600/700',
+                    full: 'https://picsum.photos/seed/works_ecom_full_02/1200/900'
+                },
+                {
+                    id: 5,
+                    title: 'Glass Duo',
+                    category: 'still-life',
+                    categoryLabel: 'Still Life',
+                    description: 'Two crystal glasses with water play — transparency, refraction and subtle highlights.',
+                    thumb: 'https://picsum.photos/seed/works_still_03/600/800',
+                    full: 'https://picsum.photos/seed/works_still_full_03/1200/900'
+                },
+                {
+                    id: 6,
+                    title: 'Leather Journal',
+                    category: 'ecommerce',
+                    categoryLabel: 'E‑commerce',
+                    description: 'Flat lay for a luxury stationery line — grain, stitching and natural lighting.',
+                    thumb: 'https://picsum.photos/seed/works_ecom_04/600/650',
+                    full: 'https://picsum.photos/seed/works_ecom_full_04/1200/900'
+                },
+                {
+                    id: 7,
+                    title: 'Stone & Steel',
+                    category: 'editorial',
+                    categoryLabel: 'Editorial',
+                    description: 'Editorial spread for a design quarterly — material contrast and brutalist composition.',
+                    thumb: 'https://picsum.photos/seed/works_editorial_05/600/780',
+                    full: 'https://picsum.photos/seed/works_editorial_full_05/1200/900'
+                },
+                {
+                    id: 8,
+                    title: 'Tea Ritual',
+                    category: 'still-life',
+                    categoryLabel: 'Still Life',
+                    description: 'Japanese teaware in soft morning light — simplicity, steam and shadow.',
+                    thumb: 'https://picsum.photos/seed/works_still_06/600/720',
+                    full: 'https://picsum.photos/seed/works_still_full_06/1200/900'
+                },
+                {
+                    id: 9,
+                    title: 'Scent Bottle',
+                    category: 'ecommerce',
+                    categoryLabel: 'E‑commerce',
+                    description: 'Perfume bottle hero shot — glass reflection, gold collar, minimal staging.',
+                    thumb: 'https://picsum.photos/seed/works_ecom_07/600/680',
+                    full: 'https://picsum.photos/seed/works_ecom_full_07/1200/900'
+                }
+            ];
+
+            // ===== 渲染网格 =====
+            const grid = document.getElementById('worksGrid');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalImg = document.getElementById('modalImg');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalClose = document.getElementById('modalCloseBtn');
+
+            let currentFilter = 'all';
+
+            function renderGrid(filter) {
+                grid.innerHTML = '';
+                const filtered = filter === 'all' 
+                    ? worksData 
+                    : worksData.filter(item => item.category === filter);
+
+                filtered.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'work-item';
+                    div.dataset.id = item.id;
+                    div.dataset.category = item.category;
+
+                    div.innerHTML = `
+                        <div class="work-thumb">
+                            <img src="${item.thumb}" alt="${item.title}" loading="lazy">
+                        </div>
+                        <div class="work-info">
+                            <span class="category">${item.categoryLabel}</span>
+                            <h3>${item.title}</h3>
+                            <p class="description">${item.description}</p>
+                        </div>
+                    `;
+
+                    // 点击打开 modal
+                    div.addEventListener('click', function(e) {
+                        openModal(item);
+                    });
+
+                    grid.appendChild(div);
+                });
+            }
+
+            // ===== 打开 Modal =====
+            function openModal(item) {
+                modalImg.src = item.full;
+                modalImg.alt = item.title;
+                modalTitle.textContent = item.title;
+                modalCategory.textContent = item.categoryLabel;
+                modalDesc.textContent = item.description;
+                modalOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // ===== 关闭 Modal =====
+            function closeModal() {
+                modalOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // ===== 筛选逻辑 =====
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    currentFilter = filter;
+                    renderGrid(filter);
+                });
+            });
+
+            // ===== 初始渲染 =====
+            renderGrid('all');
+        })();
+    </script>
+
+</body>
+</html>

@@ -27,6 +27,9 @@ public class ProjectState extends AgentState {
     public static final String SESSION_ID = "sessionId";
     public static final String MODEL = "model";
     public static final String PAGES = "pages";
+    public static final String MODIFY_PLAN = "modifyPlan";
+    public static final String TARGET_PAGE = "targetPage";
+    public static final String NEW_PAGES_DETECTED = "newPagesDetected";
 
     public ProjectState(Map<String, Object> initData) {
         super(initData);
@@ -90,5 +93,22 @@ public class ProjectState extends AgentState {
 
     public String sessionId() {
         return value(SESSION_ID).map(Object::toString).orElse("");
+    }
+
+    public String modifyPlan() {
+        return value(MODIFY_PLAN).map(Object::toString).orElse("");
+    }
+
+    public String targetPage() {
+        return value(TARGET_PAGE).map(Object::toString).orElse("index.html");
+    }
+
+    @SuppressWarnings("unchecked")
+    public java.util.List<String> newPagesDetected() {
+        return (java.util.List<String>) value(NEW_PAGES_DETECTED).orElse(java.util.List.of());
+    }
+
+    public String model() {
+        return value(MODEL).map(Object::toString).orElse("qwen3.6-plus");
     }
 }

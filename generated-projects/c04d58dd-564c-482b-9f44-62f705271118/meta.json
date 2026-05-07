@@ -1,0 +1,9 @@
+{
+  "projectId" : "c04d58dd-564c-482b-9f44-62f705271118",
+  "originalInput" : "帮我生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>山色·无声 · 自然摄影</title>\n    <style>\n        :root {\n            --color-primary: #2A3D30;\n            --color-secondary: #B8A89A;\n            --color-background: #F9F8F5;\n            --color-surface: #F1F0EC;\n            --color-text: #111;\n            --color-textMuted: #665F55;\n            --color-accent: #C48B5F;\n            --font-heading: '...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#2A3D30\",\n    \"secondary\": \"#B8A89A\",\n    \"background\": \"#F9F8F5\",\n    \"surface\": \"#F1F0EC\",\n    \"text\": \"#111111\",\n    \"textMuted\": \"#665F55\",\n    \"accent\": \"#C48B5F\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全屏沉浸Hero主视觉+不对称瀑布流作品画廊+留白充裕的图文详情区块\",\n  \"mood\": \"沉静优雅、自然沉浸、画廊质感\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 7, 9, 54, 15, 259896900 ]
+}

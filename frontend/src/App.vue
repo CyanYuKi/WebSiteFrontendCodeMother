@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, computed, watch } from 'vue'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
 
@@ -24,7 +24,10 @@ const copySuccess = ref(false)
 // SSE 流式生成
 const streamingHtml = ref('')
 const currentStage = ref('')
+const modifying = ref(false)    // 修改模式：在 result 页面内联修改，不跳转 generating 视图
 const cancelled = ref(false)
+const flowMessageIndex = ref(-1) // 执行流程所附属的消息索引，-1 表示不显示
+const currentProjectId = ref('')  // 当前查看/编辑的项目 ID，用于及时保存对话历史
 const sseReader = ref(null)
 
 // 打字机动画
@@ -59,9 +62,13 @@ const pageList = ref([])          // 从 page_list SSE 事件获取 [{name, titl
 const pageTokens = ref({})        // { [pageName]: accumulatedCode }
 const pageStatuses = ref({})      // { [pageName]: 'generating' | 'completed' | '' }
 
+const streamingPlan = ref('')   // 修改计划流式文本
+const previewVersion = ref(0)  // 每次修改/生成完成后递增，强制刷新 iframe
+
 const activePreviewUrl = computed(() => {
   if (!previewUrl.value) return undefined
-  return previewUrl.value + (currentPage.value || 'index.html')
+  const sep = previewUrl.value.includes('?') ? '&' : '?'
+  return previewUrl.value + (currentPage.value || 'index.html') + sep + '_v=' + previewVersion.value
 })
 
 const allGeneratingPages = computed(() => {
@@ -74,6 +81,312 @@ const allGeneratingPages = computed(() => {
 
 // Agent 聊天消息流
 const messages = ref([])
+const chatContainer = ref(null)
+
+// 新消息时自动滚动到底部
+watch(
+  () => messages.value.length,
+  () => nextTick(() => {
+    if (chatContainer.value) {
+      chatContainer.value.scrollTop = chatContainer.value.scrollHeight
+    }
+  })
+)
+
+// ==================== Auth State ====================
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+  return match ? decodeURIComponent(match[2]) : ''
+}
+
+function setCookie(name, value, days) {
+  const d = new Date()
+  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000)
+  document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax'
+}
+
+function removeCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax'
+}
+
+const authToken = ref(getCookie('authToken'))
+const currentUser = ref(null)
+const authMode = ref(null) // 'login' | 'register' | null
+const authError = ref('')
+const authLoading = ref(false)
+
+// 用户首页 & 历史项目
+const showUserHome = ref(false)
+const myProjects = ref([])
+const projectsLoading = ref(false)
+
+// 用户管理
+const showUserManagement = ref(false)
+const userList = ref([])
+const userMgmtLoading = ref(false)
+const editingUserId = ref(null)
+const editRole = ref('')
+
+// 登录表单
+const loginForm = ref({ username: '', password: '' })
+const registerForm = ref({ username: '', password: '', email: '' })
+
+// 已有 token 时自动获取用户信息
+if (authToken.value) {
+  fetchMe()
+}
+
+async function fetchMe() {
+  try {
+    const res = await fetch('/api/auth/me', {
+      headers: { 'Authorization': 'Bearer ' + authToken.value }
+    })
+    if (res.ok) {
+      currentUser.value = await res.json()
+    } else {
+      removeCookie('authToken')
+      authToken.value = ''
+    }
+  } catch {
+    // 忽略
+  }
+}
+
+function authHeaders() {
+  return authToken.value ? { 'Authorization': 'Bearer ' + authToken.value, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' }
+}
+
+function isAdmin() {
+  return currentUser.value && currentUser.value.role === 'ADMIN'
+}
+
+async function handleLogin() {
+  authError.value = ''
+  authLoading.value = true
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginForm.value)
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.message || err.error || '登录失败')
+    }
+    const data = await res.json()
+    authToken.value = data.token
+    currentUser.value = data.user
+    setCookie('authToken', data.token, 30)
+    authMode.value = null
+    loginForm.value = { username: '', password: '' }
+  } catch (e) {
+    authError.value = e.message
+  } finally {
+    authLoading.value = false
+  }
+}
+
+async function handleRegister() {
+  authError.value = ''
+  authLoading.value = true
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerForm.value)
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.message || err.error || '注册失败')
+    }
+    const data = await res.json()
+    authToken.value = data.token
+    currentUser.value = data.user
+    setCookie('authToken', data.token, 30)
+    authMode.value = null
+    registerForm.value = { username: '', password: '', email: '' }
+  } catch (e) {
+    authError.value = e.message
+  } finally {
+    authLoading.value = false
+  }
+}
+
+async function handleLogout() {
+  try {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: authHeaders()
+    })
+  } catch { /* ignore */ }
+  authToken.value = ''
+  currentUser.value = null
+  removeCookie('authToken')
+  reset()
+}
+
+async function openUserHome() {
+  showUserHome.value = true
+  step.value = ''
+  messages.value = []        // 切换到个人主页时清空历史对话框
+  currentProjectId.value = ''
+  await loadMyProjects()
+}
+
+async function deleteProject(projectId) {
+	  if (!confirm('确定要删除该项目吗？此操作不可撤销。')) return
+	  try {
+	    const res = await fetch('/api/projects/my/' + projectId, {
+	      method: 'DELETE',
+	      headers: authHeaders()
+	    })
+	    if (!res.ok) {
+	      const err = await res.json().catch(() => ({}))
+	      throw new Error(err.message || '删除失败')
+	    }
+	    await loadMyProjects()
+	  } catch(e) {
+	    alert('删除失败: ' + e.message)
+	  }
+	}
+
+	async function downloadProject(projectId) {
+	  try {
+	    const res = await fetch('/api/projects/my/' + projectId + '/download-zip', {
+	      headers: authHeaders()
+	    })
+	    if (!res.ok) throw new Error('下载失败')
+	    const blob = await res.blob()
+	    const url = URL.createObjectURL(blob)
+	    const a = document.createElement('a')
+	    a.href = url
+	    a.download = projectId + '.zip'
+	    document.body.appendChild(a)
+	    a.click()
+	    document.body.removeChild(a)
+	    URL.revokeObjectURL(url)
+	  } catch(e) {
+	    alert('下载失败: ' + e.message)
+	  }
+	}
+
+	function closeUserHome() {
+  showUserHome.value = false
+  reset()
+}
+
+async function loadMyProjects() {
+  projectsLoading.value = true
+  try {
+    const res = await fetch('/api/projects/my', { headers: authHeaders() })
+    if (res.ok) {
+      myProjects.value = await res.json()
+    }
+  } catch { /* ignore */ }
+  projectsLoading.value = false
+}
+
+function saveChatHistory(projectId) {
+  if (!projectId) return
+  const history = JSON.stringify(messages.value)
+  fetch('/api/projects/my/' + projectId + '/chat-history', {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ chatHistory: history })
+  }).catch(() => {})
+}
+
+async function reloadProject(projectId) {
+  // 切换项目前，先保存当前项目的对话历史
+  if (currentProjectId.value && currentProjectId.value !== projectId) {
+    saveChatHistory(currentProjectId.value)
+  }
+  try {
+    const res = await fetch('/api/projects/my/' + projectId, { headers: authHeaders() })
+    if (!res.ok) throw new Error('加载失败')
+    const data = await res.json()
+    htmlCode.value = data.htmlCode || ''
+    designConcept.value = data.designConcept || ''
+    reviewPassed.value = data.reviewPassed
+    reviewFeedback.value = ''
+    retryCount.value = data.retryCount || 0
+    previewUrl.value = '/api/preview/' + projectId + '/'
+    // 从后端返回的页面文件列表恢复多页面（优先用 pages，fallback 到 pagesJson）
+    if (data.pages && data.pages.length > 0) {
+      pages.value = data.pages
+    } else if (data.pagesJson) {
+      try {
+        const pagesMap = JSON.parse(data.pagesJson)
+        pages.value = Object.keys(pagesMap)
+      } catch { pages.value = ['index.html'] }
+    } else {
+      pages.value = ['index.html']
+    }
+    currentPage.value = pages.value.includes('index.html') ? 'index.html' : (pages.value[0] || 'index.html')
+    currentProjectId.value = projectId
+    // 恢复完整对话历史
+    try {
+      const history = JSON.parse(data.chatHistory || '[]')
+      messages.value = history
+    } catch { messages.value = [] }
+    showUserHome.value = false
+    step.value = 'result'
+    initTweaks()
+    await nextTick()
+    document.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block)
+    })
+  } catch(e) {
+    alert('加载项目失败: ' + e.message)
+  }
+}
+
+async function loadUsers() {
+  userMgmtLoading.value = true
+  try {
+    const res = await fetch('/api/users', { headers: authHeaders() })
+    if (res.ok) {
+      userList.value = await res.json()
+    }
+  } catch { /* ignore */ }
+  userMgmtLoading.value = false
+}
+
+function openUserManagement() {
+  showUserManagement.value = true
+  loadUsers()
+}
+
+async function saveUserEdit(id) {
+  try {
+    await fetch('/api/users/' + id, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({ role: editRole.value })
+    })
+    editingUserId.value = null
+    editRole.value = ''
+    loadUsers()
+  } catch { /* ignore */ }
+}
+
+async function deleteUser(id) {
+  if (!confirm('确定要删除该用户吗？')) return
+  try {
+    const res = await fetch('/api/users/' + id, {
+      method: 'DELETE',
+      headers: authHeaders()
+    })
+    if (!res.ok && res.status !== 200) {
+      const err = await res.json().catch(() => ({}))
+      alert(err.error || '删除失败')
+      return
+    }
+    loadUsers()
+  } catch(e) {
+    alert('删除失败: ' + e.message)
+  }
+}
 
 // ==================== Computed ====================
 
@@ -424,15 +737,32 @@ function twHighlighted(name) {
 
 async function handleStart() {
   if (!userInput.value.trim()) return
+  if (!authToken.value) {
+    authMode.value = 'login'
+    return
+  }
+  const inputText = userInput.value
   loading.value = true
-  step.value = 'chatting'
-  messages.value.push({ role: 'user', content: userInput.value })
+  showUserHome.value = false   // 开始对话/创建时关闭个人主页面板
+  const hasExistingCode = !!(htmlCode.value)
+  // 有已有项目时保持在当前页面（通常是 result），避免右侧面板跳转/清空
+  if (!hasExistingCode) {
+    step.value = 'chatting'
+  }
+  messages.value.push({ role: 'user', content: inputText })
+  userInput.value = ''
 
   try {
+    const body = { input: inputText, model: selectedModel.value }
+    if (hasExistingCode) {
+      body.existingHtmlCode = htmlCode.value
+      body.designConcept = designConcept.value
+      body.projectId = currentProjectId.value || undefined
+    }
     const res = await fetch('/api/generate/start', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input: userInput.value, model: selectedModel.value })
+      headers: authHeaders(),
+      body: JSON.stringify(body)
     })
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}))
@@ -444,8 +774,19 @@ async function handleStart() {
     chatReply.value = data.chatReply || ''
 
     if (data.intentType === 'chat') {
-      step.value = 'chatting'
+      // 保持在当前页面，仅追加助手回复
       messages.value.push({ role: 'assistant', content: chatReply.value })
+      // 及时保存对话历史到当前项目
+      if (currentProjectId.value) saveChatHistory(currentProjectId.value)
+    } else if (data.intentType === 'query') {
+      // 查询意图：将项目上下文的回答追加到对话，保持在当前页面
+      messages.value.push({ role: 'assistant', content: data.chatReply || '无法回答该问题。' })
+      if (currentProjectId.value) saveChatHistory(currentProjectId.value)
+    } else if (data.intentType === 'modify') {
+      messages.value.push({ role: 'assistant', content: chatReply.value || '好的，我来修改...' })
+      // 修改前先保存当前对话历史
+      if (currentProjectId.value) saveChatHistory(currentProjectId.value)
+      await handleModify(inputText)
     } else {
       try {
         checklist.value = JSON.parse(data.checklist || '[]')
@@ -461,9 +802,128 @@ async function handleStart() {
     }
   } catch (err) {
     alert('请求失败: ' + err.message)
-    step.value = 'chatting'
+    if (!hasExistingCode) {
+      step.value = 'chatting'
+    }
   } finally {
     loading.value = false
+  }
+}
+
+async function handleModify(userInputText) {
+  loading.value = true
+  cancelled.value = false
+  modifying.value = true    // 内联修改，保持在 result 页面
+  flowMessageIndex.value = messages.value.length - 1  // 执行流程紧跟前一条助手消息
+  streamingHtml.value = ''
+  streamingPlan.value = ''
+  currentStage.value = '正在分析修改方案...'
+  pageList.value = []
+  pageTokens.value = {}
+  pageStatuses.value = {}
+  twDisplayed.value = {}
+  twHighlightCache.value = {}
+  twStop()
+
+  try {
+    const res = await fetch('/api/generate/modify-stream', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        sessionId: sessionId.value,
+        userInput: userInputText,
+        projectId: currentProjectId.value || undefined,
+        currentPage: currentPage.value || 'index.html'
+      })
+    })
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}))
+      throw new Error(errData.message || `请求失败 (${res.status})`)
+    }
+
+    const reader = res.body.getReader()
+    sseReader.value = reader
+    const decoder = new TextDecoder()
+    let buffer = ''
+
+    while (true) {
+      if (cancelled.value) break
+      const { done, value } = await reader.read()
+      if (done) break
+
+      buffer += decoder.decode(value, { stream: true })
+      const events = parseSseEvents(buffer)
+      buffer = events.remainder
+
+      for (const event of events.list) {
+        if (event.name === 'stage') {
+          // 计划阶段结束，将流式规划内容作为消息推入对话
+          if (event.data === 'html_modifier' && streamingPlan.value.trim()) {
+            messages.value.push({ role: 'assistant', content: '📋 ' + streamingPlan.value.trim() })
+            streamingPlan.value = ''
+          }
+          currentStage.value = stageToLabel(event.data)
+        } else if (event.name === 'modify_plan') {
+          streamingPlan.value += event.data
+        } else if (event.name === 'html_token') {
+          streamingHtml.value += event.data
+          if (!pageTokens.value['index.html']) pageTokens.value['index.html'] = ''
+          pageTokens.value['index.html'] += event.data
+          twStartIfNeeded()
+        } else if (event.name === 'page_list') {
+          const data = JSON.parse(event.data)
+          pageList.value = data.pages || []
+          for (const p of pageList.value) {
+            if (p.name && !pageStatuses.value[p.name]) pageStatuses.value[p.name] = ''
+          }
+        } else if (event.name === 'page_status') {
+          const data = JSON.parse(event.data)
+          pageStatuses.value[data.page] = data.status
+        } else if (event.name === 'page_token') {
+          const data = JSON.parse(event.data)
+          if (!pageTokens.value[data.page]) pageTokens.value[data.page] = ''
+          pageTokens.value[data.page] += data.token
+          twStartIfNeeded()
+        } else if (event.name === 'complete') {
+          twStop()
+          const data = JSON.parse(event.data)
+          htmlCode.value = data.htmlCode || ''
+          designConcept.value = data.designConcept || ''
+          designTokensStr.value = data.designTokens || ''
+          reviewPassed.value = data.reviewPassed
+          reviewFeedback.value = data.reviewFeedback || ''
+          retryCount.value = data.retryCount || 0
+          previewUrl.value = data.previewUrl || ''
+          screenshotUrl.value = data.previewUrl ? (data.previewUrl + 'screenshot.png') : ''
+          pages.value = data.pages || ['index.html']
+          currentPage.value = pages.value.includes('index.html') ? 'index.html' : (pages.value[0] || 'index.html')
+          pageStatuses.value['index.html'] = 'completed'
+          initTweaks()
+          step.value = 'result'
+          currentProjectId.value = data.projectId
+          previewVersion.value++  // 强制刷新 iframe
+          // 生成修改概述并回复给用户
+          const reviewResult = data.reviewPassed ? '代码审查已通过 ✓' : '代码审查未通过，已尝试自动修复'
+          const retryInfo = data.retryCount > 0 ? `（修复 ${data.retryCount} 次）` : ''
+          messages.value.push({ role: 'assistant', content: `已完成修改。${reviewResult}${retryInfo}。` })
+          saveChatHistory(data.projectId)
+          await nextTick()
+          document.querySelectorAll('pre code').forEach(block => {
+            hljs.highlightElement(block)
+          })
+        } else if (event.name === 'error') {
+          throw new Error(event.data)
+        }
+      }
+    }
+  } catch (err) {
+    if (!cancelled.value) {
+      alert('修改失败: ' + err.message)
+    }
+  } finally {
+    loading.value = false
+    modifying.value = false
+    sseReader.value = null
   }
 }
 
@@ -471,6 +931,7 @@ async function handleResume() {
   loading.value = true
   cancelled.value = false
   step.value = 'generating'
+  flowMessageIndex.value = messages.value.length - 1  // 执行流程紧跟最后一条助手消息
   streamingHtml.value = ''
   currentStage.value = '正在准备...'
   pageList.value = []
@@ -483,7 +944,7 @@ async function handleResume() {
   try {
     const res = await fetch('/api/generate/resume-stream', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({
         sessionId: sessionId.value,
         answers: checklistAnswers.value
@@ -554,6 +1015,13 @@ async function handleResume() {
           }
           initTweaks()
           step.value = 'result'
+          currentProjectId.value = data.projectId
+          previewVersion.value++  // 强制刷新 iframe
+          // 生成完成后回复用户
+          const genResult = data.reviewPassed ? '代码审查已通过 ✓' : '代码审查未通过，已尝试自动修复'
+          const genRetryInfo = data.retryCount > 0 ? `（修复 ${data.retryCount} 次）` : ''
+          messages.value.push({ role: 'assistant', content: `网站已生成完毕。${genResult}${genRetryInfo}。` })
+          saveChatHistory(data.projectId)
           await nextTick()
           document.querySelectorAll('pre code').forEach(block => {
             hljs.highlightElement(block)
@@ -579,8 +1047,11 @@ function stageToLabel(stage) {
     'asset_collector': '正在收集素材...',
     'design_concept': '正在生成设计概念...',
     'html_generator': '正在生成 HTML 代码...',
+    'modify_planner': '正在分析修改方案...',
+    'html_modifier': '正在修改代码...',
     'sub_page_generator': '正在生成子页面...',
-    'code_reviewer': '正在审查代码...'
+    'code_reviewer': '正在审查代码...',
+    'new_page_detector': '正在检测新页面...'
   }
   return map[stage] || '处理中...'
 }
@@ -590,14 +1061,32 @@ function isStageActive(stageId) {
     'asset_collector': '正在收集素材...',
     'design_concept': '正在生成设计概念...',
     'html_generator': '正在生成 HTML 代码...',
+    'modify_planner': '正在分析修改方案...',
+    'html_modifier': '正在修改代码...',
     'sub_page_generator': '正在生成子页面...',
-    'code_reviewer': '正在审查代码...'
+    'code_reviewer': '正在审查代码...',
+    'new_page_detector': '正在检测新页面...'
   }
   return currentStage.value === map[stageId]
 }
 
 function isStageDone(stageId) {
-  if (step.value === 'result') return true
+  // 结果页非修改状态：所有阶段已完成
+  if (step.value === 'result' && !modifying.value) return true
+  // 修改流程阶段顺序
+  if (modifying.value) {
+    const modifyOrder = ['html_modifier', 'code_reviewer', 'new_page_detector', 'sub_page_generator']
+    const modifyMap = {
+      'html_modifier': '正在修改代码...',
+      'code_reviewer': '正在审查代码...',
+      'new_page_detector': '正在检测新页面...',
+      'sub_page_generator': '正在生成子页面...'
+    }
+    const currentIdx = modifyOrder.findIndex(id => currentStage.value === modifyMap[id])
+    const stageIdx = modifyOrder.indexOf(stageId)
+    return currentIdx > stageIdx
+  }
+  // 创建流程阶段顺序
   const order = ['asset_collector', 'design_concept', 'html_generator', 'sub_page_generator', 'code_reviewer']
   const map = {
     'asset_collector': '正在收集素材...',
@@ -653,6 +1142,7 @@ function initTweaks() {
 }
 
 function reset() {
+  showUserHome.value = false
   userInput.value = ''
   step.value = 'chatting'
   chatReply.value = ''
@@ -670,6 +1160,9 @@ function reset() {
   showTweaks.value = false
   streamingHtml.value = ''
   currentStage.value = ''
+  modifying.value = false
+  flowMessageIndex.value = -1
+  currentProjectId.value = ''
   messages.value = []
   pageList.value = []
   pageTokens.value = {}
@@ -677,6 +1170,7 @@ function reset() {
   pages.value = []
   currentPage.value = ''
   previewUrl.value = ''
+  previewVersion.value = 0
   twStop()
   twDisplayed.value = {}
   twHighlightCache.value = {}
@@ -746,7 +1240,7 @@ async function cancelGeneration() {
       try {
         await fetch('/api/generate/cancel', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: authHeaders(),
           body: JSON.stringify({ sessionId: sessionId.value })
         })
       } catch (e) {
@@ -754,7 +1248,9 @@ async function cancelGeneration() {
       }
     }
     loading.value = false
-    step.value = 'checklist'
+    modifying.value = false
+    // 修改模式下取消，保持在结果页；否则返回清单页
+    step.value = (step.value === 'result') ? 'result' : 'checklist'
   }
 }
 
@@ -790,6 +1286,7 @@ function handleKeydown(e) {
 
 <template>
   <div class="h-screen flex flex-col bg-[#f5f5f0] text-stone-800" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <template v-if="authToken">
     <!-- Header -->
     <header class="bg-[#fafaf8] border-b border-stone-200 shrink-0">
       <div class="flex items-center justify-between px-5 py-2.5">
@@ -797,12 +1294,39 @@ function handleKeydown(e) {
           <div class="w-7 h-7 bg-stone-800 rounded-lg flex items-center justify-center text-white font-bold text-[10px]">AI</div>
           <span class="text-sm font-semibold text-stone-700 tracking-tight">WebsiteMother</span>
         </div>
-        <button
-          @click="reset"
-          class="text-xs text-stone-500 hover:text-stone-800 px-3 py-1.5 rounded-lg hover:bg-stone-100 transition-colors"
-        >
-          新对话
-        </button>
+        <div class="flex items-center gap-2">
+          <template v-if="currentUser">
+            <button @click="openUserHome()" :disabled="step === 'generating'" :class="step === 'generating' ? 'text-xs text-stone-400 px-2 py-1 rounded-lg cursor-not-allowed' : 'text-xs text-stone-600 hover:text-stone-800 px-2 py-1 rounded-lg hover:bg-stone-100 transition-colors font-medium'">{{ currentUser.username }}</button>
+            <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                  :class="isAdmin() ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-500'">
+              {{ currentUser.role }}
+            </span>
+            <button v-if="isAdmin()" @click="openUserManagement"
+                    class="text-xs text-stone-500 hover:text-stone-800 px-2 py-1 rounded-lg hover:bg-stone-100 transition-colors">
+              用户管理
+            </button>
+            <button @click="handleLogout"
+                    class="text-xs text-stone-500 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
+              登出
+            </button>
+          </template>
+          <template v-else>
+            <button @click="authMode = 'login'"
+                    class="text-xs text-stone-600 hover:text-stone-800 px-3 py-1.5 rounded-lg hover:bg-stone-100 transition-colors">
+              登录
+            </button>
+            <button @click="authMode = 'register'"
+                    class="text-xs bg-stone-800 hover:bg-stone-900 text-white px-3 py-1.5 rounded-lg transition-colors">
+              注册
+            </button>
+          </template>
+          <button
+            @click="reset"
+            class="text-xs text-stone-500 hover:text-stone-800 px-3 py-1.5 rounded-lg hover:bg-stone-100 transition-colors"
+          >
+            新对话
+          </button>
+        </div>
       </div>
     </header>
 
@@ -810,27 +1334,96 @@ function handleKeydown(e) {
     <div class="flex-1 flex overflow-hidden">
       <!-- Left Sidebar -->
       <aside class="w-[32%] min-w-[380px] max-w-[520px] border-r border-stone-200 bg-white flex flex-col overflow-hidden shrink-0">
-        <div class="flex-1 overflow-y-auto p-4 space-y-4">
-          <!-- Agent Chat Messages -->
-          <div v-for="(msg, i) in messages" :key="i" class="space-y-1">
-            <!-- User Message -->
-            <div v-if="msg.role === 'user'" class="flex justify-end">
-              <div class="max-w-[85%] bg-stone-800 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed">
-                {{ msg.content }}
-              </div>
-            </div>
-            <!-- Assistant Message -->
-            <div v-else class="flex justify-start">
-              <div class="flex gap-2.5 max-w-[92%]">
-                <div class="w-7 h-7 rounded-full bg-stone-800 flex items-center justify-center shrink-0 mt-0.5">
-                  <span class="text-[10px] font-bold text-white">AI</span>
-                </div>
-                <div class="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-stone-700 leading-relaxed">
+        <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+          <!-- Agent Chat Messages (执行流程内联在对应的助手消息下方) -->
+          <template v-for="(msg, i) in messages" :key="i">
+            <div class="space-y-1">
+              <!-- User Message -->
+              <div v-if="msg.role === 'user'" class="flex justify-end">
+                <div class="max-w-[85%] bg-stone-800 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed">
                   {{ msg.content }}
                 </div>
               </div>
+              <!-- Assistant Message -->
+              <div v-else class="flex justify-start">
+                <div class="flex gap-2.5 max-w-[92%]">
+                  <div class="w-7 h-7 rounded-full bg-stone-800 flex items-center justify-center shrink-0 mt-0.5">
+                    <span class="text-[10px] font-bold text-white">AI</span>
+                  </div>
+                  <div class="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-stone-700 leading-relaxed">
+                    {{ msg.content }}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+            <!-- 执行流程内联：紧跟在触发生成/修改的助手消息后面 -->
+            <div v-if="i === flowMessageIndex && (step === 'generating' || modifying)" class="ml-9 pl-2 border-l-2 border-stone-200 space-y-1 py-1">
+              <div class="space-y-1">
+                <!-- 修改流程 -->
+                <template v-if="modifying">
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('modify_planner') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('modify_planner') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('modify_planner')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('modify_planner')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>分析修改方案</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('html_modifier') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('html_modifier') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('html_modifier')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('html_modifier')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>修改代码</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('code_reviewer') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('code_reviewer') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('code_reviewer')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('code_reviewer')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>代码审查</span>
+                  </div>
+                </template>
+                <!-- 创建流程 -->
+                <template v-else>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('asset_collector') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('asset_collector') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('asset_collector')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('asset_collector')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>素材收集</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('design_concept') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('design_concept') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('design_concept')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('design_concept')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>设计概念</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('html_generator') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('html_generator') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('html_generator')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('html_generator')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>HTML 生成</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('sub_page_generator') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('sub_page_generator') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('sub_page_generator')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('sub_page_generator')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>子页面生成</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2 py-1 rounded text-xs transition-colors"
+                       :class="isStageActive('code_reviewer') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('code_reviewer') ? 'text-stone-400' : 'text-stone-300')">
+                    <span v-if="isStageDone('code_reviewer')" class="text-emerald-500 text-[10px]">✓</span>
+                    <span v-else-if="isStageActive('code_reviewer')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
+                    <span>代码审查</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
 
           <!-- Loading Indicator in Chat -->
           <div v-if="step === 'chatting' && loading" class="flex justify-start">
@@ -848,8 +1441,8 @@ function handleKeydown(e) {
             </div>
           </div>
 
-          <!-- Checklist Summary -->
-          <div v-if="checklist.length > 0 && step !== 'checklist'" class="bg-white rounded-xl p-3.5 border border-stone-200 shadow-sm space-y-2">
+          <!-- Checklist Summary（仅在生成过程中显示，不在结果页和闲聊中保留） -->
+          <div v-if="checklist.length > 0 && step === 'generating'" class="bg-white rounded-xl p-3.5 border border-stone-200 shadow-sm space-y-2">
             <p class="text-[11px] font-semibold text-stone-400 mb-1 uppercase tracking-wider">需求清单</p>
             <div v-for="item in checklist" :key="item.field" class="text-sm flex gap-2">
               <span class="text-stone-500 shrink-0">{{ item.label }}:</span>
@@ -861,47 +1454,6 @@ function handleKeydown(e) {
             </div>
           </div>
 
-          <!-- Execution Flow -->
-          <div v-if="step === 'generating' || step === 'result'" class="pt-2">
-            <p class="text-[11px] font-semibold text-stone-400 mb-2 uppercase tracking-wider">执行流程</p>
-            <div class="space-y-1">
-              <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
-                   :class="isStageActive('asset_collector') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('asset_collector') ? 'text-stone-500' : 'text-stone-300')">
-                <span v-if="isStageDone('asset_collector')" class="text-emerald-500">✓</span>
-                <span v-else-if="isStageActive('asset_collector')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
-                <span>素材收集</span>
-              </div>
-              <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
-                   :class="isStageActive('design_concept') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('design_concept') ? 'text-stone-500' : 'text-stone-300')">
-                <span v-if="isStageDone('design_concept')" class="text-emerald-500">✓</span>
-                <span v-else-if="isStageActive('design_concept')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
-                <span>设计概念</span>
-              </div>
-              <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
-                   :class="isStageActive('html_generator') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('html_generator') ? 'text-stone-500' : 'text-stone-300')">
-                <span v-if="isStageDone('html_generator')" class="text-emerald-500">✓</span>
-                <span v-else-if="isStageActive('html_generator')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
-                <span>HTML 生成</span>
-              </div>
-              <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
-                   :class="isStageActive('sub_page_generator') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('sub_page_generator') ? 'text-stone-500' : 'text-stone-300')">
-                <span v-if="isStageDone('sub_page_generator')" class="text-emerald-500">✓</span>
-                <span v-else-if="isStageActive('sub_page_generator')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
-                <span>子页面生成</span>
-              </div>
-              <div class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors"
-                   :class="isStageActive('code_reviewer') ? 'bg-indigo-50 text-indigo-700' : (isStageDone('code_reviewer') ? 'text-stone-500' : 'text-stone-300')">
-                <span v-if="isStageDone('code_reviewer')" class="text-emerald-500">✓</span>
-                <span v-else-if="isStageActive('code_reviewer')" class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                <span v-else class="w-1.5 h-1.5 bg-stone-300 rounded-full"></span>
-                <span>代码审查</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Model Selector + Input -->
@@ -941,8 +1493,65 @@ function handleKeydown(e) {
       <!-- Right Canvas -->
       <main class="flex-1 overflow-auto relative"
             style="background-color: #f5f5f0; background-image: linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 24px 24px;">
+        <!-- User Home -->
+        <div v-if="showUserHome" class="h-full p-8 overflow-auto">
+          <div class="max-w-3xl mx-auto space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-bold text-stone-800">我的项目</h2>
+                <p class="text-stone-400 text-sm mt-1">历史生成记录</p>
+              </div>
+              <button @click="closeUserHome" class="text-xs text-stone-500 hover:text-stone-800 px-3 py-1.5 rounded-lg hover:bg-stone-100 transition-colors">返回工作台</button>
+            </div>
+            <div v-if="projectsLoading" class="text-center py-12 text-stone-400 text-sm">加载中...</div>
+            <div v-else-if="myProjects.length === 0" class="text-center py-12">
+              <p class="text-stone-400 text-sm">暂无项目记录</p>
+              <p class="text-stone-300 text-xs mt-1">生成网站后会自动保存到这里</p>
+            </div>
+            <div v-else class="grid gap-3">
+              <div v-for="proj in myProjects" :key="proj.projectId"
+                   class="bg-white rounded-xl border border-stone-200 hover:border-stone-400 hover:shadow-sm transition-all overflow-hidden">
+                <div class="flex gap-4 p-4 cursor-pointer" @click="reloadProject(proj.projectId)">
+                  <!-- 缩略图 -->
+                  <div class="w-36 h-24 shrink-0 rounded-lg overflow-hidden bg-stone-100 border border-stone-200 relative">
+                    <div class="absolute inset-0 flex items-center justify-center text-stone-300">
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <img v-if="proj.screenshotUrl" :src="proj.screenshotUrl" class="relative w-full h-full object-cover object-top" @error="$event.target.remove()" />
+                  </div>
+                  <!-- 项目信息 -->
+                  <div class="flex-1 min-w-0 flex flex-col justify-center">
+                    <p class="text-sm font-medium text-stone-800 truncate">{{ proj.projectName || proj.originalInput || '未命名项目' }}</p>
+                    <div class="flex items-center gap-3 mt-1.5">
+                      <span class="text-xs text-stone-400">{{ proj.createdAt ? proj.createdAt.substring(0, 16).replace('T', ' ') : '' }}</span>
+                      <span class="text-[10px] px-1.5 py-0.5 rounded-full"
+                            :class="proj.reviewPassed ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'">
+                        {{ proj.reviewPassed ? '审查通过' : '审查未通过' }}
+                      </span>
+                      <span v-if="proj.retryCount > 0" class="text-[10px] text-stone-400">修复 {{ proj.retryCount }} 次</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 操作按钮 -->
+                <div class="flex items-center gap-1 px-4 pb-3" @click.stop>
+                  <button @click.stop="downloadProject(proj.projectId)"
+                     class="flex items-center gap-1 px-2.5 py-1 text-xs text-stone-500 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    下载
+                  </button>
+                  <button @click.stop="deleteProject(proj.projectId)"
+                          class="flex items-center gap-1 px-2.5 py-1 text-xs text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    删除
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Chatting Loading -->
-        <div v-if="step === 'chatting' && loading" class="h-full flex items-center justify-center">
+        <div v-if="!showUserHome && step === 'chatting' && loading" class="h-full flex items-center justify-center">
           <div class="flex flex-col items-center gap-4">
             <div class="flex gap-1.5">
               <div class="w-2.5 h-2.5 bg-stone-400 rounded-full animate-bounce"></div>
@@ -954,7 +1563,7 @@ function handleKeydown(e) {
         </div>
 
         <!-- Chatting Idle -->
-        <div v-else-if="step === 'chatting'" class="h-full flex items-center justify-center">
+        <div v-else-if="!showUserHome && step === 'chatting'" class="h-full flex items-center justify-center">
           <div class="text-center space-y-3 text-stone-400">
             <svg class="w-10 h-10 mx-auto opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -964,7 +1573,7 @@ function handleKeydown(e) {
         </div>
 
         <!-- Checklist -->
-        <div v-if="step === 'checklist'" class="w-full px-8 py-8 space-y-6">
+        <div v-if="!showUserHome && step === 'checklist'" class="w-full px-8 py-8 space-y-6">
           <div class="text-center space-y-1">
             <h2 class="text-2xl font-bold text-stone-800">完善你的需求</h2>
             <p class="text-stone-500">请填写以下信息，帮助 AI 更精准地生成</p>
@@ -1034,7 +1643,7 @@ function handleKeydown(e) {
         </div>
 
         <!-- Generating -->
-        <div v-if="step === 'generating'" class="h-full flex flex-col p-4 gap-3">
+        <div v-if="!showUserHome && step === 'generating'" class="h-full flex flex-col p-4 gap-3">
           <div class="flex flex-col items-center justify-center py-4 space-y-3 shrink-0">
             <div class="relative">
               <div class="w-12 h-12 border-4 border-stone-200 rounded-full"></div>
@@ -1097,7 +1706,22 @@ function handleKeydown(e) {
         </div>
 
         <!-- Result -->
-        <div v-if="step === 'result'" class="p-4 space-y-4 w-full">
+        <div v-if="!showUserHome && step === 'result'" class="p-4 space-y-4 w-full">
+          <!-- 修改/对话进度指示器（有已有项目时的加载状态） -->
+          <div v-if="modifying || (loading && htmlCode)" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors"
+               :class="modifying ? 'bg-indigo-50 border border-indigo-200' : 'bg-stone-50 border border-stone-200'">
+            <div class="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
+                 :class="modifying ? 'border-indigo-400' : 'border-stone-400'"></div>
+            <div>
+              <p class="text-sm font-medium" :class="modifying ? 'text-indigo-700' : 'text-stone-600'">
+                {{ modifying ? (currentStage || '正在修改代码...') : 'AI 正在分析你的需求...' }}
+              </p>
+              <p class="text-xs mt-0.5" :class="modifying ? 'text-indigo-400' : 'text-stone-400'">
+                {{ modifying ? 'AI 正在根据你的指令修改现有代码' : '正在理解你的意图...' }}
+              </p>
+            </div>
+          </div>
+
           <!-- Toolbar -->
           <div class="flex items-center justify-between flex-wrap gap-3">
             <div>
@@ -1269,6 +1893,104 @@ function handleKeydown(e) {
           </div>
         </div>
       </main>
+    </div>
+      </template>
+
+      <!-- ==================== Not Logged In: Landing Page ==================== -->
+      <div v-else class="flex-1 flex items-center justify-center p-8">
+        <div class="text-center max-w-xl">
+          <div class="w-20 h-20 bg-stone-800 rounded-3xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-8 shadow-lg shadow-stone-800/10">AI</div>
+          <h1 class="text-4xl font-bold text-stone-800 mb-4 tracking-tight">WebsiteMother</h1>
+          <p class="text-stone-400 text-base leading-relaxed mb-12 max-w-md mx-auto">
+            AI 驱动的网站生成器。用自然语言描述你想要的网站，自动生成完整的设计概念、配色方案、HTML 代码和多页面。
+          </p>
+          <div class="flex items-center justify-center gap-4">
+            <button @click="authMode = 'login'" class="px-10 py-3.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl font-medium transition-colors shadow-sm">登录</button>
+            <button @click="authMode = 'register'" class="px-10 py-3.5 bg-white border border-stone-200 hover:border-stone-400 text-stone-700 rounded-xl font-medium transition-colors shadow-sm">注册</button>
+          </div>
+        </div>
+
+      </div>
+    <!-- Auth Modal -->
+    <div v-if="authMode" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="authMode = null">
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4">
+        <h2 class="text-lg font-bold text-stone-800 mb-4">{{ authMode === 'login' ? '登录' : '注册' }}</h2>
+        <div v-if="authError" class="mb-3 p-2.5 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600">{{ authError }}</div>
+        <div class="space-y-3">
+          <input v-model="(authMode === 'login' ? loginForm : registerForm).username" type="text" placeholder="用户名"
+                 class="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-400 focus:border-stone-400 outline-none text-sm" />
+          <input v-model="(authMode === 'login' ? loginForm : registerForm).password" type="password" placeholder="密码"
+                 class="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-400 focus:border-stone-400 outline-none text-sm"
+                 @keydown.enter="authMode === 'login' ? handleLogin() : handleRegister()" />
+          <input v-if="authMode === 'register'" v-model="registerForm.email" type="email" placeholder="邮箱（选填）"
+                 class="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-stone-400 focus:border-stone-400 outline-none text-sm" />
+          <button
+            @click="authMode === 'login' ? handleLogin() : handleRegister()"
+            :disabled="authLoading"
+            class="w-full bg-stone-800 hover:bg-stone-900 disabled:opacity-40 text-white py-2.5 rounded-xl font-medium text-sm transition-colors">
+            {{ authLoading ? '请稍候...' : (authMode === 'login' ? '登录' : '注册') }}
+          </button>
+          <button @click="authMode = authMode === 'login' ? 'register' : 'login'"
+                  class="w-full text-xs text-stone-500 hover:text-stone-700 py-1 transition-colors">
+            {{ authMode === 'login' ? '没有账号？去注册' : '已有账号？去登录' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Management Panel -->
+    <div v-if="showUserManagement" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showUserManagement = false">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col mx-4">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-stone-200">
+          <h2 class="text-lg font-bold text-stone-800">用户管理</h2>
+          <button @click="showUserManagement = false" class="text-stone-500 hover:text-stone-800 p-1 rounded-lg hover:bg-stone-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="flex-1 overflow-auto p-4">
+          <div v-if="userMgmtLoading" class="text-center py-8 text-stone-400 text-sm">加载中...</div>
+          <table v-else class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-stone-400 text-xs uppercase tracking-wider border-b border-stone-100">
+                <th class="pb-2 font-medium">ID</th>
+                <th class="pb-2 font-medium">用户名</th>
+                <th class="pb-2 font-medium">邮箱</th>
+                <th class="pb-2 font-medium">角色</th>
+                <th class="pb-2 font-medium">创建时间</th>
+                <th class="pb-2 font-medium text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="user in userList" :key="user.id" class="border-b border-stone-50">
+                <td class="py-2.5 text-stone-500">{{ user.id }}</td>
+                <td class="py-2.5 font-medium">{{ user.username }}</td>
+                <td class="py-2.5 text-stone-500">{{ user.email || '-' }}</td>
+                <td class="py-2.5">
+                  <template v-if="editingUserId === user.id">
+                    <select v-model="editRole" class="text-xs border border-stone-300 rounded px-1.5 py-0.5">
+                      <option value="USER">USER</option>
+                      <option value="ADMIN">ADMIN</option>
+                    </select>
+                    <button @click="saveUserEdit(user.id)" class="ml-1 text-emerald-600 hover:text-emerald-700 text-xs font-medium">保存</button>
+                    <button @click="editingUserId = null" class="ml-1 text-stone-400 hover:text-stone-600 text-xs">取消</button>
+                  </template>
+                  <span v-else class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+                        :class="user.role === 'ADMIN' ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-500'">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td class="py-2.5 text-stone-400 text-xs">{{ user.createdAt ? user.createdAt.substring(0, 10) : '-' }}</td>
+                <td class="py-2.5 text-right">
+                  <button v-if="editingUserId !== user.id" @click="editingUserId = user.id; editRole = user.role"
+                          class="text-xs text-stone-500 hover:text-stone-800 mr-2">编辑</button>
+                  <button v-if="user.id !== currentUser?.id" @click="deleteUser(user.id)"
+                          class="text-xs text-red-400 hover:text-red-600">删除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -1,0 +1,9 @@
+{
+  "projectId" : "e1c53b4d-f5dd-4bce-9da0-150c80aaf049",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>镜界 · 摄影叙事</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#0F0F0F\",\n    \"secondary\": \"#707070\",\n    \"background\": \"#080808\",\n    \"surface\": \"#141414\",\n    \"text\": \"#F0F0F0\",\n    \"textMuted\": \"#999999\",\n    \"accent\": \"#C9A87C\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": 1.33\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"顶部透明导航+全屏沉浸式Hero+不规则瀑布流画廊+底部极简联系区\",\n  \"mood\": \"沉静高雅，留白呼吸，聚焦影像\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 5, 7, 12, 45, 27, 137239900 ]
+}

@@ -1,0 +1,9 @@
+{
+  "projectId" : "99731eee-1eab-4ade-8276-fabb1675de81",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>LENS & SHADOW · Commercial Product Studio</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap\" rel=\"s...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"222222\",\n    \"secondary\": \"4A4A4A\",\n    \"background\": \"F7F6F4\",\n    \"surface\": \"FFFFFF\",\n    \"text\": \"1A1A1A\",\n    \"textMuted\": \"7D7D7D\",\n    \"accent\": \"B89A7B\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Manrope, sans-serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全屏沉浸式Hero+响应式瀑布流作品网格+极简分段信息模块\",\n  \"mood\": \"现代极简、高级画廊感、冷静克制、聚焦产品\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 7, 10, 49, 8, 133916100 ]
+}

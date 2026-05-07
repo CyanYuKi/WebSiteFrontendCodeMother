@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品 | 光映</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #F2F0ED;
+            --color-secondary: #8A8A8A;
+            --color-background: #0A0A0A;
+            --color-surface: #161616;
+            --color-text: #F5F5F5;
+            --color-textMuted: #7D7D7D;
+            --color-accent: #C89B7B;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --gap-sm: calc(var(--spacing-unit) * 0.75);
+            --gap-md: calc(var(--spacing-unit) * 1.5);
+            --gap-lg: calc(var(--spacing-unit) * 3);
+            --gap-xl: calc(var(--spacing-unit) * 5);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem var(--gap-lg);
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--color-text);
+            text-transform: none;
+        }
+
+        .navbar-brand img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .navbar-brand span {
+            font-size: 1.2rem;
+            letter-spacing: 0.08em;
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+            gap: var(--gap-md);
+            align-items: center;
+        }
+
+        .navbar-links a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+            position: relative;
+            padding: 0.25rem 0;
+        }
+
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.35s var(--ease-out);
+        }
+
+        .navbar-links a:hover {
+            color: var(--color-text);
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        .navbar-links a.active {
+            color: var(--color-accent);
+        }
+
+        .navbar-links a.active::after {
+            width: 100%;
+            background: var(--color-accent);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding-top: 6rem;
+            padding-bottom: var(--gap-lg);
+            padding-left: var(--gap-lg);
+            padding-right: var(--gap-lg);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--color-text);
+            margin-bottom: var(--gap-sm);
+        }
+
+        .page-header p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.04em;
+            max-width: 480px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* Filters */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: var(--gap-md);
+            padding: var(--gap-md) var(--gap-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            display: inline-block;
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 10px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            color: var(--color-textMuted);
+            background: transparent;
+            border-radius: var(--radius-sm);
+            transition: all 0.35s var(--ease-out);
+            cursor: pointer;
+            background: var(--color-surface);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .filter-btn.active {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            background: rgba(200, 155, 123, 0.08);
+        }
+
+        /* Masonry Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--gap-md);
+            padding: var(--gap-md) var(--gap-lg) var(--gap-xl);
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .grid-item {
+            break-inside: avoid;
+            margin-bottom: 0;
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--color-surface);
+            cursor: pointer;
+            transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+        }
+
+        .grid-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.6s var(--ease-out), filter 0.5s var(--ease-out);
+            filter: grayscale(0.15) contrast(1.02);
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.03);
+            filter: brightness(1.06) contrast(1.02);
+        }
+
+        .grid-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 1.25rem 1.25rem;
+            background: linear-gradient(transparent, rgba(10, 10, 10, 0.85));
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+        }
+
+        .grid-item:hover .overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .grid-item .overlay h3 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--color-text);
+            letter-spacing: 0.02em;
+            margin-bottom: 0.2rem;
+        }
+
+        .grid-item .overlay span {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .grid-item .category-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            color: var(--color-textMuted);
+            pointer-events: none;
+        }
+
+        /* default spans for variety */
+        .grid-item.span-2x {
+            grid-column: span 1;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease-out);
+            padding: var(--gap-md);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox-content {
+            max-width: 80vw;
+            max-height: 85vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-content .lightbox-info {
+            margin-top: var(--gap-sm);
+            display: flex;
+            gap: var(--gap-md);
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.04em;
+        }
+
+        .lightbox-content .lightbox-info h3 {
+            font-family: var(--font-heading);
+            color: var(--color-text);
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -2.5rem;
+            right: -0.5rem;
+            font-size: 1.8rem;
+            color: var(--color-textMuted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s var(--ease-out);
+            line-height: 1;
+        }
+
+        .lightbox-close:hover {
+            color: var(--color-text);
+        }
+
+        /* Footer */
+        .site-footer {
+            margin-top: auto;
+            padding: var(--gap-lg) var(--gap-lg) var(--gap-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--gap-md);
+            max-width: 1440px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+
+        .site-footer .footer-brand {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            letter-spacing: 0.06em;
+            color: var(--color-textMuted);
+        }
+
+        .site-footer .footer-links {
+            display: flex;
+            gap: var(--gap-md);
+            flex-wrap: wrap;
+        }
+
+        .site-footer .footer-links a {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+        }
+
+        .site-footer .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .site-footer .footer-copy {
+            font-size: 0.7rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.04em;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--gap-sm);
+                padding: var(--gap-sm) var(--gap-md) var(--gap-lg);
+            }
+
+            .navbar {
+                padding: 1rem var(--gap-md);
+            }
+
+            .navbar-links {
+                gap: var(--gap-sm);
+            }
+
+            .page-header {
+                padding-left: var(--gap-md);
+                padding-right: var(--gap-md);
+            }
+
+            .filter-bar {
+                padding: var(--gap-sm) var(--gap-md);
+                gap: var(--gap-sm);
+            }
+
+            .filter-btn {
+                font-size: 0.75rem;
+                padding: 8px 18px;
+            }
+
+            .site-footer {
+                padding: var(--gap-md) var(--gap-md) var(--gap-sm);
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .lightbox-content {
+                max-width: 92vw;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar-brand span {
+                display: none;
+            }
+
+            .navbar-links a {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar (identical structure to index, only links/active changed) -->
+    <header class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/23/20260507/c70535fc/6871c55c-7647-4001-81a3-bc94925914b7-1.png?Expires=1778210741&OSSAccessKeyId=STS.NYWJPDiwfjcEhQn3uXEuxCSAm&Signature=gZ72DMBYo07C3v1icloyKDyjD2s%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5riAerwhKhH3aGuanff13UNSfpUrJbqjzz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb4zY1JRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGIsyCCQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET5wK7%2BTCuU5wGoABP8MUGFSUCIpv2y4obgwLTLj1aiW3SD5fAMiHd%2Bde4fhcz2LAJg1TYJh%2Fo2DZv%2FZPTbZfks6hiP78tsaRUKfJfOGU39497ptXirp6OY%2FhYVEGWpPGnWx1GiN2SHawIS2EBuDyUEuLZMxsHkZNNdssArxog%2BnfPrglKbvFJOCdy%2FUgAA%3D%3D" alt="光映徽记" loading="eager" width="36" height="36">
+            <span>光映</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="portfolio.html" class="active">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>作品</h1>
+        <p>光影之间，叙述无声的故事</p>
+    </section>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="portrait">人像</button>
+        <button class="filter-btn" data-filter="landscape">风光</button>
+        <button class="filter-btn" data-filter="stilllife">静物</button>
+    </div>
+
+    <!-- Portfolio Grid (Masonry style with 3 columns) -->
+    <div class="portfolio-grid" id="portfolioGrid">
+        <!-- Grid items will be populated by JS -->
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">✕</button>
+            <img id="lightboxImg" src="" alt="作品大图">
+            <div class="lightbox-info">
+                <h3 id="lightboxTitle"></h3>
+                <span id="lightboxYear"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-brand">光映</div>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="portfolio.html">作品</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-copy">© 2025 光映 · 静默之眼</div>
+    </footer>
+
+    <script>
+        (function() {
+            // -------- DATA --------
+            const imagesData = [
+                // 人像
+                { id: 1, category: 'portrait', title: '凝视', year: '2024', src: 'https://images.pexels.com/photos/19493089/pexels-photo-19493089.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'portrait' },
+                { id: 2, category: 'portrait', title: '侧影', year: '2023', src: 'https://images.pexels.com/photos/31036662/pexels-photo-31036662.jpeg?auto=compress&cs=tinysrgb&h=350', aspect: 'landscape' },
+                { id: 3, category: 'portrait', title: '午后', year: '2024', src: 'https://images.pexels.com/photos/6893345/pexels-photo-6893345.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'portrait' },
+                // 风光
+                { id: 4, category: 'landscape', title: '孤寂海岸', year: '2024', src: 'https://images.pexels.com/photos/29475900/pexels-photo-29475900.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', aspect: 'portrait' },
+                { id: 5, category: 'landscape', title: '山脊', year: '2023', src: 'https://images.pexels.com/photos/33926823/pexels-photo-33926823.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', aspect: 'landscape' },
+                { id: 6, category: 'landscape', title: '晨曦', year: '2024', src: 'https://images.pexels.com/photos/19848073/pexels-photo-19848073.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'landscape' },
+                // 静物
+                { id: 7, category: 'stilllife', title: '静默', year: '2024', src: 'https://images.pexels.com/photos/8268759/pexels-photo-8268759.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'landscape' },
+                { id: 8, category: 'stilllife', title: '物语', year: '2023', src: 'https://images.pexels.com/photos/16037756/pexels-photo-16037756.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'landscape' },
+                { id: 9, category: 'stilllife', title: '质感', year: '2024', src: 'https://images.pexels.com/photos/11489977/pexels-photo-11489977.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'portrait' },
+                // 额外混合
+                { id: 10, category: 'landscape', title: '远山', year: '2023', src: 'https://images.pexels.com/photos/12716745/pexels-photo-12716745.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'square' },
+                { id: 11, category: 'portrait', title: '目光', year: '2024', src: 'https://images.pexels.com/photos/16313654/pexels-photo-16313654.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'portrait' },
+                { id: 12, category: 'stilllife', title: '旧物', year: '2023', src: 'https://images.pexels.com/photos/3970/pexels-photo-3970.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', aspect: 'landscape' }
+            ];
+
+            // fallback for missing images
+            const fallbackSrc = 'https://images.pexels.com/photos/12716745/pexels-photo-12716745.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+
+            const grid = document.getElementById('portfolioGrid');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            const lightboxTitle = document.getElementById('lightboxTitle');
+            const lightboxYear = document.getElementById('lightboxYear');
+            const lightboxClose = document.getElementById('lightboxClose');
+
+            let currentFilter = 'all';
+
+            // Render
+            function render(filter) {
+                const filtered = filter === 'all' ? imagesData : imagesData.filter(item => item.category === filter);
+                grid.innerHTML = '';
+                filtered.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'grid-item';
+                    if (item.aspect === 'portrait') {
+                        // portrait images get a slight span for visual variety (still within col)
+                        div.style.gridRow = 'span 2';
+                    }
+                    div.dataset.id = item.id;
+                    div.dataset.category = item.category;
+
+                    const img = document.createElement('img');
+                    img.src = item.src;
+                    img.alt = item.title;
+                    img.loading = 'lazy';
+                    img.onerror = function() {
+                        this.src = fallbackSrc;
+                    };
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'overlay';
+                    const h3 = document.createElement('h3');
+                    h3.textContent = item.title;
+                    const span = document.createElement('span');
+                    span.textContent = item.year;
+                    overlay.appendChild(h3);
+                    overlay.appendChild(span);
+
+                    const tag = document.createElement('div');
+                    tag.className = 'category-tag';
+                    const catMap = { portrait: '人像', landscape: '风光', stilllife: '静物' };
+                    tag.textContent = catMap[item.category] || item.category;
+
+                    div.appendChild(img);
+                    div.appendChild(tag);
+                    div.appendChild(overlay);
+
+                    // click -> lightbox
+                    div.addEventListener('click', function(e) {
+                        openLightbox(item);
+                    });
+
+                    grid.appendChild(div);
+                });
+
+                // If grid is empty, show placeholder
+                if (filtered.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--color-textMuted);';
+                    empty.textContent = '暂无此类作品';
+                    grid.appendChild(empty);
+                }
+            }
+
+            // Lightbox
+            function openLightbox(item) {
+                lightboxImg.src = item.src;
+                lightboxImg.alt = item.title;
+                lightboxImg.onerror = function() {
+                    this.src = fallbackSrc;
+                };
+                lightboxTitle.textContent = item.title;
+                lightboxYear.textContent = item.year;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            // Filter buttons
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    currentFilter = filter;
+                    render(filter);
+                });
+            });
+
+            // Lightbox close
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                }
+            });
+
+            // Initial render
+            render('all');
+        })();
+    </script>
+
+</body>
+</html>

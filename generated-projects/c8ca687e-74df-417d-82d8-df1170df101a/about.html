@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 摄影师个人网站</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1C1C1C;
+            --color-secondary: #737373;
+            --color-background: #F8F6F3;
+            --color-surface: #FFFFFF;
+            --color-text: #1E1E1E;
+            --color-textMuted: #6B6B6B;
+            --color-accent: #B08D55;
+            --font-heading: Cormorant Garamond, serif;
+            --font-body: Manrope, sans-serif;
+            --spacing-unit: 0.75rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ---- 导航栏（与首页完全一致） ---- */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+            background-color: transparent;
+            transition: background-color 0.4s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(6px);
+            background-color: rgba(248, 246, 243, 0.7);
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-link img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .main-nav {
+            list-style: none;
+            display: flex;
+            gap: calc(var(--spacing-unit) * 3);
+            align-items: center;
+        }
+
+        .main-nav li a {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            color: var(--color-text);
+            padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 0.8);
+            transition: color 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+
+        .main-nav li a:hover {
+            color: var(--color-accent);
+        }
+
+        .main-nav li a.active {
+            color: var(--color-accent);
+            border-bottom: 1px solid var(--color-accent);
+        }
+
+        /* ---- 页面主要内容 (grid 布局) ---- */
+        .about-page {
+            flex: 1;
+            padding: 120px 5% 80px 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            align-items: start;
+        }
+
+        /* 左侧：文字内容 */
+        .about-text {
+            padding-top: 20px;
+        }
+
+        .about-text h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            border-bottom: 1px solid var(--color-accent);
+            display: inline-block;
+            padding-bottom: 12px;
+        }
+
+        .about-text .intro {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            color: var(--color-textMuted);
+            line-height: 1.8;
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            letter-spacing: 0.02em;
+        }
+
+        .about-text .bio-block {
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+
+        .about-text .bio-block h2 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: calc(var(--spacing-unit) * 1);
+            letter-spacing: 0.03em;
+        }
+
+        .about-text .bio-block p {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.7;
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+        }
+
+        .about-text .work-style {
+            display: flex;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 1.2);
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .about-text .work-style span {
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            border: 1px solid var(--color-accent);
+            padding: calc(var(--spacing-unit) * 0.6) calc(var(--spacing-unit) * 1.6);
+            border-radius: 30px;
+        }
+
+        /* 右侧：图片网格 */
+        .about-visual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto;
+            gap: 16px;
+            align-content: start;
+        }
+
+        .about-visual .portrait-large {
+            grid-column: 1 / 3;
+            width: 100%;
+            height: 480px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: var(--color-secondary);
+        }
+
+        .about-visual .portrait-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .about-visual .portrait-large:hover img {
+            transform: scale(1.03);
+        }
+
+        .about-visual .portrait-small {
+            width: 100%;
+            height: 240px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: var(--color-secondary);
+        }
+
+        .about-visual .portrait-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .about-visual .portrait-small:hover img {
+            transform: scale(1.03);
+        }
+
+        /* ---- Footer (与首页风格一致) ---- */
+        .site-footer {
+            background-color: var(--color-primary);
+            color: rgba(255, 255, 255, 0.75);
+            padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 2);
+            margin-top: auto;
+        }
+
+        .site-footer .footer-links a {
+            display: inline-block;
+            padding: calc(var(--spacing-unit) * 1.2) calc(var(--spacing-unit) * 4);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #fff;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            background: transparent;
+            margin-right: calc(var(--spacing-unit) * 1);
+        }
+
+        .site-footer .footer-links a:last-child {
+            margin-right: 0;
+        }
+
+        .site-footer .footer-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+        }
+
+        .site-footer .footer-social a {
+            margin-left: calc(var(--spacing-unit) * 2);
+            transition: color 0.3s;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.75);
+            letter-spacing: 0.06em;
+        }
+
+        .site-footer .footer-social a:hover {
+            color: var(--color-accent);
+        }
+
+        .site-footer .footer-copy {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            letter-spacing: 0.05em;
+        }
+
+        /* ---- 响应式 ---- */
+        @media (max-width: 900px) {
+            .about-page {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 110px 5% 60px 5%;
+            }
+
+            .about-text h1 {
+                font-size: 2.6rem;
+            }
+
+            .about-visual .portrait-large {
+                height: 360px;
+            }
+
+            .about-visual .portrait-small {
+                height: 200px;
+            }
+
+            .site-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: calc(var(--spacing-unit) * 2);
+            }
+
+            .site-footer .footer-links a {
+                margin-bottom: calc(var(--spacing-unit) * 0.5);
+            }
+
+            .site-footer .footer-social a {
+                margin-left: 0;
+                margin-right: calc(var(--spacing-unit) * 2);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+            }
+
+            .main-nav {
+                gap: calc(var(--spacing-unit) * 1.5);
+            }
+
+            .main-nav li a {
+                font-size: 0.7rem;
+                letter-spacing: 0.04em;
+            }
+
+            .about-text h1 {
+                font-size: 2rem;
+            }
+
+            .about-visual {
+                grid-template-columns: 1fr;
+            }
+
+            .about-visual .portrait-large {
+                grid-column: 1;
+                height: 280px;
+            }
+
+            .about-visual .portrait-small {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏（与首页完全一致） -->
+    <header class="site-header">
+        <a href="index.html" class="logo-link">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/96/20260507/c70535fc/d448a388-78a1-4140-bf63-317769c4e10f-1.png?Expires=1778222907&OSSAccessKeyId=STS.NXrq1joTBFGgQBofv5AgTaiKQ&Signature=qNNyCPw7IVKklSsB%2FPxSDMbgMwA%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5vHOovegotj8YWMU2TegnZgTeh4jqzgszz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb42IvJRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGgs6ICQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET8spAGvCuU5wGoABkdP1DzDJl01L9PGlXloAsdm%2BCodkHe2RimV4f6zpTPd3l8MlPrd5RICIV2uN%2Bu9bHVRUWOGHiFkwDbPPR5odJ44kBW%2FBNO95h0jgpANCnwMdqqYHVWCp2iSKgbVKXczS7TFrYwbezoRi57Km6w%2BuqNnM8ajeTvvzP70xcZoDkGAgAA%3D%3D" alt="Logo" loading="lazy">
+        </a>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="gallery.html">作品集</a></li>
+                <li><a href="about.html" class="active">关于</a></li>
+                <li><a href="contact.html">联系</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 关于页面主要内容 (grid 布局) -->
+    <main class="about-page">
+        <!-- 左侧文字 -->
+        <div class="about-text">
+            <h1>关于我</h1>
+            <p class="intro">
+                用镜头捕捉真实的情感与转瞬即逝的光影。我专注于人文肖像与环境叙事，相信每一帧都承载着独特的故事。
+            </p>
+
+            <div class="bio-block">
+                <h2>创作理念</h2>
+                <p>
+                    摄影于我，是一场安静的对话。我偏爱自然光与日常场景中的不寻常视角，在克制与留白之间寻找情绪的张力。不做过多干预，只记录最本真的瞬间。
+                </p>
+            </div>
+
+            <div class="bio-block">
+                <h2>工作方式</h2>
+                <p>
+                    我倾向于慢节奏的拍摄过程，与拍摄对象建立信任，让镜头成为透明的介质。从前期沟通到后期处理，我亲力亲为，以确保每一幅作品都保留最初的温度与质感。
+                </p>
+            </div>
+
+            <div class="work-style">
+                <span>人文肖像</span>
+                <span>环境叙事</span>
+                <span>自然光影</span>
+                <span>胶片质感</span>
+            </div>
+        </div>
+
+        <!-- 右侧图片网格 -->
+        <div class="about-visual">
+            <div class="portrait-large">
+                <img src="https://images.pexels.com/photos/19177223/pexels-photo-19177223.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作环境肖像" loading="lazy">
+            </div>
+            <div class="portrait-small">
+                <img src="https://images.pexels.com/photos/12260845/pexels-photo-12260845.jpeg?auto=compress&cs=tinysrgb&h=350" alt="创作瞬间" loading="lazy">
+            </div>
+            <div class="portrait-small">
+                <img src="https://images.pexels.com/photos/6693138/pexels-photo-6693138.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作台细节" loading="lazy">
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer（与首页一致） -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-social">
+            <a href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">Behance</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">微博</a>
+        </div>
+        <div class="footer-copy">
+            © 2025 摄影师 · 静默之间
+        </div>
+    </footer>
+
+</body>
+</html>

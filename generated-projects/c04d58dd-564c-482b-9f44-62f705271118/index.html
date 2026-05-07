@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山色·无声 · 自然摄影</title>
+    <style>
+        :root {
+            --color-primary: #2A3D30;
+            --color-secondary: #B8A89A;
+            --color-background: #F9F8F5;
+            --color-surface: #F1F0EC;
+            --color-text: #111;
+            --color-textMuted: #665F55;
+            --color-accent: #C48B5F;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --ratio: 1.5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 2);
+        }
+
+        /* -------------------- HEADER / NAV -------------------- */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(249,248,245,0.95) 0%, rgba(249,248,245,0.6) 100%);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .site-header .site-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            letter-spacing: 0.06em;
+        }
+
+        .site-nav {
+            display: flex;
+            gap: 2.2rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+        }
+
+        .site-nav a {
+            transition: color 0.25s;
+        }
+
+        .site-nav a:hover {
+            color: var(--color-accent);
+        }
+
+        /* -------------------- HERO (FULL SCREEN IMMERSIVE) -------------------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            position: relative;
+            background: var(--color-primary);
+            margin-bottom: 0;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(42,61,48,0.55) 0%, rgba(42,61,48,0.05) 60%, rgba(0,0,0,0.1) 100%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 5rem 2rem 4rem 2rem;
+            max-width: 680px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.8rem, 7vw, 5.2rem);
+            color: #ffffff;
+            line-height: 1.05;
+            text-wrap: pretty;
+            letter-spacing: 0.02em;
+            font-weight: 300;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+
+        .hero-content .subhead {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.75);
+            margin-top: 1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            margin-top: 2.5rem;
+            padding: 0.8rem 2.4rem;
+            border: 1px solid rgba(255,255,255,0.5);
+            color: #ffffff;
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            background: transparent;
+            font-family: var(--font-body);
+        }
+
+        .hero-cta:hover {
+            background: #ffffff;
+            color: var(--color-primary);
+            border-color: #ffffff;
+        }
+
+        /* -------------------- SECTION GENERIC -------------------- */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-label {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: var(--color-primary);
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+            line-height: 1.15;
+            text-wrap: pretty;
+        }
+
+        .section-desc {
+            color: var(--color-textMuted);
+            max-width: 560px;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        /* -------------------- FEATURE (ABOUT) -------------------- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .feature-image {
+            aspect-ratio: 5 / 4;
+            width: 100%;
+            object-fit: cover;
+            background: var(--color-surface);
+        }
+
+        .feature-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .feature-text .large-quote {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            color: var(--color-primary);
+            line-height: 1.3;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .feature-text p {
+            color: var(--color-textMuted);
+            line-height: 1.7;
+        }
+
+        .feature-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+            width: fit-content;
+        }
+
+        .feature-link:hover {
+            border-bottom-color: var(--color-accent);
+        }
+
+        /* -------------------- ASYMMETRIC GALLERY (WATERFALL) -------------------- */
+        .gallery-section {
+            background: var(--color-surface);
+            padding: 6rem 0;
+        }
+
+        .masonry {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .masonry-item {
+            overflow: hidden;
+            background: var(--color-background);
+            transition: transform 0.2s;
+        }
+
+        .masonry-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: auto;
+            display: block;
+        }
+
+        .masonry-item:nth-child(1) {
+            grid-row: span 2;
+            aspect-ratio: 3 / 4;
+        }
+
+        .masonry-item:nth-child(2) {
+            grid-row: span 1;
+            aspect-ratio: 4 / 3;
+        }
+
+        .masonry-item:nth-child(3) {
+            grid-row: span 1;
+            aspect-ratio: 4 / 3;
+        }
+
+        .masonry-item:nth-child(4) {
+            grid-column: 2;
+            grid-row: span 2;
+            aspect-ratio: 3 / 4;
+            margin-top: -1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .masonry {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .masonry-item:nth-child(1),
+            .masonry-item:nth-child(4) {
+                grid-row: span 1;
+                aspect-ratio: 4 / 3;
+            }
+            .masonry-item:nth-child(4) {
+                grid-column: 1;
+                margin-top: 0;
+            }
+        }
+
+        .gallery-cta {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .gallery-cta a {
+            display: inline-block;
+            padding: 0.7rem 2.8rem;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: 0.25s;
+        }
+
+        .gallery-cta a:hover {
+            background: var(--color-primary);
+            color: #ffffff;
+        }
+
+        /* -------------------- TESTIMONIAL -------------------- */
+        .testimonial-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .testimonial-image {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+        }
+
+        .testimonial-content {
+            padding: 1rem 0;
+        }
+
+        .testimonial-content blockquote {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            line-height: 1.4;
+            color: var(--color-primary);
+            font-weight: 300;
+            text-wrap: pretty;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-content .attribution {
+            font-size: 0.85rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+        }
+
+        .testimonial-content .attribution span {
+            color: var(--color-accent);
+        }
+
+        /* -------------------- CONTACT / CTA -------------------- */
+        .contact-section {
+            background: var(--color-primary);
+            color: #ffffff;
+            padding: 5rem 0;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .contact-info h2 {
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            color: #ffffff;
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+        }
+
+        .contact-image {
+            width: 100%;
+            aspect-ratio: 5 / 4;
+            object-fit: cover;
+            filter: grayscale(0.15);
+        }
+
+        .btn-accent {
+            display: inline-block;
+            padding: 0.8rem 2.4rem;
+            background: var(--color-accent);
+            color: #ffffff;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: none;
+            transition: 0.2s;
+            font-family: var(--font-body);
+            cursor: pointer;
+        }
+
+        .btn-accent:hover {
+            background: #b07a4e;
+        }
+
+        .btn-outline-light {
+            display: inline-block;
+            padding: 0.7rem 2.4rem;
+            border: 1px solid rgba(255,255,255,0.5);
+            color: #ffffff;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: 0.2s;
+            background: transparent;
+            margin-left: 1rem;
+        }
+
+        .btn-outline-light:hover {
+            background: #ffffff;
+            color: var(--color-primary);
+        }
+
+        /* -------------------- FOOTER -------------------- */
+        .site-footer {
+            background: var(--color-surface);
+            padding: 2.5rem 0;
+            border-top: 1px solid rgba(42,61,48,0.06);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--color-textMuted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        /* -------------------- RESPONSIVE -------------------- */
+        @media (max-width: 768px) {
+            .feature-grid,
+            .testimonial-block,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .site-header {
+                padding: 1rem 1.5rem;
+            }
+            .site-nav {
+                gap: 1.2rem;
+                font-size: 0.75rem;
+            }
+            .hero-content {
+                padding: 3rem 1.5rem 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-nav {
+                gap: 0.8rem;
+                font-size: 0.65rem;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+            .site-header .site-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER / NAV -->
+    <header class="site-header">
+        <div class="site-title">山色·无声</div>
+        <nav class="site-nav">
+            <a href="index.html">首页</a>
+            <a href="about.html">关于</a>
+            <a href="portfolio.html">作品集</a>
+            <a href="contact.html">联系</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <img class="hero-bg" src="https://images.pexels.com/photos/10620138/pexels-photo-10620138.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="山脉与湖面的晨光" loading="eager">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>把自然<br>还给寂静</h1>
+            <div class="subhead">风景摄影 · 山野漫游</div>
+            <a href="portfolio.html" class="hero-cta">浏览作品集</a>
+        </div>
+    </section>
+
+    <!-- FEATURE / ABOUT -->
+    <section>
+        <div class="container">
+            <div class="feature-grid">
+                <img class="feature-image" src="https://images.pexels.com/photos/19291684/pexels-photo-19291684.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="静谧森林" loading="eager">
+                <div class="feature-text">
+                    <div class="section-label">关于我的镜头</div>
+                    <div class="large-quote">“我拍摄的不是风景，而是与风景的沉默对话。”</div>
+                    <p>十年间行走于雪山、峡谷与海岸之间，用大画幅和中画幅记录光线在地表最诚实的纹理。每一帧都经过漫长的等待——等待云散、等待雪停、等待一只鸟飞入画面的恰当位置。</p>
+                    <a href="about.html" class="feature-link">进一步了解 →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY / ASYMMETRIC WATERFALL -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="section-label">近期作品</div>
+            <h2 class="section-title">山有骨，水有韵</h2>
+            <div class="masonry">
+                <div class="masonry-item">
+                    <img src="https://images.pexels.com/photos/3216897/pexels-photo-3216897.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="山间溪流" loading="eager">
+                </div>
+                <div class="masonry-item">
+                    <img src="https://images.pexels.com/photos/14520953/pexels-photo-14520953.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="冬日森林" loading="eager">
+                </div>
+                <div class="masonry-item">
+                    <img src="https://images.pexels.com/photos/19336097/pexels-photo-19336097.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="晨雾牧场" loading="lazy">
+                </div>
+                <div class="masonry-item">
+                    <img src="https://images.pexels.com/photos/26263100/pexels-photo-26263100.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="海岸礁石" loading="lazy">
+                </div>
+            </div>
+            <div class="gallery-cta">
+                <a href="portfolio.html">查看全部作品</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section>
+        <div class="container">
+            <div class="testimonial-block">
+                <img class="testimonial-image" src="https://images.pexels.com/photos/34333327/pexels-photo-34333327.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户肖像" loading="lazy">
+                <div class="testimonial-content">
+                    <div class="section-label">朋友说</div>
+                    <blockquote>“他让我重新看见了故乡的山。那些我以为早已熟悉的轮廓，在他的底片上变成了另一种亘古的沉默。”</blockquote>
+                    <div class="attribution">—— 林远 <span>· 策展人</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT / CTA -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2>一起走进<br>旷野深处</h2>
+                    <p>无论是委托拍摄、展览合作，还是想聊聊你心目中的那座山，我都在这里。</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+                        <a href="contact.html" class="btn-accent">发送消息</a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn-outline-light">Instagram</a>
+                    </div>
+                </div>
+                <img class="contact-image" src="https://images.pexels.com/photos/9903248/pexels-photo-9903248.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="远山与草甸" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <span>© 2025 山色·无声</span>
+            <div class="footer-links">
+                <a href="about.html">关于</a>
+                <a href="portfolio.html">作品集</a>
+                <a href="contact.html">联系</a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PAGES_PLAN -->
+    <!-- PAGES_PLAN: [{"name":"about.html","title":"关于我","overview":"个人简介页面，包含摄影师的经历、创作理念、常用器材，以及一张工作室氛围肖像照片。布局为图文左右分栏，文字为主。","layout":"detail"},{"name":"portfolio.html","title":"作品集","overview":"瀑布流画廊页面，展示全部自然风景摄影作品。支持分类筛选（山脉/海岸/森林），点击作品可查看大图和简短描述。","layout":"grid"},{"name":"contact.html","title":"联系","overview":"联系与委托页面，包含联系表单（姓名、邮箱、需求类型、留言）、社交媒体链接、工作室地址信息。带有视觉简洁的背景图。","layout":"form"}] -->
+
+</body>
+</html>

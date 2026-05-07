@@ -1,0 +1,9 @@
+{
+  "projectId" : "1efd64cf-f106-471c-83ca-61339e603c97",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>远山集 · 风光摄影</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap\" rel=\"stylesheet...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#7D6B5D\",\n    \"secondary\": \"#9DA896\",\n    \"background\": \"#FAF8F5\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#2B2826\",\n    \"textMuted\": \"#7A746C\",\n    \"accent\": \"#C9A67C\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": \"1.25\"\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": \"1.5\"\n  },\n  \"layoutDirection\": \"全屏沉浸式Hero主视觉 + 垂直单列大图留白画廊 + 居中对称关于模块 + 顶部极简导航\",\n  \"mood\": \"静谧自然、文艺清新、沉浸留白、质朴高级\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 29, 17, 24, 12, 454207100 ]
+}

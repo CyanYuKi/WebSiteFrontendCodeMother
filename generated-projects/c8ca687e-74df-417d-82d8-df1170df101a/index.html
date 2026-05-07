@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>镜·界 | 私人摄影工作室</title>
+    <style>
+        :root {
+            --color-primary: #1C1C1C;
+            --color-secondary: #737373;
+            --color-background: #F8F6F3;
+            --color-surface: #FFFFFF;
+            --color-text: #1E1E1E;
+            --color-textMuted: #6B6B6B;
+            --color-accent: #B08D55;
+            --font-heading: Cormorant Garamond, serif;
+            --font-body: Manrope, sans-serif;
+            --spacing-unit: 0.75rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+
+        h1 { font-size: clamp(2.5rem, 8vw, 5.5rem); line-height: 0.95; }
+        h2 { font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: 0.05em; }
+        h3 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); }
+        p { font-size: 0.95rem; color: var(--color-textMuted); font-weight: 350; }
+
+        /* Container utility */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 3);
+        }
+
+        /* ---- Header / Nav ---- */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: difference;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        .site-header * {
+            pointer-events: auto;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 1);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            letter-spacing: 0.2em;
+            font-weight: 400;
+            color: #fff;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 3);
+            list-style: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .main-nav a {
+            color: rgba(255,255,255,0.75);
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ---- Hero ---- */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--color-primary);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .hero-sub {
+            font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+            letter-spacing: 0.3em;
+            font-weight: 300;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            text-transform: uppercase;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: calc(var(--spacing-unit) * 1.2) calc(var(--spacing-unit) * 4);
+            border: 1px solid rgba(255,255,255,0.5);
+            color: #fff;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            background: transparent;
+        }
+
+        .hero-cta:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        /* ---- Section common ---- */
+        .section {
+            padding: calc(var(--spacing-unit) * 12) 0;
+        }
+
+        .section--dark {
+            background-color: var(--color-primary);
+            color: #fff;
+        }
+
+        .section--dark p {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: calc(var(--spacing-unit) * 6);
+        }
+
+        .section-header p {
+            max-width: 480px;
+            margin: calc(var(--spacing-unit) * 1.5) auto 0;
+            font-size: 0.9rem;
+        }
+
+        /* ---- About / Feature (two column) ---- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 6);
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 520px;
+            object-fit: cover;
+            aspect-ratio: 2/3;
+        }
+
+        .about-content h2 {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .about-content p {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            max-width: 480px;
+        }
+
+        .accent-link {
+            display: inline-flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            border-bottom: 1px solid var(--color-accent);
+            padding-bottom: 4px;
+        }
+
+        /* ---- Gallery / Waterfall asymmetric ---- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1fr;
+            gap: calc(var(--spacing-unit) * 2);
+            grid-auto-flow: dense;
+        }
+
+        .gallery-item {
+            overflow: hidden;
+            position: relative;
+            background: var(--color-surface);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.03);
+        }
+
+        .gallery-item:nth-child(1) {
+            grid-row: span 2;
+            aspect-ratio: 3/4;
+        }
+
+        .gallery-item:nth-child(2) {
+            aspect-ratio: 4/5;
+        }
+
+        .gallery-item:nth-child(3) {
+            aspect-ratio: 5/6;
+        }
+
+        .gallery-item:nth-child(4) {
+            grid-column: 2 / -1;
+            aspect-ratio: 16/9;
+        }
+        .gallery-item:nth-child(5) {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .gallery-item:nth-child(5) {
+                display: block;
+                grid-column: 1 / 2;
+                aspect-ratio: 4/3;
+            }
+        }
+
+        /* ---- Testimonial ---- */
+        .testimonial-card {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            padding: calc(var(--spacing-unit) * 4);
+        }
+
+        .testimonial-card blockquote {
+            font-family: var(--font-heading);
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-style: italic;
+            line-height: 1.5;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .testimonial-card .attribution {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--spacing-unit) * 1.5);
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .testimonial-card .attribution img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .testimonial-card .attribution .name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--color-text);
+        }
+
+        .testimonial-card .attribution .role {
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+        }
+
+        /* ---- Contact / CTA ---- */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 5);
+            align-items: center;
+        }
+
+        .contact-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            aspect-ratio: 3/2;
+        }
+
+        .contact-text h2 {
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+        }
+
+        .contact-text p {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            max-width: 400px;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: calc(var(--spacing-unit) * 1.2) calc(var(--spacing-unit) * 4);
+            background: var(--color-primary);
+            color: #fff;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border: none;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .contact-btn:hover {
+            background: var(--color-accent);
+        }
+
+        /* ---- Footer ---- */
+        .site-footer {
+            padding: calc(var(--spacing-unit) * 5) 0;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 2);
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+        }
+
+        .footer-nav a {
+            margin-left: calc(var(--spacing-unit) * 2);
+            transition: color 0.3s;
+        }
+
+        .footer-nav a:hover {
+            color: var(--color-accent);
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 3);
+            }
+
+            .about-image {
+                height: 320px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .gallery-item:nth-child(4) {
+                grid-column: 1 / -1;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 3);
+            }
+
+            .contact-image {
+                height: 260px;
+            }
+
+            .site-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-nav a {
+                margin: 0 calc(var(--spacing-unit) * 1);
+            }
+
+            .hero-title {
+                font-size: clamp(2rem, 12vw, 3.5rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-item:nth-child(1) {
+                grid-row: span 1;
+            }
+            .gallery-item:nth-child(4) {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <a href="index.html" class="logo-link">
+            <img class="logo-img" src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/96/20260507/c70535fc/d448a388-78a1-4140-bf63-317769c4e10f-1.png?Expires=1778222907&OSSAccessKeyId=STS.NXrq1joTBFGgQBofv5AgTaiKQ&Signature=qNNyCPw7IVKklSsB%2FPxSDMbgMwA%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5vHOovegotj8YWMU2TegnZgTeh4jqzgszz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb42IvJRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGgs6ICQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET8spAGvCuU5wGoABkdP1DzDJl01L9PGlXloAsdm%2BCodkHe2RimV4f6zpTPd3l8MlPrd5RICIV2uN%2Bu9bHVRUWOGHiFkwDbPPR5odJ44kBW%2FBNO95h0jgpANCnwMdqqYHVWCp2iSKgbVKXczS7TFrYwbezoRi57Km6w%2BuqNnM8ajeTvvzP70xcZoDkGAgAA%3D%3D" alt="镜界logo" loading="eager">
+            <span class="logo-text">镜·界</span>
+        </a>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="gallery.html">作品集</a></li>
+                <li><a href="about.html">关于</a></li>
+                <li><a href="contact.html">联系</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img class="hero-image" src="https://images.pexels.com/photos/33829176/pexels-photo-33829176.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="光影主视觉" loading="eager">
+        <div class="hero-overlay">
+            <h1 class="hero-title">光与影的<br>安静叙述</h1>
+            <p class="hero-sub">私人肖像 · 空间 · 自然</p>
+            <a href="gallery.html" class="hero-cta">探索作品</a>
+        </div>
+    </section>
+
+    <!-- About / Feature -->
+    <section class="section container">
+        <div class="about-grid">
+            <div>
+                <img class="about-image" src="https://images.pexels.com/photos/19177223/pexels-photo-19177223.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师工作台" loading="eager">
+            </div>
+            <div class="about-content">
+                <h2>以静默之眼<br>捕捉真实</h2>
+                <p>我是一位痴迷于自然光线与情绪氛围的独立摄影师。每一张照片都是时间中截取的一片静谧，不喧哗，自有声。工作室位于城市边缘，擅长以克制而温暖的视角呈现人与空间的对话。</p>
+                <p>从肖像到环境叙事，我致力于让画面回归本质——真诚、安静、有重量。</p>
+                <a href="about.html" class="accent-link">更深入了解 →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery / Waterfall -->
+    <section class="section section--dark">
+        <div class="container">
+            <div class="section-header">
+                <h2>近期作品</h2>
+                <p>一组从近期委托中挑选的片段，尝试在框架内寻找呼吸感。</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/14539605/pexels-photo-14539605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="肖像作品" loading="eager">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/8798119/pexels-photo-8798119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="环境人像" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/29085927/pexels-photo-29085927.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="黑白光影" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/7668385/pexels-photo-7668385.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="空间静物" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/8290865/pexels-photo-8290865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="自然片段" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="section container">
+        <div class="testimonial-card">
+            <blockquote>“她让我在镜头前忘记了紧张，那些照片捕捉到了我自己都不曾发现的情绪。” </blockquote>
+            <div class="attribution">
+                <img src="https://images.pexels.com/photos/33072061/pexels-photo-33072061.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户肖像" loading="lazy">
+                <div>
+                    <div class="name">陈 女士</div>
+                    <div class="role">肖像委托 · 2025</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / CTA -->
+    <section class="section container">
+        <div class="contact-grid">
+            <div class="contact-text">
+                <h2>开启一段<br>安静的影像对话</h2>
+                <p>无论是个人肖像、空间记录还是小型项目，我都很乐意倾听你的想法。每一次拍摄都是一次彼此信任的交流。</p>
+                <a href="contact.html" class="contact-btn">预约咨询</a>
+            </div>
+            <div>
+                <img class="contact-image" src="https://images.pexels.com/photos/8960464/pexels-photo-8960464.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作室角落" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="container">
+        <div class="site-footer">
+            <span>© 2025 镜·界 摄影工作室</span>
+            <div class="footer-nav">
+                <a href="index.html">首页</a>
+                <a href="gallery.html">作品集</a>
+                <a href="about.html">关于</a>
+                <a href="contact.html">联系</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PAGES_PLAN -->
+    <!-- PAGES_PLAN: [{"name":"gallery.html","title":"作品集","overview":"展示摄影师精选作品，采用瀑布流网格布局，包含肖像、空间、自然等分类，点击可查看大图详情。整体保持沉浸、呼吸感。","layout":"grid"},{"name":"about.html","title":"关于我","overview":"介绍摄影师个人背景、创作理念与工作方式，配合工作环境及肖像照片，风格克制安静。","layout":"grid"},{"name":"contact.html","title":"联系咨询","overview":"提供联系表单及工作室地址信息，包含预约拍摄意向表单，界面极简、安静。","layout":"form"}] -->
+</body>
+</html>

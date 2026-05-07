@@ -3,6 +3,15 @@ spring:
     name: WebsiteMother
   profiles:
     active: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/websitemother?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ${MYSQL_PASSWORD:1376263202}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
 pexels:
   api-key: ${PEXELS_API_KEY:}
 

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>镜界 · 摄影叙事</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0F0F0F;
+            --color-secondary: #707070;
+            --color-background: #080808;
+            --color-surface: #141414;
+            --color-text: #F0F0F0;
+            --color-textMuted: #999;
+            --color-accent: #C9A87C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 8px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ---------- 导航 ---------- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 5);
+            background: linear-gradient(180deg, rgba(8,8,8,0.85) 0%, rgba(8,8,8,0) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: background 0.3s;
+        }
+
+        .navbar .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 168, 124, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 4);
+            list-style: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+        }
+
+        .nav-links a {
+            position: relative;
+            transition: color 0.3s;
+            padding: 4px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.4s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            filter: brightness(0.45) saturate(0.8);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 calc(var(--spacing-unit) * 6);
+            background: radial-gradient(ellipse at center, rgba(8,8,8,0.2) 0%, rgba(8,8,8,0.6) 100%);
+        }
+
+        .hero-overlay h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3.2rem, 10vw, 7rem);
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            color: var(--color-text);
+            text-shadow: 0 2px 40px rgba(0,0,0,0.6);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+
+        .hero-overlay h1 span {
+            font-style: italic;
+            color: var(--color-accent);
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            color: var(--color-textMuted);
+            max-width: 560px;
+            text-wrap: pretty;
+            margin-bottom: calc(var(--spacing-unit) * 5);
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 2);
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 6);
+            border: 1px solid rgba(201, 168, 124, 0.4);
+            background: rgba(201, 168, 124, 0.06);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.35s ease;
+            border-radius: 0;
+        }
+
+        .hero-cta:hover {
+            background: rgba(201, 168, 124, 0.15);
+            border-color: var(--color-accent);
+            transform: translateY(-2px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: calc(var(--spacing-unit) * 6);
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-textMuted);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--color-textMuted), transparent);
+        }
+
+        /* ---------- Gallery 瀑布流 ---------- */
+        .section-gallery {
+            padding: calc(var(--spacing-unit) * 12) calc(var(--spacing-unit) * 5);
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 5vw, 3.6rem);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            text-align: center;
+        }
+
+        .section-title small {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: var(--color-textMuted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: calc(var(--spacing-unit) * 1);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: calc(var(--spacing-unit) * 2);
+            margin-top: calc(var(--spacing-unit) * 6);
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            background: var(--color-surface);
+            aspect-ratio: auto;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.6s ease;
+            filter: brightness(0.85) saturate(0.9);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.04);
+            filter: brightness(1) saturate(1.05);
+        }
+
+        .gallery-item:nth-child(1) { grid-row: span 1; }
+        .gallery-item:nth-child(2) { grid-row: span 2; }
+        .gallery-item:nth-child(3) { grid-row: span 1; }
+        .gallery-item:nth-child(4) { grid-row: span 2; }
+        .gallery-item:nth-child(5) { grid-row: span 1; }
+
+        .gallery-item .item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+            background: linear-gradient(0deg, rgba(8,8,8,0.7) 0%, transparent 100%);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: var(--color-textMuted);
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.35s ease;
+        }
+
+        .gallery-item:hover .item-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---------- About 极简 ---------- */
+        .section-about {
+            padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 5);
+            background: var(--color-surface);
+        }
+
+        .about-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 8);
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 480px;
+            object-fit: cover;
+            filter: grayscale(0.15) brightness(0.7);
+            border: 1px solid rgba(201, 168, 124, 0.1);
+        }
+
+        .about-text h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            line-height: 1.2;
+        }
+
+        .about-text h2 span {
+            color: var(--color-accent);
+            font-style: italic;
+        }
+
+        .about-text p {
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            text-wrap: pretty;
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            max-width: 480px;
+        }
+
+        .about-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-unit);
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .about-link:hover {
+            border-bottom-color: var(--color-accent);
+        }
+
+        /* ---------- CTA / 联系 ---------- */
+        .section-cta {
+            padding: calc(var(--spacing-unit) * 12) calc(var(--spacing-unit) * 5);
+            text-align: center;
+        }
+
+        .cta-block {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .cta-block h3 {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 400;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+
+        .cta-block p {
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            text-wrap: pretty;
+            margin-bottom: calc(var(--spacing-unit) * 5);
+        }
+
+        .cta-block .contact-btn {
+            display: inline-block;
+            padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 8);
+            border: 1px solid var(--color-accent);
+            color: var(--color-accent);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 400;
+            transition: all 0.35s;
+            background: transparent;
+        }
+
+        .cta-block .contact-btn:hover {
+            background: var(--color-accent);
+            color: var(--color-primary);
+        }
+
+        /* ---------- Footer ---------- */
+        .footer {
+            padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 5);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 3);
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 4);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        /* ---------- 响应式 ---------- */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+            }
+
+            .nav-links {
+                gap: calc(var(--spacing-unit) * 2.5);
+                font-size: 0.7rem;
+            }
+
+            .hero-overlay h1 {
+                font-size: clamp(2.4rem, 12vw, 4rem);
+            }
+
+            .hero-sub {
+                font-size: 0.9rem;
+            }
+
+            .about-inner {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 4);
+            }
+
+            .about-image {
+                height: 320px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: calc(var(--spacing-unit) * 1.5);
+            }
+
+            .gallery-item:nth-child(n) {
+                grid-row: span 1;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-gallery,
+            .section-about,
+            .section-cta {
+                padding-left: calc(var(--spacing-unit) * 3);
+                padding-right: calc(var(--spacing-unit) * 3);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/f1/20260507/c70535fc/8e3aee66-2592-46ca-922a-452448d628cc-1.png?Expires=1778215225&OSSAccessKeyId=STS.NZgDREdWDm4dnXLMTZ9Vowj55&Signature=9b4BcAnVZ8iy6AweT8V2YDwyqaQ%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nSD%2BjxiYhl2vaPbH79qVQPNdlDmK%2Be1zz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb428xQBWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGgsUEIAKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET7q394HCuU5wGoABdSRt1Dmh9IpNcvlGqnuS4dOJnlcyj5fRaXSRjXUoTcTXsFfPcbjgW%2BcNeB8qPK7dus5YC8ur%2Bmn85yfv5zxVJK0rYovGfXsrCgk9bzhJUXZs1rt11wGurjA4%2BaXXqknC%2Fb8NHH5%2BKMscStKLc6JWQqIqADb51cmHYZzbpiovwb4gAA%3D%3D"
+                 alt="镜界 logo"
+                 loading="eager"
+                 width="48" height="48">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#gallery">作品</a></li>
+            <li><a href="#about">叙事</a></li>
+            <li><a href="#contact">联系</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <img src="https://images.pexels.com/photos/33829176/pexels-photo-33829176.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+             alt="沉浸式光影"
+             loading="eager"
+             width="940" height="627">
+        <div class="hero-overlay">
+            <h1>镜界<br><span>· 光影叙事</span></h1>
+            <p class="hero-sub">在沉默的瞬间里，捕获时间的温度。每一帧，都是未完成的诗。</p>
+            <a href="#gallery" class="hero-cta">进入视界</a>
+        </div>
+        <div class="scroll-indicator">
+            scroll
+            <span></span>
+        </div>
+    </section>
+
+    <!-- Gallery 瀑布流 -->
+    <section class="section-gallery" id="gallery">
+        <div class="section-title">
+            近期作品
+            <small>Selected Frames</small>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/11489977/pexels-photo-11489977.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="作品一"
+                     loading="eager"
+                     width="940" height="626">
+                <div class="item-label">孤岛</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/8798119/pexels-photo-8798119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                     alt="作品二"
+                     loading="eager"
+                     width="940" height="626">
+                <div class="item-label">雾中低语</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/11234295/pexels-photo-11234295.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="作品三"
+                     loading="eager"
+                     width="940" height="1413">
+                <div class="item-label">褶皱</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/29293968/pexels-photo-29293968.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="作品四"
+                     loading="eager"
+                     width="940" height="1483">
+                <div class="item-label">剖面</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/8166008/pexels-photo-8166008.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="作品五"
+                     loading="lazy"
+                     width="940" height="1413">
+                <div class="item-label">地平线</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About 叙事 -->
+    <section class="section-about" id="about">
+        <div class="about-inner">
+            <img class="about-image"
+                 src="https://images.pexels.com/photos/19177223/pexels-photo-19177223.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                 alt="关于"
+                 loading="lazy"
+                 width="940" height="1410">
+            <div class="about-text">
+                <h2>以镜头 <span>写作</span></h2>
+                <p>
+                    我是林澈，一位游离于城市与荒野之间的影像记录者。相信最好的照片诞生于等待与直觉的缝隙，不打扰，不虚构，只收集世界原本的呼吸。十余年，从极地冰原到市井弄堂，快门是我与世界对话的唯一语言。
+                </p>
+                <a href="about.html" class="about-link">阅读完整叙事 →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / 联系 -->
+    <section class="section-cta" id="contact">
+        <div class="cta-block">
+            <h3>一起创造你的瞬间</h3>
+            <p>无论是私人肖像、品牌视觉，还是静默的风景，我都愿意倾听并转化。每一次拍摄都是一次诚恳的对话。</p>
+            <a href="contact.html" class="contact-btn">预约拍摄</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span>&copy; 2025 镜界 · 林澈</span>
+        <div class="footer-links">
+            <a href="about.html">关于</a>
+            <a href="portfolio.html">作品集</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <span>Instagram / 小红书 @lens_poetry</span>
+    </footer>
+
+    <!-- PAGES_PLAN: [{"name":"portfolio.html","title":"作品集","overview":"完整作品分类展示，包含人像、风光、静物三个系列，每张作品配标题与拍摄参数，采用瀑布流网格布局","layout":"grid"},{"name":"about.html","title":"关于摄影师","overview":"摄影师个人履历、创作理念、合作品牌展示，包含一段深入的文字自述与一组私人工作照","layout":"detail"},{"name":"contact.html","title":"联系与预约","overview":"联系表单、拍摄预约流程说明、常见问题及社交媒体链接，底部嵌入地图位置","layout":"form"}] -->
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 摄影师</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Karla:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #4A3728;
+            --color-secondary: #C9B89C;
+            --color-background: #F4EFE6;
+            --color-surface: #EAE3D5;
+            --color-text: #2A221A;
+            --color-textMuted: #7D6E5D;
+            --color-accent: #B85E3C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Karla', sans-serif;
+            --spacing-unit: 0.75rem;
+            --scale-spacing: 1.33;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* ---- 布局容器 ---- */
+        .site-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ---- 顶部导航 (与首页一致) ---- */
+        .top-bar {
+            background-color: var(--color-text);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .hero-nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .hero-nav a {
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s, color 0.25s;
+            color: var(--color-background);
+        }
+
+        .hero-nav a:hover {
+            border-bottom-color: var(--color-secondary);
+            color: var(--color-secondary);
+        }
+
+        .hero-nav a.active {
+            border-bottom-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        /* ---- 主内容区 (detail 布局) ---- */
+        .main-content {
+            flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 3rem var(--spacing-unit) 4rem;
+            width: 100%;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            letter-spacing: 0.05em;
+        }
+
+        .page-header .subtitle {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: var(--color-textMuted);
+            margin-top: 0.5rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* 摄影师介绍 + 创作理念 */
+        .intro-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+            align-items: start;
+        }
+
+        .intro-image {
+            position: relative;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            border-radius: 4px;
+            background: var(--color-surface);
+        }
+
+        .intro-image img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+            mix-blend-mode: luminosity;
+            filter: sepia(0.3) saturate(0.8);
+            transition: filter 0.4s;
+        }
+
+        .intro-image:hover img {
+            filter: sepia(0) contrast(1.02);
+        }
+
+        .intro-text {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .intro-text h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .intro-text p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--color-text);
+            max-width: 600px;
+        }
+
+        .intro-text .quote {
+            font-family: var(--font-heading);
+            font-style: italic;
+            font-size: 1.5rem;
+            color: var(--color-accent);
+            border-left: 3px solid var(--color-secondary);
+            padding-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* 胶片工作流程展示 + 故事时间线 - 网格密集陈列 */
+        .workflow-section {
+            margin-bottom: 4rem;
+        }
+
+        .workflow-section h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .workflow-card {
+            background: var(--color-surface);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .workflow-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(74, 55, 40, 0.12);
+        }
+
+        .workflow-card .card-image {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: var(--color-surface);
+        }
+
+        .workflow-card .card-image img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+            mix-blend-mode: luminosity;
+            filter: sepia(0.3) saturate(0.8);
+            transition: filter 0.4s;
+        }
+
+        .workflow-card:hover .card-image img {
+            filter: sepia(0) contrast(1.02);
+        }
+
+        .workflow-card .card-content {
+            padding: 1.25rem;
+        }
+
+        .workflow-card .card-content h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .workflow-card .card-content .year {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .workflow-card .card-content p {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.6;
+        }
+
+        /* 额外图片素材池（密集陈列） */
+        .extra-gallery {
+            margin-bottom: 4rem;
+        }
+
+        .extra-gallery h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .extra-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .extra-grid .extra-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 3px;
+            background: var(--color-surface);
+        }
+
+        .extra-grid .extra-item img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+            mix-blend-mode: luminosity;
+            filter: sepia(0.3) saturate(0.8);
+            transition: filter 0.4s;
+        }
+
+        .extra-grid .extra-item:hover img {
+            filter: sepia(0) contrast(1.02);
+        }
+
+        /* ---- Footer (与首页一致) ---- */
+        .site-footer {
+            background-color: var(--color-text);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .site-footer .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .site-footer .footer-nav a {
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-secondary);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s;
+        }
+
+        .site-footer .footer-nav a:hover {
+            border-bottom-color: var(--color-secondary);
+        }
+
+        .site-footer .copyright {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+        }
+
+        /* ---- 响应式 ---- */
+        @media (max-width: 1024px) {
+            .intro-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .intro-image {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .intro-text p {
+                max-width: none;
+            }
+
+            .workflow-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .extra-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0.8rem 1rem;
+            }
+
+            .hero-nav {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-nav a {
+                font-size: 0.85rem;
+            }
+
+            .main-content {
+                padding: 2rem var(--spacing-unit) 3rem;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .intro-text h2 {
+                font-size: 1.6rem;
+            }
+
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .extra-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .site-footer .footer-nav {
+                gap: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .extra-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-wrapper">
+        <!-- 顶部导航 (与首页一致) -->
+        <div class="top-bar">
+            <nav class="hero-nav" aria-label="主导航">
+                <a href="portfolio.html">作品集</a>
+                <a href="about.html" class="active">关于</a>
+                <a href="contact.html">联系</a>
+            </nav>
+        </div>
+
+        <!-- 主内容 -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>关于摄影师</h1>
+                <div class="subtitle">光影的追寻者 · 故事的记录者</div>
+            </div>
+
+            <!-- 摄影师介绍 + 创作理念 -->
+            <section class="intro-section">
+                <div class="intro-image">
+                    <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师工作现场" loading="lazy">
+                </div>
+                <div class="intro-text">
+                    <h2>创作理念</h2>
+                    <p>我始终相信，摄影是时间的容器——每一帧画面都承载着独一无二的光线、情绪与记忆。从街头巷尾的偶然一瞥，到人像中细腻的神情捕捉，再到风景里广阔的自然低语，我试图用镜头构建一种安静的叙事。</p>
+                    <p>胶片是我的第一语言。它的颗粒感、色温的微妙偏移、以及按下快门后那份无法即刻预览的期待，都让摄影回归到最本真的观看方式。我不追求完美无瑕，而是迷恋那些偶然的瑕疵——漏光、过曝、甚至是底片上的划痕，它们都是时间的指纹。</p>
+                    <blockquote class="quote">
+                        “一张好照片，不是告诉你看到了什么，而是让你感受到那里曾经有过什么。”
+                    </blockquote>
+                    <p>我的工作流程始终围绕胶片展开：从选择胶卷、测光、到暗房冲洗与扫描，每一个环节都亲力亲为。这种缓慢而专注的过程，让我与每一张影像之间都建立起一种私密的联系。</p>
+                </div>
+            </section>
+
+            <!-- 胶片工作流程展示 + 故事时间线 -->
+            <section class="workflow-section">
+                <h2>胶片工作流程 · 时间线</h2>
+                <div class="workflow-grid">
+                    <div class="workflow-card">
+                        <div class="card-image">
+                            <img src="https://images.pexels.com/photos/20519867/pexels-photo-20519867.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片选择与准备" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <span class="year">第一步</span>
+                            <h3>选卷与准备</h3>
+                            <p>根据拍摄题材选择适合的胶片——从 Kodak Portra 的温暖肤色到 Ilford HP5 的经典黑白，每一卷都有它自己的性格。</p>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="card-image">
+                            <img src="https://images.pexels.com/photos/8084370/pexels-photo-8084370.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="测光与构图" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <span class="year">第二步</span>
+                            <h3>现场测光与构图</h3>
+                            <p>使用测光表精细测量光线，依靠经验与直觉构图。每一帧都是不可重来的决定，这种专注让拍摄变得格外神圣。</p>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="card-image">
+                            <img src="https://images.pexels.com/photos/5155932/pexels-photo-5155932.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="暗房冲洗" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <span class="year">第三步</span>
+                            <h3>暗房冲洗</h3>
+                            <p>在暗房中亲手冲洗胶卷，控制药水温度与时间。看着影像在显影罐中缓缓浮现，是摄影过程中最令我着迷的仪式。</p>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="card-image">
+                            <img src="https://images.pexels.com/photos/7964358/pexels-photo-7964358.jpeg?auto=compress&cs=tinysrgb&h=350" alt="扫描与后期" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <span class="year">第四步</span>
+                            <h3>扫描与归档</h3>
+                            <p>使用专业扫描仪将底片数字化，保留胶片的原始质感。后期仅做微调，尊重胶片本身的色彩与反差。</p>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="card-image">
+                            <img src="https://images.pexels.com/photos/20732843/pexels-photo-20732843.jpeg?auto=compress&cs=tinysrgb&h=350" alt="编辑与策展" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <span class="year">第五步</span>
+                            <h3>编辑与策展</h3>
+                            <p>从成百上千张底片中挑选出最能讲述故事的画面。编辑本身就是一种创作，它决定了观看的顺序与情绪节奏。</p>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="card-image">
+                            <img src="https://images.pexels.com/photos/4641194/pexels-photo-4641194.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="展览与分享" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <span class="year">第六步</span>
+                            <h3>展览与分享</h3>
+                            <p>无论是线上展厅还是实体展览，我珍视每一次与观众对话的机会。摄影的完整旅程，在于被看见。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 额外图片素材池（密集陈列） -->
+            <section class="extra-gallery">
+                <h2>工作现场 · 影像记忆</h2>
+                <div class="extra-grid">
+                    <div class="extra-item">
+                        <img src="https://images.pexels.com/photos/29569264/pexels-photo-29569264.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="工作现场 1" loading="lazy">
+                    </div>
+                    <div class="extra-item">
+                        <img src="https://images.pexels.com/photos/37157243/pexels-photo-37157243.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作现场 2" loading="lazy">
+                    </div>
+                    <div class="extra-item">
+                        <img src="https://images.pexels.com/photos/14525932/pexels-photo-14525932.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作现场 3" loading="lazy">
+                    </div>
+                    <div class="extra-item">
+                        <img src="https://images.pexels.com/photos/8261778/pexels-photo-8261778.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作现场 4" loading="lazy">
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer (与首页一致) -->
+        <footer class="site-footer">
+            <div class="footer-nav">
+                <a href="portfolio.html">作品集</a>
+                <a href="about.html">关于</a>
+                <a href="contact.html">联系</a>
+            </div>
+            <div class="copyright">© 2025 胶片叙事 · All Rights Reserved</div>
+        </footer>
+    </div>
+</body>
+</html>

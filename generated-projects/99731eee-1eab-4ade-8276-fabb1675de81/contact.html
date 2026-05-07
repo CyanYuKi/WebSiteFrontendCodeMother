@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - 商业产品摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #222;
+            --color-secondary: #4A4A4A;
+            --color-background: #F7F6F4;
+            --color-surface: #FFFFFF;
+            --color-text: #1A1A1A;
+            --color-textMuted: #7D7D7D;
+            --color-accent: #B89A7B;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Manrope', sans-serif;
+            --spacing-unit: 8px;
+            --spacing-xs: calc(var(--spacing-unit) * 1);
+            --spacing-sm: calc(var(--spacing-unit) * 2);
+            --spacing-md: calc(var(--spacing-unit) * 4);
+            --spacing-lg: calc(var(--spacing-unit) * 8);
+            --spacing-xl: calc(var(--spacing-unit) * 12);
+            --spacing-2xl: calc(var(--spacing-unit) * 18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* Header & Navigation */
+        header {
+            padding: var(--spacing-md) 0;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--color-primary);
+        }
+
+        nav ul {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+        }
+
+        nav ul li a {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--color-primary);
+            transition: color 0.2s;
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px solid transparent;
+        }
+
+        nav ul li a:hover {
+            color: var(--color-accent);
+        }
+
+        nav ul li a.active {
+            color: var(--color-accent);
+            border-bottom-color: var(--color-accent);
+        }
+
+        /* Page Hero / Title */
+        .page-header {
+            text-align: center;
+            padding: var(--spacing-xl) 0 var(--spacing-lg);
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--color-textMuted);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Contact Layout (form layout) */
+        .contact-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            padding: var(--spacing-lg) 0 var(--spacing-2xl);
+            align-items: start;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .info-card {
+            background: var(--color-surface);
+            padding: var(--spacing-lg);
+            border-radius: 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .info-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+            letter-spacing: 0.02em;
+        }
+
+        .info-card p,
+        .info-card a {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-secondary);
+            line-height: 1.8;
+            display: block;
+        }
+
+        .info-card a {
+            display: inline-block;
+            transition: color 0.2s;
+        }
+
+        .info-card a:hover {
+            color: var(--color-accent);
+        }
+
+        .info-card .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .info-image {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            margin-top: var(--spacing-sm);
+        }
+
+        .info-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(0.92) contrast(1.02);
+            transition: transform 0.5s ease;
+        }
+
+        .info-image:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Form */
+        .contact-form-wrapper {
+            background: var(--color-surface);
+            padding: var(--spacing-lg);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .contact-form-wrapper h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: 0.02em;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--color-textMuted);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--color-background);
+            border: 1px solid #e0ddd8;
+            border-radius: 0;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-text);
+            transition: border-color 0.2s, background 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-accent);
+            background: #f0ede8;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #b5b0ab;
+            font-weight: 300;
+        }
+
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: 14px 48px;
+            background: var(--color-primary);
+            color: var(--color-background);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            width: 100%;
+            margin-top: var(--spacing-sm);
+        }
+
+        .btn-submit:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            padding: var(--spacing-lg) 0;
+            border-top: 1px solid #e5e2dd;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--color-secondary);
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--color-textMuted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+                padding: 0 var(--spacing-sm);
+            }
+
+            nav ul {
+                gap: var(--spacing-md);
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li a {
+                font-size: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2.4rem;
+            }
+
+            .contact-section {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+                padding: var(--spacing-md) 0 var(--spacing-xl);
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+
+            .contact-form-wrapper {
+                padding: var(--spacing-md);
+            }
+
+            .info-card {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo">Studio Refined</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="works.html">Works</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <h1>Let's Create Together</h1>
+                <p>Tell us about your project – we'll be in touch within 24 hours.</p>
+            </div>
+
+            <div class="contact-section">
+                <!-- Left: Contact Info -->
+                <div class="contact-info">
+                    <div class="info-card">
+                        <p class="label">Studio Address</p>
+                        <p>47 Thames Street, Suite 200<br>London, SE10 0AR<br>United Kingdom</p>
+                    </div>
+                    <div class="info-card">
+                        <p class="label">Email</p>
+                        <a href="mailto:hello@studiorefined.com">hello@studiorefined.com</a>
+                    </div>
+                    <div class="info-card">
+                        <p class="label">Phone</p>
+                        <a href="tel:+442079460123">+44 20 7946 0123</a>
+                    </div>
+                    <div class="info-image">
+                        <img src="https://images.pexels.com/photos/19893582/pexels-photo-19893582.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Contact Studio" loading="lazy">
+                    </div>
+                </div>
+
+                <!-- Right: Project Inquiry Form -->
+                <div class="contact-form-wrapper">
+                    <h2>Project Inquiry</h2>
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <label for="client-name">Client Name</label>
+                            <input type="text" id="client-name" name="client_name" placeholder="Your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">Brand</label>
+                            <input type="text" id="brand" name="brand" placeholder="Brand or company name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-type">Product Type</label>
+                            <input type="text" id="product-type" name="product_type" placeholder="e.g. Cosmetics, Electronics, Fashion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Brief Description</label>
+                            <textarea id="description" name="description" placeholder="Tell us about your project, desired style, timeline and budget (if any)..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Send Inquiry</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="works.html">Works</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <p class="footer-copy">&copy; 2025 Studio Refined. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

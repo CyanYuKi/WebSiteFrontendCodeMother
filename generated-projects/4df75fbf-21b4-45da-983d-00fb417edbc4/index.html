@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>垣迹 · 摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #E8E4D9;
+            --color-secondary: #7A7670;
+            --color-background: #0C0C0A;
+            --color-surface: #181815;
+            --color-text: #F2F0EB;
+            --color-textMuted: #999691;
+            --color-accent: #C9A675;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --scale: 1.35;
+            --spacing-scale: 1.6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 300;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* --- 极简悬浮导航 --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 3rem;
+            background: rgba(12, 12, 10, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201, 166, 117, 0.08);
+            transition: background 0.3s ease;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: var(--color-primary);
+        }
+
+        .navbar-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 2.8rem;
+            list-style: none;
+        }
+
+        .navbar-links li {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.25s ease;
+            cursor: pointer;
+        }
+
+        .navbar-links li:hover,
+        .navbar-links li.active {
+            color: var(--color-accent);
+        }
+
+        /* --- 全屏沉浸式 Hero --- */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            filter: brightness(0.55) saturate(0.85);
+            transition: filter 0.6s ease;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, rgba(12,12,10,0.30) 0%, rgba(12,12,10,0.85) 100%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 780px;
+            padding: 2rem;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: 4px;
+            color: var(--color-primary);
+            margin-bottom: 1.2rem;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+        }
+
+        .hero-content .sub {
+            font-size: clamp(0.95rem, 2vw, 1.2rem);
+            font-weight: 300;
+            color: var(--color-textMuted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-content .scroll-indicator {
+            display: inline-block;
+            margin-top: 2rem;
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--color-accent), transparent);
+            animation: pulse-height 2.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-height {
+            0%, 100% { transform: scaleY(0.6); opacity: 0.5; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        /* --- 不对称网格画廊 --- */
+        .gallery-section {
+            padding: 8rem 3rem 6rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .gallery-header {
+            margin-bottom: 4rem;
+        }
+
+        .gallery-header h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 1px;
+        }
+
+        .gallery-header p {
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            max-width: 480px;
+            margin-top: 0.8rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr;
+            grid-auto-rows: 280px 320px 260px;
+            gap: 1.2rem;
+        }
+
+        .gallery-grid .item {
+            overflow: hidden;
+            position: relative;
+            border-radius: 0;
+            background: var(--color-surface);
+        }
+
+        .gallery-grid .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+            filter: grayscale(0.2) brightness(0.85);
+        }
+
+        .gallery-grid .item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0) brightness(1);
+        }
+
+        .item-1 { grid-column: 1 / 2; grid-row: 1 / 3; }
+        .item-2 { grid-column: 2 / 4; grid-row: 1 / 2; }
+        .item-3 { grid-column: 2 / 3; grid-row: 2 / 4; }
+        .item-4 { grid-column: 3 / 4; grid-row: 2 / 3; }
+        .item-5 { grid-column: 1 / 2; grid-row: 3 / 4; }
+        .item-6 { grid-column: 3 / 4; grid-row: 3 / 4; }
+
+        /* --- 关于 / 单栏 --- */
+        .about-section {
+            padding: 5rem 3rem 7rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            flex: 1 1 380px;
+            aspect-ratio: 3 / 2;
+            overflow: hidden;
+            background: var(--color-surface);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8);
+        }
+
+        .about-text {
+            flex: 1 1 380px;
+        }
+
+        .about-text h3 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 1px;
+            margin-bottom: 1.2rem;
+        }
+
+        .about-text p {
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1.8rem;
+            text-wrap: pretty;
+        }
+
+        .about-text .cta-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-accent);
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .about-text .cta-link:hover {
+            border-bottom-color: var(--color-accent);
+        }
+
+        /* --- Footer 单栏联系 --- */
+        .footer-contact {
+            background: var(--color-surface);
+            padding: 5rem 3rem 3rem;
+            margin-top: 3rem;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.2rem;
+        }
+
+        .footer-inner .contact-title {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 4px;
+        }
+
+        .footer-inner .contact-sub {
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            max-width: 400px;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-inner .contact-email {
+            color: var(--color-accent);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(201, 166, 117, 0.3);
+            padding-bottom: 0.2rem;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--color-secondary);
+            margin: 1.2rem 0;
+        }
+
+        .footer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        .footer-meta a {
+            color: var(--color-textMuted);
+            transition: color 0.3s;
+        }
+
+        .footer-meta a:hover {
+            color: var(--color-accent);
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 1rem 1.5rem;
+            }
+
+            .navbar-links {
+                gap: 1.6rem;
+            }
+
+            .navbar-links li {
+                font-size: 0.75rem;
+                letter-spacing: 0.8px;
+            }
+
+            .gallery-section {
+                padding: 5rem 1.5rem 3rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: 220px 240px 200px;
+                gap: 0.8rem;
+            }
+
+            .item-1 { grid-column: 1 / 2; grid-row: 1 / 3; }
+            .item-2 { grid-column: 2 / 3; grid-row: 1 / 2; }
+            .item-3 { grid-column: 2 / 3; grid-row: 2 / 4; }
+            .item-4 { grid-column: 1 / 2; grid-row: 3 / 4; }
+            .item-5 { grid-column: 1 / 2; grid-row: 4 / 5; }
+            .item-6 { grid-column: 2 / 3; grid-row: 4 / 5; }
+        }
+
+        @media (max-width: 640px) {
+            .navbar {
+                padding: 0.8rem 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .navbar-links {
+                gap: 0.8rem;
+                flex-wrap: wrap;
+            }
+
+            .navbar-links li {
+                font-size: 0.7rem;
+                letter-spacing: 0.5px;
+            }
+
+            .hero-content h1 {
+                letter-spacing: 2px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 200px;
+                gap: 0.6rem;
+            }
+
+            .item-1, .item-2, .item-3, .item-4, .item-5, .item-6 {
+                grid-column: 1 / 2;
+                grid-row: auto;
+            }
+
+            .about-section {
+                padding: 3rem 1.5rem;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .footer-contact {
+                padding: 3rem 1.5rem 2rem;
+            }
+
+            .footer-inner .contact-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* 占位符 */
+        .no-js-message {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 悬浮导航 -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/b6/20260507/c70535fc/d8bae875-8312-4639-9d41-fb5008d0ea39-1.png?Expires=1778216708&OSSAccessKeyId=STS.NZjBNXf21EvYNgbRPt96CCEhW&Signature=MWMpLjdFGdAQQDyr%2BdwdQ9I%2FTew%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nfCfTsi%2B0Q8rSyTEHTtlAhNblvrIDDtTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb4zMJfBSM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGIsaHLAKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET2EacwXCuU5wGoABf3ZLlGrURn2BZKP1l7SRU8C20ssh5ZDnAcDs78EVZ8tiuuOb%2F4isAgt8ncUb%2BnQPv2pSQoW8fgEcv%2FFNhrLXkvSJ3VBgTwsXwkWeXpaaY8cahS1jyj4MOtVIUMGOcp%2FTTgjaDIoI3Bnzi38Cr%2BnWFAMQM19C8wv%2BY29cYOopiEgAA%3D%3D" loading="eager" alt="垣迹" width="32" height="32">
+            垣迹
+        </div>
+        <ul class="navbar-links">
+            <li class="active">首页</li>
+            <li><a href="gallery.html">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <img class="hero-bg" src="https://images.pexels.com/photos/33829176/pexels-photo-33829176.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" loading="eager" alt="光影之间" width="1200" height="800">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>垣迹</h1>
+            <p class="sub">光影 · 静默 · 在场</p>
+            <div class="scroll-indicator"></div>
+        </div>
+    </section>
+
+    <!-- 不对称网格画廊 -->
+    <section class="gallery-section">
+        <div class="gallery-header">
+            <h2>近期作品</h2>
+            <p>边缘的秩序，暗处的低语。每帧皆是一次注视。</p>
+        </div>
+        <div class="gallery-grid">
+            <div class="item item-1">
+                <img src="https://images.pexels.com/photos/12551293/pexels-photo-12551293.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="eager" alt="作品 1" width="700" height="1050">
+            </div>
+            <div class="item item-2">
+                <img src="https://images.pexels.com/photos/19177223/pexels-photo-19177223.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="作品 2" width="750" height="500">
+            </div>
+            <div class="item item-3">
+                <img src="https://images.pexels.com/photos/8798116/pexels-photo-8798116.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" loading="lazy" alt="作品 3" width="650" height="650">
+            </div>
+            <div class="item item-4">
+                <img src="https://images.pexels.com/photos/12716745/pexels-photo-12716745.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="作品 4" width="650" height="650">
+            </div>
+            <div class="item item-5">
+                <img src="https://images.pexels.com/photos/31313591/pexels-photo-31313591.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="作品 5" width="700" height="467">
+            </div>
+            <div class="item item-6">
+                <img src="https://images.pexels.com/photos/36546471/pexels-photo-36546471.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="作品 6" width="500" height="750">
+            </div>
+        </div>
+    </section>
+
+    <!-- About 区块 -->
+    <section class="about-section">
+        <div class="about-image">
+            <img src="https://images.pexels.com/photos/37204672/pexels-photo-37204672.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="关于垣迹" width="700" height="467">
+        </div>
+        <div class="about-text">
+            <h3>以镜头为笔</h3>
+            <p>我们关注那些容易被忽略的瞬间——阴影的密度、材质的呼吸、人与空间之间微妙的张力。不追逐叙事，只呈现注视本身。</p>
+            <a href="about.html" class="cta-link">更深入的讲述 →</a>
+        </div>
+    </section>
+
+    <!-- Footer / 单栏联系 -->
+    <footer class="footer-contact">
+        <div class="footer-inner">
+            <h4 class="contact-title">建立连接</h4>
+            <p class="contact-sub">若你同样在意观看的方式，不妨留下讯息。</p>
+            <a href="mailto:hello@yuanji.photo" class="contact-email">hello@yuanji.photo</a>
+            <div class="footer-divider"></div>
+            <div class="footer-meta">
+                <span>© 2025 垣迹</span>
+                <a href="gallery.html">作品</a>
+                <a href="about.html">关于</a>
+                <a href="contact.html">联系</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 子页面规划 -->
+    <!-- PAGES_PLAN: [{"name":"gallery.html","title":"作品集","overview":"展示摄影师精选作品，采用非对称瀑布流布局，每张图片带有半透明浮层标题，支持鼠标悬停交互。","layout":"grid"},{"name":"about.html","title":"关于垣迹","overview":"介绍摄影师背景、创作理念与工作流程，包含一段自述文字、一张工作肖像照及核心作品年表。","layout":"detail"},{"name":"contact.html","title":"联系与委托","overview":"提供联系表单（姓名、邮箱、消息）、工作邮箱及社交媒体链接，表单提交后显示成功提示。","layout":"form"}] -->
+
+</body>
+</html>

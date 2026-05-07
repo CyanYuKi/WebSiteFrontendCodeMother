@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>預約拍攝・限量作品 | 光影叙事</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --color-primary: #0E1014;
+    --color-secondary: #1B1E24;
+    --color-background: #090A0D;
+    --color-surface: #14161A;
+    --color-text: #E9E4DC;
+    --color-text-muted: #7C808A;
+    --color-accent: #C99A6E;
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Manrope', sans-serif;
+    --spacing-unit: 0.75rem;
+    --max-width: 1400px;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 1.8rem 1.8rem 2.2rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    color: var(--color-text-muted);
+    transition: color 0.3s;
+    position: relative;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.6s;
+    filter: brightness(0.8) saturate(0.9);
+}
+
+img:hover {
+    transform: scale(1.05);
+    filter: brightness(1) saturate(1);
+}
+
+/* ===== 导航栏 (与首页一致) ===== */
+.header {
+    background: transparent;
+    padding: 0.5rem 0 2.5rem;
+}
+
+.header .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.nav-brand {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+}
+
+.nav-links a {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--color-accent);
+}
+
+/* ===== 页面主容器 ===== */
+.shop-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+/* ===== Hero 區 ===== */
+.shop-hero {
+    margin-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/7;
+    background-color: var(--color-primary);
+}
+
+.shop-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.45) saturate(0.85) contrast(1.1);
+    transition: none;
+}
+
+.shop-hero:hover img {
+    transform: none;
+    filter: brightness(0.45) saturate(0.85) contrast(1.1);
+}
+
+.shop-hero-overlay {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 2.5rem;
+    right: 2.5rem;
+}
+
+.shop-hero-overlay h1 {
+    font-family: var(--font-heading);
+    font-size: 3.2rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.shop-hero-overlay p {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    max-width: 500px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+/* ===== GRID 布局：作品卡片 + 方案卡片 ===== */
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.shop-card {
+    background: var(--color-surface);
+    border: 1px solid rgba(255,255,255,0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.shop-card:hover {
+    border-color: rgba(201, 154, 110, 0.3);
+    transform: translateY(-4px);
+}
+
+.shop-card-image {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--color-primary);
+}
+
+.shop-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.75);
+    transition: filter 0.4s, transform 0.5s;
+}
+
+.shop-card:hover .shop-card-image img {
+    filter: brightness(1);
+    transform: scale(1.03);
+}
+
+.shop-card-body {
+    padding: 1.5rem 1.8rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.shop-card-body h3 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+}
+
+.shop-card-body .description {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+.shop-card-body .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.3rem;
+}
+
+.shop-card-body .price {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-accent);
+    letter-spacing: 0.02em;
+}
+
+.shop-card-body .badge {
+    background: rgba(201, 154, 110, 0.15);
+    color: var(--color-accent);
+    padding: 0.2rem 0.8rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(201, 154, 110, 0.2);
+}
+
+.shop-card-body .btn-inquire {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--color-text);
+    padding: 0.6rem 1.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    align-self: flex-start;
+    margin-top: 0.2rem;
+}
+
+.shop-card-body .btn-inquire:hover {
+    background: var(--color-accent);
+    color: var(--color-primary);
+    border-color: var(--color-accent);
+}
+
+/* ===== 分隔标题 ===== */
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-bottom: 0.8rem;
+}
+
+/* ===== 預約方案區 (grid延续) ===== */
+.booking-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.booking-card {
+    background: var(--color-surface);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 2rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.booking-card:hover {
+    border-color: rgba(201, 154, 110, 0.25);
+    transform: translateY(-4px);
+}
+
+.booking-card .plan-name {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: 0.3rem;
+}
+
+.booking-card .plan-sub {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+}
+
+.booking-card .plan-price {
+    font-size: 2rem;
+    font-family: var(--font-heading);
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+}
+
+.booking-card .plan-features {
+    list-style: none;
+    margin-bottom: 1.5rem;
+}
+
+.booking-card .plan-features li {
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.booking-card .plan-features li::before {
+    content: "—";
+    color: var(--color-accent);
+    opacity: 0.6;
+}
+
+.booking-card .btn-book {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--color-text);
+    padding: 0.7rem 1.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.booking-card .btn-book:hover {
+    background: var(--color-accent);
+    color: var(--color-primary);
+    border-color: var(--color-accent);
+}
+
+/* ===== 引導 CTA ===== */
+.shop-cta {
+    background: var(--color-surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 3rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.shop-cta .cta-text h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--color-text);
+    margin-bottom: 0.3rem;
+}
+
+.shop-cta .cta-text p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.shop-cta .btn-cta {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    padding: 0.8rem 2.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.shop-cta .btn-cta:hover {
+    background: var(--color-accent);
+    color: var(--color-primary);
+    border-color: var(--color-accent);
+}
+
+/* ===== Footer (与首页风格一致) ===== */
+.shop-footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 2.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 2rem;
+}
+
+.shop-footer a:hover {
+    color: var(--color-accent);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+    .booking-grid {
+        grid-template-columns: 1fr;
+    }
+    .shop-hero-overlay h1 {
+        font-size: 2.2rem;
+    }
+    .shop-cta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 1rem 1rem 1.5rem;
+    }
+    .header .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    .nav-links {
+        gap: 1.5rem;
+    }
+    .shop-hero-overlay {
+        bottom: 1.5rem;
+        left: 1.5rem;
+        right: 1.5rem;
+    }
+    .shop-hero-overlay h1 {
+        font-size: 1.8rem;
+    }
+    .section-title {
+        font-size: 1.6rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="nav-brand">光影叙事</div>
+        <ul class="nav-links">
+            <li><a href="index.html#gallery">作品</a></li>
+            <li><a href="index.html#blog">幕後</a></li>
+            <li><a href="about.html">關於</a></li>
+            <li><a href="shop.html" class="active">預約</a></li>
+        </ul>
+    </div>
+</header>
+
+<main class="shop-page">
+
+    <!-- Hero -->
+    <section class="shop-hero">
+        <img src="https://images.pexels.com/photos/26050834/pexels-photo-26050834.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="光影叙事 限量攝影作品" loading="lazy">
+        <div class="shop-hero-overlay">
+            <h1>限量作品・預約拍攝</h1>
+            <p>每一幀畫面皆為獨一無二的敘事。從收藏級微噴到專屬拍攝方案，讓影像成為您的永恆印記。</p>
+        </div>
+    </section>
+
+    <!-- 限量作品 GRID -->
+    <h2 class="section-title">限量攝影作品</h2>
+    <div class="shop-grid">
+        <div class="shop-card">
+            <div class="shop-card-image">
+                <img src="https://images.pexels.com/photos/36984008/pexels-photo-36984008.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="孤獨的風景 限量作品" loading="lazy">
+            </div>
+            <div class="shop-card-body">
+                <h3>孤獨的風景</h3>
+                <p class="description">北極圈極地黑白系列，Hahnemühle Photo Rag® 典藏微噴，33"×44"，附藝術家親筆簽名及版次證書。</p>
+                <div class="meta">
+                    <span class="price">NT$ 28,000</span>
+                    <span class="badge">版次 3/10</span>
+                </div>
+                <a href="#" class="btn-inquire" target="_blank" rel="noopener noreferrer">詢問收藏</a>
+            </div>
+        </div>
+
+        <div class="shop-card">
+            <div class="shop-card-image">
+                <img src="https://images.pexels.com/photos/16313665/pexels-photo-16313665.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="海岸線的呼吸 限量作品" loading="lazy">
+            </div>
+            <div class="shop-card-body">
+                <h3>海岸線的呼吸</h3>
+                <p class="description">冰島南部海岸長曝光系列，Canson Infinity Baryta 紙基，24"×36"，附版次證書及保存說明。</p>
+                <div class="meta">
+                    <span class="price">NT$ 22,000</span>
+                    <span class="badge">版次 5/15</span>
+                </div>
+                <a href="#" class="btn-inquire" target="_blank" rel="noopener noreferrer">詢問收藏</a>
+            </div>
+        </div>
+
+        <div class="shop-card">
+            <div class="shop-card-image">
+                <img src="https://images.pexels.com/photos/13177882/pexels-photo-13177882.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="城市的光譜 限量作品" loading="lazy">
+            </div>
+            <div class="shop-card-body">
+                <h3>城市的光譜</h3>
+                <p class="description">夜間城市抽象光軌，金屬相紙輸出，20"×30"，懸掛式裝裱，限量 8 版。</p>
+                <div class="meta">
+                    <span class="price">NT$ 18,500</span>
+                    <span class="badge">版次 2/8</span>
+                </div>
+                <a href="#" class="btn-inquire" target="_blank" rel="noopener noreferrer">詢問收藏</a>
+            </div>
+        </div>
+
+        <div class="shop-card">
+            <div class="shop-card-image">
+                <img src="https://images.pexels.com/photos/35171313/pexels-photo-35171313.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="寂靜的頌歌 限量作品" loading="lazy">
+            </div>
+            <div class="shop-card-body">
+                <h3>寂靜的頌歌</h3>
+                <p class="description">挪威森林中畫幅黑白作品，ILFORD Galerie 纖維紙基，16"×20"，附作家親筆簽名。</p>
+                <div class="meta">
+                    <span class="price">NT$ 15,200</span>
+                    <span class="badge">版次 7/12</span>
+                </div>
+                <a href="#" class="btn-inquire" target="_blank" rel="noopener noreferrer">詢問收藏</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 預約方案 GRID -->
+    <h2 class="section-title">預約拍攝方案</h2>
+    <div class="booking-grid">
+        <div class="booking-card">
+            <div class="plan-name">敘事紀錄</div>
+            <div class="plan-sub">半日・個人／雙人</div>
+            <div class="plan-price">NT$ 12,000</div>
+            <ul class="plan-features">
+                <li>4 小時拍攝時數</li>
+                <li>100+ 張後製調色照片</li>
+                <li>線上圖庫瀏覽下載</li>
+                <li>1 處拍攝地點 (大台北區)</li>
+            </ul>
+            <a href="#" class="btn-book" target="_blank" rel="noopener noreferrer">預約此方案</a>
+        </div>
+
+        <div class="booking-card">
+            <div class="plan-name">電影感肖像</div>
+            <div class="plan-sub">全日・商業／創作</div>
+            <div class="plan-price">NT$ 28,000</div>
+            <ul class="plan-features">
+                <li>8 小時拍攝時數</li>
+                <li>250+ 張專業後製照片</li>
+                <li>1 套妝髮顧問協調</li>
+                <li>2 處場景 (含戶外／棚內)</li>
+            </ul>
+            <a href="#" class="btn-book" target="_blank" rel="noopener noreferrer">預約此方案</a>
+        </div>
+
+        <div class="booking-card">
+            <div class="plan-name">專題委託</div>
+            <div class="plan-sub">客製・品牌／個人</div>
+            <div class="plan-price">NT$ 56,000 起</div>
+            <ul class="plan-features">
+                <li>完整前期溝通與企劃</li>
+                <li>2 天拍攝行程</li>
+                <li>500+ 張精修照片</li>
+                <li>商業使用授權</li>
+                <li>專業色彩管理輸出</li>
+            </ul>
+            <a href="#" class="btn-book" target="_blank" rel="noopener noreferrer">洽詢專案</a>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="shop-cta">
+        <div class="cta-text">
+            <h2>無法決定哪個方案？</h2>
+            <p>讓我們根據您的需求，打造專屬拍攝體驗。立即預約免費線上諮詢。</p>
+        </div>
+        <a href="#" class="btn-cta" target="_blank" rel="noopener noreferrer">預約諮詢</a>
+    </div>
+
+</main>
+
+<footer class="shop-footer">
+    <span>© 2025 光影叙事 · 暗調電影感攝影</span>
+    <div>
+        <a href="about.html" style="margin-right: 1.5rem;">關於</a>
+        <a href="shop.html">預約</a>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>联系 · 静默影像</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #1A1A1A;
+      --color-secondary: #6B7280;
+      --color-background: #F9F8F6;
+      --color-surface: #FFFFFF;
+      --color-text: #111;
+      --color-textMuted: #666;
+      --color-accent: #C8A97E;
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --spacing-unit: 1rem;
+      --space-xs: calc(var(--spacing-unit) * 0.5);
+      --space-sm: var(--spacing-unit);
+      --space-md: calc(var(--spacing-unit) * 1.5);
+      --space-lg: calc(var(--spacing-unit) * 2.5);
+      --space-xl: calc(var(--spacing-unit) * 4);
+      --space-2xl: calc(var(--spacing-unit) * 6);
+      --max-width: 1200px;
+      --nav-height: 72px;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      z-index: 100;
+      background: transparent;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(249, 248, 246, 0.85);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      padding: 0 var(--space-lg);
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--color-text);
+    }
+
+    .site-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .nav-links li a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text);
+      position: relative;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .nav-links li a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width 0.3s;
+    }
+
+    .nav-links li a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links .nav-cta-li a {
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-text);
+      padding: 0.5rem 1.25rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-links .nav-cta-li a::after {
+      display: none;
+    }
+
+    .nav-links .nav-cta-li a:hover {
+      background: var(--color-accent);
+      color: var(--color-surface);
+    }
+
+    .nav-links li a[aria-current="page"] {
+      color: var(--color-accent);
+    }
+
+    .nav-links li a[aria-current="page"]::after {
+      width: 100%;
+      background: var(--color-accent);
+    }
+
+    main {
+      padding-top: var(--nav-height);
+    }
+
+    /* ===== contact page form layout ===== */
+    .contact-hero {
+      position: relative;
+      width: 100%;
+      height: 45vh;
+      min-height: 320px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.55);
+    }
+
+    .contact-hero .hero-overlay {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      padding: 0 var(--space-lg);
+    }
+
+    .contact-hero .hero-overlay h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .contact-hero .hero-overlay p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.75);
+      max-width: 500px;
+      margin: 0 auto;
+      letter-spacing: 0.02em;
+    }
+
+    .contact-section {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-lg);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+
+    .contact-info {
+      padding-right: var(--space-lg);
+    }
+
+    .contact-info h2 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: var(--space-md);
+      letter-spacing: 0.02em;
+    }
+
+    .contact-info .studio-address {
+      margin-bottom: var(--space-lg);
+    }
+
+    .contact-info .studio-address p {
+      font-size: 0.95rem;
+      color: var(--color-textMuted);
+      line-height: 1.7;
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-info .studio-address .label {
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 0.15rem;
+    }
+
+    .contact-info .social-links {
+      display: flex;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+
+    .contact-info .social-links a {
+      display: inline-block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-textMuted);
+      border-bottom: 1px solid transparent;
+      transition: color 0.25s, border-color 0.25s;
+      padding-bottom: 2px;
+    }
+
+    .contact-info .social-links a:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    .contact-form-wrapper {
+      background: var(--color-surface);
+      padding: var(--space-xl) var(--space-lg);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+    }
+
+    .contact-form-wrapper form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .form-row label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      color: var(--color-textMuted);
+      margin-bottom: 0.15rem;
+    }
+
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 6px;
+      background: var(--color-background);
+      color: var(--color-text);
+      transition: border-color 0.25s;
+      outline: none;
+      width: 100%;
+    }
+
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+      border-color: var(--color-accent);
+    }
+
+    .form-row textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-row select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 12px;
+    }
+
+    .form-submit {
+      display: inline-block;
+      background: var(--color-accent);
+      color: var(--color-surface);
+      padding: 0.9rem 2.5rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+      transition: opacity 0.25s;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      align-self: flex-start;
+      margin-top: var(--space-sm);
+    }
+
+    .form-submit:hover {
+      opacity: 0.85;
+    }
+
+    .contact-map {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-lg) var(--space-2xl);
+    }
+
+    .contact-map iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      border-radius: 12px;
+      filter: grayscale(0.2) brightness(0.98);
+    }
+
+    /* footer */
+    .site-footer {
+      background: var(--color-primary);
+      color: rgba(255,255,255,0.7);
+      padding: var(--space-2xl) var(--space-lg) var(--space-lg);
+      margin-top: var(--space-xl);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-md);
+      text-align: center;
+    }
+
+    .footer-inner .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+
+    .footer-inner .footer-links {
+      display: flex;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-inner .footer-links a {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.25s;
+    }
+
+    .footer-inner .footer-links a:hover {
+      color: var(--color-accent);
+    }
+
+    .footer-inner .footer-copy {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.04em;
+      margin-top: var(--space-sm);
+    }
+
+    @media (max-width: 768px) {
+      .contact-section {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+      }
+
+      .contact-info {
+        padding-right: 0;
+      }
+
+      .header-inner {
+        padding: 0 var(--space-md);
+      }
+
+      .nav-links {
+        gap: var(--space-sm);
+      }
+
+      .nav-links li a {
+        font-size: 0.7rem;
+      }
+
+      .nav-links .nav-cta-li a {
+        padding: 0.4rem 0.9rem;
+        font-size: 0.65rem;
+      }
+
+      .contact-hero {
+        height: 35vh;
+        min-height: 240px;
+      }
+
+      .form-submit {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links .nav-cta-li a {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.6rem;
+      }
+
+      .site-logo {
+        font-size: 1.1rem;
+      }
+
+      .contact-hero .hero-overlay h1 {
+        font-size: 2rem;
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/20/20260507/c70535fc/2a7ae863-8da6-4ebd-83ef-02d0f49a8b77-1.png?Expires=1778209526&OSSAccessKeyId=STS.NYmRVWhNpTrjEZCaPr1AQYmdg&Signature=niki87VfnnnyxuuF1Dp5eequo7o%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rYGezjhZFR47CBR3zyhVAnPc59tqjPhTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb41ZINBSM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGQmyf5Bgcansbe4QdDgFERdQX%2BIMAZtfUovgr615%2BKZEDu95Cknl8CWBcOuAWsL6QFrHRT7I%2BM8bCuU5wGoABTPMDcxn6l67PuFYL11X3ia3qcHVdg4sRFpDFqLYSA9wyDUxIzfl%2BRx%2BfxNntHBXGmBqFb1IxX3LS7F9pZvFxpPY5SXlNGVdFMq79X2YuGZsqqdSAhlcLLCEZLprB2KU7cJNqGPuP8oKjD6d2PrVzTxtp%2BYWoyHp6I401vFOTKp4gAA%3D%3D" alt="静默影像" loading="eager" width="36" height="36">
+        静默影像
+      </a>
+      <ul class="nav-links">
+        <li><a href="gallery.html">作品</a></li>
+        <li><a href="about.html">关于</a></li>
+        <li><a href="contact.html" aria-current="page">联系</a></li>
+        <li class="nav-cta-li"><a href="contact.html">预约拍摄</a></li>
+      </ul>
+    </div>
+ </header>
+
+ <main>
+    <section class="contact-hero">
+      <img src="https://images.pexels.com/photos/8960464/pexels-photo-8960464.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作室环境" loading="eager">
+      <div class="hero-overlay">
+        <h1>联系</h1>
+        <p>期待与你共同创作有温度的光影故事</p>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="contact-info">
+        <h2>工作室</h2>
+        <div class="studio-address">
+          <p class="label">地址</p>
+          <p>杭州市西湖区留泗路18号 东信和创园23幢</p>
+          <p style="margin-top:var(--space-md);"><span class="label">邮箱</span><br>hello@silenceimage.studio</p>
+          <p style="margin-top:var(--space-md);"><span class="label">电话</span><br>+86 571 8888 1234</p>
+        </div>
+
+        <div class="social-links">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://weibo.com" target="_blank" rel="noopener noreferrer">微博</a>
+          <a href="https://xiaohongshu.com" target="_blank" rel="noopener noreferrer">小红书</a>
+        </div>
+      </div>
+
+      <div class="contact-form-wrapper">
+        <form action="#" method="post">
+          <div class="form-row">
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name" placeholder="你的名字" required>
+          </div>
+
+          <div class="form-row">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+          </div>
+
+          <div class="form-row">
+            <label for="type">需求类型</label>
+            <select id="type" name="type" required>
+              <option value="" disabled selected>请选择</option>
+              <option value="个人写真">个人写真</option>
+              <option value="婚纱/情侣">婚纱/情侣</option>
+              <option value="家庭/亲子">家庭/亲子</option>
+              <option value="商业拍摄">商业拍摄</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="date">期望拍摄时间</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+
+          <div class="form-row">
+            <label for="message">补充说明</label>
+            <textarea id="message" name="message" placeholder="请描述你的拍摄想法、风格偏好或任何想聊的……"></textarea>
+          </div>
+
+          <button type="submit" class="form-submit">发送预约</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="contact-map">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5748.392831044394!2d120.0408933!3d30.1799382!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x344b5e3e5e5e5e5f%3A0x1e2e3e4e5e6e7e8!2z5Lic5rW36LW15Y6f5Yy65rWZ6Lev5Yy6!5e0!3m2!1szh-CN!2scn!4v1680000" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="工作室地图"></iframe>
+    </section>
+ </main>
+
+ <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">静默影像 · Silence Image Studio</div>
+      <div class="footer-links">
+        <a href="gallery.html">作品</a>
+        <a href="about.html">关于</a>
+        <a href="contact.html">联系</a>
+      </div>
+      <div class="footer-copy">© 2025 静默影像 · 用光影讲述故事</div>
+    </div>
+ </footer>
+
+</body>
+</html>

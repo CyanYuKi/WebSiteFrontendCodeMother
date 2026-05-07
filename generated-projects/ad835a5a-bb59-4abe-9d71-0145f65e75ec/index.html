@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光影叙事 · 个人摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #F2F0ED;
+            --color-secondary: #8A8A8A;
+            --color-background: #0A0A0A;
+            --color-surface: #161616;
+            --color-text: #F5F5F5;
+            --color-textMuted: #7D7D7D;
+            --color-accent: #C89B7B;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --gap-sm: calc(var(--spacing-unit) * 0.75);
+            --gap-md: calc(var(--spacing-unit) * 1.5);
+            --gap-lg: calc(var(--spacing-unit) * 3);
+            --gap-xl: calc(var(--spacing-unit) * 5);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--gap-md);
+        }
+
+        /* ===== NAV ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: var(--gap-sm) var(--gap-md);
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(242, 240, 237, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.4s var(--ease-out);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-sm);
+        }
+
+        .navbar-brand img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .navbar-brand span {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            color: var(--color-primary);
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-md);
+            list-style: none;
+        }
+
+        .navbar-links a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+            position: relative;
+        }
+
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.35s var(--ease-out);
+        }
+
+        .navbar-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        .navbar-links a.active {
+            color: var(--color-accent);
+        }
+
+        .navbar-links a.active::after {
+            width: 100%;
+            background: var(--color-accent);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 0 var(--gap-md);
+            padding-top: 80px;
+            gap: var(--gap-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 2;
+            padding: var(--gap-lg) 0;
+        }
+
+        .hero-content .label {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: var(--gap-sm);
+            font-weight: 400;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            font-weight: 400;
+            line-height: 1.15;
+            color: var(--color-primary);
+            margin-bottom: var(--gap-md);
+            text-wrap: pretty;
+        }
+
+        .hero-content p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            max-width: 480px;
+            margin-bottom: var(--gap-lg);
+            text-wrap: pretty;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 12px 32px;
+            border: 1px solid var(--color-accent);
+            color: var(--color-accent);
+            background: transparent;
+            border-radius: var(--radius-sm);
+            transition: all 0.35s var(--ease-out);
+            cursor: pointer;
+        }
+
+        .hero-cta:hover {
+            background: var(--color-accent);
+            color: var(--color-background);
+        }
+
+        .hero-image {
+            position: relative;
+            height: 80vh;
+            min-height: 500px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            z-index: 1;
+            aspect-ratio: 3 / 4;
+            align-self: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.15) contrast(1.05);
+            transition: transform 0.8s var(--ease-out);
+        }
+
+        .hero-image:hover img {
+            transform: scale(1.02);
+        }
+
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10,10,10,0.2) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ===== QUOTE ===== */
+        .quote-section {
+            padding: var(--gap-xl) 0;
+            text-align: center;
+            background: var(--color-surface);
+            margin: 0;
+        }
+
+        .quote-section blockquote {
+            font-family: var(--font-heading);
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--color-primary);
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 var(--gap-md);
+            line-height: 1.4;
+            text-wrap: pretty;
+            border-left: 2px solid var(--color-accent);
+            padding-left: var(--gap-md);
+            text-align: left;
+        }
+
+        .quote-section cite {
+            display: block;
+            margin-top: var(--gap-md);
+            font-style: normal;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            color: var(--color-textMuted);
+            text-align: left;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: var(--gap-md);
+        }
+
+        /* ===== GALLERY (瀑布流) ===== */
+        .gallery-section {
+            padding: var(--gap-xl) var(--gap-md);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-header {
+            margin-bottom: var(--gap-lg);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--gap-md);
+        }
+
+        .gallery-header h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 400;
+            color: var(--color-primary);
+        }
+
+        .gallery-header .sub {
+            color: var(--color-textMuted);
+            font-size: 0.9rem;
+            max-width: 320px;
+            text-wrap: pretty;
+        }
+
+        .masonry-grid {
+            columns: 3;
+            column-gap: var(--gap-md);
+            break-inside: avoid;
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: var(--gap-md);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--color-surface);
+            position: relative;
+            cursor: pointer;
+            transition: opacity 0.4s var(--ease-out);
+        }
+
+        .masonry-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.6s var(--ease-out), filter 0.5s var(--ease-out);
+        }
+
+        .masonry-item:hover img {
+            transform: scale(1.03);
+            filter: brightness(1.08) contrast(1.02);
+        }
+
+        .masonry-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--gap-md);
+            background: linear-gradient(transparent, rgba(10,10,10,0.7));
+            color: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.4s var(--ease-out);
+            pointer-events: none;
+        }
+
+        .masonry-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .masonry-item .overlay span {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== ABOUT ===== */
+        .about-section {
+            padding: var(--gap-xl) var(--gap-md);
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--gap-lg);
+            align-items: center;
+        }
+
+        .about-image {
+            aspect-ratio: 4 / 5;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.2);
+        }
+
+        .about-text h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 400;
+            color: var(--color-primary);
+            margin-bottom: var(--gap-md);
+        }
+
+        .about-text p {
+            color: var(--color-textMuted);
+            margin-bottom: var(--gap-md);
+            text-wrap: pretty;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .about-text .signature {
+            font-family: var(--font-heading);
+            font-style: italic;
+            color: var(--color-accent);
+            font-size: 1.2rem;
+            margin-top: var(--gap-md);
+        }
+
+        /* ===== CONTACT ===== */
+        .contact-section {
+            padding: var(--gap-xl) var(--gap-md);
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: var(--gap-lg);
+            align-items: center;
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            margin-top: var(--gap-lg);
+            margin-bottom: var(--gap-lg);
+        }
+
+        .contact-info h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 400;
+            color: var(--color-primary);
+            margin-bottom: var(--gap-sm);
+        }
+
+        .contact-info p {
+            color: var(--color-textMuted);
+            margin-bottom: var(--gap-md);
+            text-wrap: pretty;
+            max-width: 400px;
+        }
+
+        .contact-info .email {
+            color: var(--color-accent);
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s var(--ease-out);
+        }
+
+        .contact-info .email:hover {
+            border-bottom-color: var(--color-accent);
+        }
+
+        .contact-info .social-links {
+            display: flex;
+            gap: var(--gap-md);
+            margin-top: var(--gap-md);
+        }
+
+        .contact-info .social-links a {
+            color: var(--color-textMuted);
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            transition: color 0.3s var(--ease-out);
+        }
+
+        .contact-info .social-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .contact-image {
+            aspect-ratio: 4 / 5;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .contact-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: var(--gap-lg) var(--gap-md);
+            text-align: center;
+            border-top: 1px solid rgba(242, 240, 237, 0.06);
+            margin-top: var(--gap-lg);
+        }
+
+        .footer p {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.04em;
+        }
+
+        .footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--gap-md);
+            margin-bottom: var(--gap-sm);
+            flex-wrap: wrap;
+        }
+
+        .footer .footer-links a {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+        }
+
+        .footer .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .masonry-grid {
+                columns: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                min-height: auto;
+                padding-top: 80px;
+                gap: var(--gap-md);
+            }
+
+            .hero-image {
+                height: 50vh;
+                min-height: 320px;
+                order: -1;
+                border-radius: var(--radius-sm);
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .about-section {
+                grid-template-columns: 1fr;
+                gap: var(--gap-md);
+            }
+
+            .about-image {
+                aspect-ratio: 3 / 2;
+            }
+
+            .contact-section {
+                grid-template-columns: 1fr;
+                gap: var(--gap-md);
+            }
+
+            .contact-image {
+                aspect-ratio: 3 / 2;
+                order: -1;
+            }
+
+            .masonry-grid {
+                columns: 1;
+            }
+
+            .navbar-links {
+                gap: var(--gap-sm);
+            }
+
+            .navbar-links a {
+                font-size: 0.7rem;
+            }
+
+            .navbar-brand span {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--gap-sm);
+            }
+
+            .hero {
+                padding: 0 var(--gap-sm);
+                padding-top: 70px;
+            }
+
+            .gallery-section {
+                padding: var(--gap-lg) var(--gap-sm);
+            }
+
+            .about-section,
+            .contact-section {
+                padding: var(--gap-lg) var(--gap-sm);
+            }
+
+            .navbar {
+                padding: var(--gap-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER / NAV ===== -->
+    <header class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/23/20260507/c70535fc/6871c55c-7647-4001-81a3-bc94925914b7-1.png?Expires=1778210741&OSSAccessKeyId=STS.NYWJPDiwfjcEhQn3uXEuxCSAm&Signature=gZ72DMBYo07C3v1icloyKDyjD2s%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5riAerwhKhH3aGuanff13UNSfpUrJbqjzz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb4zY1JRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGIsyCCQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET5wK7%2BTCuU5wGoABP8MUGFSUCIpv2y4obgwLTLj1aiW3SD5fAMiHd%2Bde4fhcz2LAJg1TYJh%2Fo2DZv%2FZPTbZfks6hiP78tsaRUKfJfOGU39497ptXirp6OY%2FhYVEGWpPGnWx1GiN2SHawIS2EBuDyUEuLZMxsHkZNNdssArxog%2BnfPrglKbvFJOCdy%2FUgAA%3D%3D" alt="光映徽记" loading="eager" width="36" height="36">
+            <span>光映</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html" class="active">首页</a></li>
+            <li><a href="portfolio.html">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+    </header>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="label">光影叙事 · 静默一瞬</p>
+            <h1>透过镜头<br>看见时间的轮廓</h1>
+            <p>在明暗交界处捕捉情绪的纹理，用极简的构图讲述每一帧故事。以安静的目光，凝视世界的细部。</p>
+            <a href="portfolio.html" class="hero-cta">浏览作品 →</a>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.pexels.com/photos/29475900/pexels-photo-29475900.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="主视觉" loading="eager">
+        </div>
+    </section>
+
+    <!-- ===== QUOTE ===== -->
+    <div class="quote-section">
+        <blockquote>
+            “摄影不是用眼睛去看，而是用心去感受。在安静中，影像自己开口说话。”
+            <cite>—— 陈默 · 独立摄影师</cite>
+        </blockquote>
+    </div>
+
+    <!-- ===== GALLERY (瀑布流) ===== -->
+    <section class="gallery-section">
+        <div class="gallery-header">
+            <div>
+                <h2>最近影像</h2>
+                <p class="sub">一些在安静时刻捕获的切片，无序排列如同记忆本身。</p>
+            </div>
+        </div>
+        <div class="masonry-grid">
+            <div class="masonry-item">
+                <img src="https://images.pexels.com/photos/33926823/pexels-photo-33926823.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="静物01" loading="eager">
+                <div class="overlay"><span>薄暮 · 海岸</span></div>
+            </div>
+            <div class="masonry-item">
+                <img src="https://images.pexels.com/photos/19848073/pexels-photo-19848073.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="建筑光影" loading="eager">
+                <div class="overlay"><span>回廊</span></div>
+            </div>
+            <div class="masonry-item">
+                <img src="https://images.pexels.com/photos/8268759/pexels-photo-8268759.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="自然纹理" loading="lazy">
+                <div class="overlay"><span>林间光斑</span></div>
+            </div>
+            <div class="masonry-item">
+                <img src="https://images.pexels.com/photos/16037756/pexels-photo-16037756.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="人像" loading="lazy">
+                <div class="overlay"><span>侧影</span></div>
+            </div>
+            <div class="masonry-item">
+                <img src="https://images.pexels.com/photos/11489977/pexels-photo-11489977.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="街景" loading="lazy">
+                <div class="overlay"><span>雨后街道</span></div>
+            </div>
+            <div class="masonry-item">
+                <img src="https://images.pexels.com/photos/12716745/pexels-photo-12716745.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="抽象" loading="lazy">
+                <div class="overlay"><span>秩序</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section class="about-section">
+        <div class="about-image">
+            <img src="https://images.pexels.com/photos/16313654/pexels-photo-16313654.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="关于摄影师" loading="lazy">
+        </div>
+        <div class="about-text">
+            <h2>以静默的眼光<br>观看世界</h2>
+            <p>十年间，从街头到旷野，从人像到静物。我相信最好的影像存在于等待与偶然之间——当光线恰好在某个角度停驻，当情绪沉淀到刚好可以显影。</p>
+            <p>不只记录，更是与瞬间的共振。每一张照片都是对‘安静’这一状态的致敬。</p>
+            <div class="signature">—— 用光叙事的人</div>
+            <a href="about.html" style="display:inline-block;margin-top:var(--gap-md);color:var(--color-accent);font-size:0.85rem;letter-spacing:0.06em;border-bottom:1px solid var(--color-accent);padding-bottom:2px;">更多故事 →</a>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT / CTA ===== -->
+    <section class="contact-section">
+        <div class="contact-info">
+            <h2>让我们<br>一起创作</h2>
+            <p>如果你也着迷于光影之间的叙事，欢迎来信。无论是项目合作还是纯粹的影像交流，我都乐意倾听。</p>
+            <a href="mailto:hello@guangying.photo" class="email">hello@guangying.photo</a>
+            <div class="social-links">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href="https://behance.net" target="_blank" rel="noopener noreferrer">Behance</a>
+                <a href="https://500px.com" target="_blank" rel="noopener noreferrer">500px</a>
+            </div>
+        </div>
+        <div class="contact-image">
+            <img src="https://images.pexels.com/photos/6893345/pexels-photo-6893345.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系区" loading="lazy">
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="portfolio.html">作品</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <p>© 2025 光映 · 静默摄影室 ｜ 所有影像均保留版权</p>
+    </footer>
+
+    <!-- PAGES_PLAN: [{"name":"portfolio.html","title":"作品集","overview":"展示瀑布流摄影作品列表，包含分类筛选（人像/风光/静物）与每张作品的标题和年份，点击可查看大图。布局为三列瀑布格网。","layout":"grid"},{"name":"about.html","title":"关于摄影师","overview":"详细介绍摄影师的创作理念、从业经历与参展记录，搭配个人肖像与环境侧拍，页面风格延续静谧极简。包含个人简介文字区与荣誉时间线。","layout":"list"},{"name":"contact.html","title":"联系与委托","overview":"提供联系表单（姓名/邮箱/留言）、工作室地址与社交媒体链接，表单提交后显示感谢提示。背景配以暗调环境相片。","layout":"form"}] -->
+
+</body>
+</html>

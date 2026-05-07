@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日记 — 林叙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #A88A75;
+      --color-secondary: #7A8B8C;
+      --color-background: #F4EFEA;
+      --color-surface: #EBE4DA;
+      --color-text: #3D3832;
+      --color-textMuted: #8C7E6F;
+      --color-accent: #C9A86E;
+      --font-heading: Cormorant Garamond, serif;
+      --font-body: Lora, serif;
+      --spacing-unit: 8px;
+    }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+      filter: saturate(0.8) contrast(1.02);
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 6);
+      background: rgba(244, 239, 234, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168, 138, 117, 0.1);
+      transition: padding 0.4s ease, background 0.4s ease;
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--color-text);
+      transition: color 0.3s ease;
+    }
+    .nav-brand:hover {
+      color: var(--color-primary);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 5);
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--color-textMuted);
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-primary);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--color-text);
+    }
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--color-text);
+      transition: all 0.3s ease;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      padding-top: calc(var(--spacing-unit) * 18);
+      padding-bottom: calc(var(--spacing-unit) * 6);
+      text-align: center;
+    }
+    .page-header h1 {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .page-header .subtitle {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--color-textMuted);
+      letter-spacing: 0.04em;
+    }
+    .header-line {
+      width: 48px;
+      height: 1px;
+      background: var(--color-primary);
+      margin: calc(var(--spacing-unit) * 3) auto 0;
+      opacity: 0.6;
+    }
+
+    /* ===== CATEGORY FILTER ===== */
+    .category-filter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: calc(var(--spacing-unit) * 2);
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+      margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+    .category-filter button {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--color-textMuted);
+      background: none;
+      border: 1px solid transparent;
+      padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 2.5);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .category-filter button:hover {
+      color: var(--color-text);
+      border-color: var(--color-primary);
+    }
+    .category-filter button.active {
+      color: var(--color-text);
+      border-color: var(--color-primary);
+      background: rgba(168, 138, 117, 0.1);
+    }
+
+    /* ===== BLOG LIST ===== */
+    .blog-list {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 calc(var(--spacing-unit) * 4);
+    }
+    .blog-item {
+      display: block;
+      margin-bottom: calc(var(--spacing-unit) * 8);
+      transition: opacity 0.3s ease;
+    }
+    .blog-item:hover {
+      opacity: 0.92;
+    }
+    .blog-cover {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .blog-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.8) contrast(1.02);
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+    }
+    .blog-item:hover .blog-cover img {
+      transform: scale(1.03);
+      filter: saturate(0.95) contrast(1.05);
+    }
+    .blog-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(61, 56, 50, 0.08) 100%);
+      pointer-events: none;
+    }
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 2);
+      margin-top: calc(var(--spacing-unit) * 3);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+    .blog-category {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-background);
+      background: var(--color-primary);
+      padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 1.5);
+      border-radius: 1px;
+    }
+    .blog-category.cat-essay {
+      background: var(--color-secondary);
+    }
+    .blog-category.cat-technique {
+      background: var(--color-accent);
+      color: var(--color-text);
+    }
+    .blog-category.cat-journey {
+      background: var(--color-primary);
+    }
+    .blog-date {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.04em;
+    }
+    .blog-title {
+      font-family: var(--font-heading);
+      font-size: 1.65rem;
+      font-weight: 400;
+      line-height: 1.35;
+      letter-spacing: 0.03em;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+      transition: color 0.3s ease;
+    }
+    .blog-item:hover .blog-title {
+      color: var(--color-primary);
+    }
+    .blog-excerpt {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 400;
+      line-height: 1.8;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .blog-readmore {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--color-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 1);
+      transition: gap 0.3s ease, color 0.3s ease;
+    }
+    .blog-readmore::after {
+      content: '→';
+      font-size: 0.85rem;
+      transition: transform 0.3s ease;
+    }
+    .blog-item:hover .blog-readmore {
+      gap: calc(var(--spacing-unit) * 1.5);
+    }
+    .blog-item:hover .blog-readmore::after {
+      transform: translateX(3px);
+    }
+
+    .blog-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--color-surface), transparent);
+      margin: calc(var(--spacing-unit) * 2) 0 calc(var(--spacing-unit) * 6);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      margin-top: calc(var(--spacing-unit) * 12);
+      padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+      text-align: center;
+      border-top: 1px solid rgba(168, 138, 117, 0.15);
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 5);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--color-textMuted);
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: var(--color-text);
+    }
+    .footer-copy {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.04em;
+      opacity: 0.7;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav {
+        padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+      }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(244, 239, 234, 0.97);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: calc(var(--spacing-unit) * 5);
+      }
+      .nav-links.open {
+        display: flex;
+      }
+      .nav-links a {
+        font-size: 1.1rem;
+      }
+      .nav-toggle {
+        display: flex;
+        z-index: 1001;
+      }
+      .page-header h1 {
+        font-size: 2.2rem;
+      }
+      .blog-list {
+        padding: 0 calc(var(--spacing-unit) * 2.5);
+      }
+      .blog-title {
+        font-size: 1.35rem;
+      }
+      .blog-cover {
+        aspect-ratio: 4 / 3;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav-brand">林叙</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="gallery.html">作品</a></li>
+      <li><a href="blog.html" class="active">日记</a></li>
+      <li><a href="about.html">关于</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <header class="page-header">
+    <h1>日记</h1>
+    <p class="subtitle">用文字与光影，记录每一段值得留存的时刻</p>
+    <div class="header-line"></div>
+  </header>
+
+  <div class="category-filter">
+    <button class="active" data-filter="all">全部</button>
+    <button data-filter="essay">随笔</button>
+    <button data-filter="technique">技法分享</button>
+    <button data-filter="journey">旅途记录</button>
+  </div>
+
+  <main class="blog-list">
+
+    <article class="blog-item" data-category="journey">
+      <a href="#">
+        <div class="blog-cover">
+          <img src="https://images.pexels.com/photos/12761139/pexels-photo-12761139.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="旅途记录封面" loading="lazy">
+        </div>
+        <div class="blog-meta">
+          <span class="blog-category cat-journey">旅途记录</span>
+          <span class="blog-date">2025.05.18</span>
+        </div>
+        <h2 class="blog-title">在川西的公路上，追一场迟来的日落</h2>
+        <p class="blog-excerpt">从康定出发往新都桥的路上，云层忽然散开。我把车停在路边，抓起相机冲向那片被夕阳染成金色的草甸。风很大，手在抖，但按下快门的那一刻，一切都安静了。</p>
+        <span class="blog-readmore">阅读全文</span>
+      </a>
+    </article>
+
+    <div class="blog-divider"></div>
+
+    <article class="blog-item" data-category="technique">
+      <a href="#">
+        <div class="blog-cover">
+          <img src="https://images.pexels.com/photos/2084275/pexels-photo-2084275.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="技法分享封面" loading="lazy">
+        </div>
+        <div class="blog-meta">
+          <span class="blog-category cat-technique">技法分享</span>
+          <span class="blog-date">2025.04.22</span>
+        </div>
+        <h2 class="blog-title">胶片模拟：用数码相机还原 Portra 400 的色调</h2>
+        <p class="blog-excerpt">很多人问我为什么数码拍出来的照片总觉得少了点什么。其实不是器材的问题，而是我们习惯了数码的"完美"，却忘了胶片那种微微偏色、颗粒和不可复制的偶然性，才是照片有温度的原因。</p>
+        <span class="blog-readmore">阅读全文</span>
+      </a>
+    </article>
+
+    <div class="blog-divider"></div>
+
+    <article class="blog-item" data-category="essay">
+      <a href="#">
+        <div class="blog-cover">
+          <img src="https://images.pexels.com/photos/36933577/pexels-photo-36933577.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="随笔封面" loading="lazy">
+        </div>
+        <div class="blog-meta">
+          <span class="blog-category cat-essay">随笔</span>
+          <span class="blog-date">2025.03.15</span>
+        </div>
+        <h2 class="blog-title">关于拍照这件小事</h2>
+        <p class="blog-excerpt">有时候觉得，拍照其实是一种"在场"的证明。不是证明我去过哪里、见过什么，而是证明在那个瞬间，我确实认真地看过这个世界。哪怕只是一片落叶、一道斜光。</p>
+        <span class="blog-readmore">阅读全文</span>
+      </a>
+    </article>
+
+    <div class="blog-divider"></div>
+
+    <article class="blog-item" data-category="journey">
+      <a href="#">
+        <div class="blog-cover">
+          <img src="https://images.pexels.com/photos/17368985/pexels-photo-17368985.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="旅途记录封面" loading="lazy">
+        </div>
+        <div class="blog-meta">
+          <span class="blog-category cat-journey">旅途记录</span>
+          <span class="blog-date">2025.02.08</span>
+        </div>
+        <h2 class="blog-title">京都的冬：寺庙、枯山水与一杯热抹茶</h2>
+        <p class="blog-excerpt">一月的京都游客很少，正是拍照的好时候。清晨的南禅寺，石板路上结着薄霜，僧人扫地的声音在空旷的院子里回响。我站在方丈庭园前，看着枯山水的纹路，忽然觉得时间是可以被看见的。</p>
+        <span class="blog-readmore">阅读全文</span>
+      </a>
+    </article>
+
+    <div class="blog-divider"></div>
+
+    <article class="blog-item" data-category="technique">
+      <a href="#">
+        <div class="blog-cover">
+          <img src="https://images.pexels.com/photos/15994865/pexels-photo-15994865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="技法分享封面" loading="lazy">
+        </div>
+        <div class="blog-meta">
+          <span class="blog-category cat-technique">技法分享</span>
+          <span class="blog-date">2025.01.20</span>
+        </div>
+        <h2 class="blog-title">自然光的五种用法：从窗边到黄昏</h2>
+        <p class="blog-excerpt">不需要闪光灯，不需要反光板。最好的光源一直都在——窗户、门廊、树荫下的斑驳、傍晚的金色时刻。学会观察光的方向和质地，比任何设备都重要。</p>
+        <span class="blog-readmore">阅读全文</span>
+      </a>
+    </article>
+
+    <div class="blog-divider"></div>
+
+    <article class="blog-item" data-category="essay">
+      <a href="#">
+        <div class="blog-cover">
+          <img src="https://images.pexels.com/photos/36729769/pexels-photo-36729769.jpeg?auto=compress&cs=tinysrgb&h=350" alt="随笔封面" loading="lazy">
+        </div>
+        <div class="blog-meta">
+          <span class="blog-category cat-essay">随笔</span>
+          <span class="blog-date">2024.12.03</span>
+        </div>
+        <h2 class="blog-title">年末整理：今年最喜欢的十二张照片</h2>
+        <p class="blog-excerpt">每年年底我都会做一次这样的整理。不是为了选出"最好的"，而是想看看这一年的自己，目光都停留在哪些地方。翻看这些照片的时候，像在读一本没有文字日记。</p>
+        <span class="blog-readmore">阅读全文</span>
+      </a>
+    </article>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="gallery.html">作品</a>
+      <a href="blog.html">日记</a>
+      <a href="about.html">关于</a>
+      <a href="contact.html">联系</a>
+    </div>
+    <p class="footer-copy">© 2025 林叙 — 用光影书写日常</p>
+  </footer>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+    });
+
+    const filterBtns = document.querySelectorAll('.category-filter button');
+    const blogItems = document.querySelectorAll('.blog-item');
+    const dividers = document.querySelectorAll('.blog-divider');
+
+    filterBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        filterBtns.forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var filter = btn.getAttribute('data-filter');
+        blogItems.forEach(function(item) {
+          if (filter === 'all' || item.getAttribute('data-category') === filter) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+        dividers.forEach(function(d) {
+          d.style.display = 'block';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
