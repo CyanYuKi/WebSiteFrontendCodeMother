@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 · 静默之境</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #4D6B5F;
+            --color-secondary: #A88B72;
+            --color-background: #FAF8F5;
+            --color-surface: #F3EFE8;
+            --color-text: #333635;
+            --color-textMuted: #7A7F7D;
+            --color-accent: #C79B71;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Work Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --spacing-xs: calc(0.5 * var(--spacing-unit));
+            --spacing-sm: calc(0.8 * var(--spacing-unit));
+            --spacing-md: calc(1.618 * var(--spacing-unit));
+            --spacing-lg: calc(2.618 * var(--spacing-unit));
+            --spacing-xl: calc(4.236 * var(--spacing-unit));
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            --lightbox-bg: rgba(30, 30, 28, 0.94);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+        img { display: block; max-width: 100%; height: auto; }
+        a { text-decoration: none; color: inherit; }
+        a { position: relative; padding-bottom: 2px; transition: opacity var(--transition); }
+        img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.6s ease; }
+
+        /* ===== 导航栏 (与首页完全一致) ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            background-color: rgba(250, 248, 245, 0.55);
+            z-index: 100;
+            border-bottom: 1px solid rgba(163, 139, 114, 0.12);
+            transition: background var(--transition), box-shadow var(--transition);
+        }
+        .navbar-brand {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: var(--color-text);
+            opacity: 0.9;
+        }
+        .navbar-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+        .navbar-links a {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            padding-bottom: 4px;
+            border-bottom: 1px solid transparent;
+            transition: color var(--transition), border-color var(--transition);
+        }
+        .navbar-links a:hover {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        .navbar-links a.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        /* ===== 页面布局：沉浸式表单 ===== */
+        .contact-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 5% 80px;
+            position: relative;
+            background: var(--color-background);
+        }
+        /* 背景大图 (半透明覆盖) */
+        .contact-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .contact-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.08) saturate(0.85) brightness(0.98);
+            opacity: 0.18;
+        }
+        .contact-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xl);
+            padding: var(--spacing-lg) var(--spacing-md);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            background: rgba(250, 248, 245, 0.4);
+            border-radius: 0;
+            box-shadow: 0 0 0 1px rgba(163, 139, 114, 0.06);
+        }
+        .contact-header {
+            text-align: center;
+            max-width: 600px;
+        }
+        .contact-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.8rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.1;
+        }
+        .contact-header p {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            color: var(--color-textMuted);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        .contact-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            align-items: start;
+        }
+        /* 表单区域 */
+        .form-wrap {
+            background: rgba(243, 239, 232, 0.5);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: var(--spacing-lg) var(--spacing-md);
+            border-radius: 0;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.02);
+            border: 1px solid rgba(163, 139, 114, 0.12);
+        }
+        .form-wrap h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        .form-group label {
+            display: block;
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: var(--color-textMuted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1rem;
+            background: var(--color-background);
+            border: 1px solid rgba(163, 139, 114, 0.25);
+            border-radius: 0;
+            color: var(--color-text);
+            transition: border-color var(--transition), box-shadow var(--transition);
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(77, 107, 95, 0.1);
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7F7D' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 12px 8px;
+        }
+        .submit-btn {
+            display: inline-block;
+            padding: 14px 48px;
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: var(--color-primary);
+            color: var(--color-background);
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+            margin-top: var(--spacing-sm);
+        }
+        .submit-btn:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+        /* 右侧信息 */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+            padding-top: var(--spacing-xs);
+        }
+        .info-card {
+            background: rgba(243, 239, 232, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: var(--spacing-md) var(--spacing-md);
+            border: 1px solid rgba(163, 139, 114, 0.10);
+        }
+        .info-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+            letter-spacing: 0.8px;
+        }
+        .info-card p {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--color-text);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        .info-card .social-links {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        .info-card .social-links a {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--color-textMuted);
+            letter-spacing: 0.5px;
+            padding: 4px 0;
+            border-bottom: 1px solid transparent;
+            transition: color var(--transition), border-color var(--transition);
+        }
+        .info-card .social-links a:hover {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        .info-card .social-links a.external::after {
+            content: " ↗";
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+        .info-card .photographer-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: var(--spacing-sm);
+            filter: sepia(0.08) saturate(0.9);
+            border: 2px solid rgba(163, 139, 114, 0.2);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid rgba(163, 139, 114, 0.15);
+            margin: var(--spacing-sm) 0;
+        }
+        .footer-note {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            opacity: 0.8;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 820px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+            .contact-header h1 {
+                font-size: 2.8rem;
+            }
+            .navbar {
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+            .navbar-links {
+                gap: var(--spacing-md);
+            }
+            .navbar-links a {
+                font-size: 0.8rem;
+            }
+            .contact-content {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+        }
+        @media (max-width: 520px) {
+            .contact-header h1 {
+                font-size: 2.2rem;
+            }
+            .navbar-links a {
+                font-size: 0.7rem;
+                letter-spacing: 0.8px;
+            }
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            .submit-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景大图 (沉浸) -->
+    <div class="contact-bg">
+        <img src="https://images.pexels.com/photos/12516294/pexels-photo-12516294.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="自然风光背景" loading="lazy">
+    </div>
+
+    <!-- 导航栏 (与首页一致) -->
+    <nav class="navbar">
+        <div class="navbar-brand">静默之境</div>
+        <div class="navbar-links">
+            <a href="index.html#work">作品</a>
+            <a href="index.html#about">关于</a>
+            <a href="contact.html" class="active">联系</a>
+        </div>
+    </nav>
+
+    <!-- 联系页面主体 -->
+    <main class="contact-page">
+        <div class="contact-content">
+            <div class="contact-header">
+                <h1>预约 · 对话</h1>
+                <p>留下你的故事，让镜头与自然共谱静谧篇章</p>
+            </div>
+
+            <div class="contact-grid">
+                <!-- 左侧表单 -->
+                <div class="form-wrap">
+                    <h2>旅拍预约 / 作品收藏咨询</h2>
+                    <form action="#" method="post" id="contactForm">
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" name="name" placeholder="你的名字" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">意向类型</label>
+                            <select id="type" name="type">
+                                <option value="旅拍预约">旅拍预约</option>
+                                <option value="作品收藏咨询">作品收藏咨询</option>
+                                <option value="合作洽谈">合作洽谈</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">留言</label>
+                            <textarea id="message" name="message" placeholder="请描述你的想法、地点、时间或其他需求…"></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">发送</button>
+                    </form>
+                </div>
+
+                <!-- 右侧信息 -->
+                <div class="contact-info">
+                    <div class="info-card">
+                        <img class="photographer-avatar" src="https://images.pexels.com/photos/33491869/pexels-photo-33491869.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师肖像">
+                        <h3>摄影师 · 林静</h3>
+                        <p>十年风光旅拍经验，足迹遍布二十余国。擅长捕捉自然光线与大地肌理，以沉静而富有诗意的镜头语言，记录属于每一片山川的独白。</p>
+                        <hr>
+                        <p style="font-size: 0.9rem; color: var(--color-textMuted);">📸 富士 / 哈苏 · 中画幅胶片与数字混合创作</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>社交媒体</h3>
+                        <div class="social-links">
+                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="external">Instagram</a>
+                            <a href="https://500px.com" target="_blank" rel="noopener noreferrer" class="external">500px</a>
+                            <a href="https://weibo.com" target="_blank" rel="noopener noreferrer" class="external">微博</a>
+                            <a href="https://behance.net" target="_blank" rel="noopener noreferrer" class="external">Behance</a>
+                        </div>
+                        <hr>
+                        <p style="font-size: 0.9rem; color: var(--color-textMuted);">✉️ linding@silentmountain.com</p>
+                        <p style="font-size: 0.9rem; color: var(--color-textMuted);">📍 云南 · 大理 / 阿尔卑斯 · 采尔马特</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="footer-note">· 每一份来信我们都会用心回复 ·</p>
+        </div>
+    </main>
+
+    <script>
+        // 简单的表单拦截（仅作示意）
+        document.getElementById('contactForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('感谢您的留言！静默之境团队将尽快与您联系。');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

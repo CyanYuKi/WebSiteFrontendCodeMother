@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>菲林之间 · 摄影档案</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* 设计系统变量 */
+        :root {
+            --color-primary: #4A3728;
+            --color-secondary: #C9B89C;
+            --color-background: #F4EFE6;
+            --color-surface: #EAE3D5;
+            --color-text: #2A221A;
+            --color-textMuted: #7D6E5D;
+            --color-accent: #B85E3C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Karla', sans-serif;
+            --spacing-unit: 0.75rem;
+            --scale-spacing: 1.33;
+        }
+
+        /* 基础重置 */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            opacity: 0.75;
+        }
+
+        /* 排版 */
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+        }
+
+        /* 全幅包裹 */
+        .site-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ---------- 沉浸式 Hero ---------- */
+        .hero-full {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+            background-color: var(--color-primary);
+        }
+
+        .hero-full img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+            mix-blend-mode: luminosity;
+            filter: sepia(0.3) saturate(0.8);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(42,34,26,0.65) 0%, transparent 60%);
+            color: var(--color-background);
+        }
+
+        .hero-overlay h1 {
+            font-size: clamp(2.8rem, 10vw, 5.5rem);
+            font-weight: 700;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-overlay .sub {
+            font-family: var(--font-body);
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            font-weight: 400;
+            color: var(--color-secondary);
+            text-shadow: 0 1px 6px rgba(0,0,0,0.25);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero-nav {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-nav a {
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s, color 0.25s;
+            color: var(--color-background);
+        }
+
+        .hero-nav a:hover {
+            border-bottom-color: var(--color-accent);
+            color: var(--color-accent);
+            opacity: 1;
+        }
+
+        /* ---------- 主内容：分类 + 瀑布流网格 ---------- */
+        .content-area {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 3rem var(--spacing-unit) 4rem;
+            gap: 2rem;
+        }
+
+        /* 左侧固定分类导航 */
+        .category-sidebar {
+            flex: 0 0 180px;
+            min-width: 140px;
+            position: sticky;
+            top: 2rem;
+            align-self: flex-start;
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--color-secondary);
+        }
+
+        .category-sidebar h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--color-secondary);
+            padding-bottom: 0.75rem;
+        }
+
+        .category-sidebar ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .category-sidebar li a {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-textMuted);
+            padding: 0.3rem 0;
+            display: block;
+            transition: color 0.2s, padding-left 0.2s;
+            border-left: 2px solid transparent;
+            padding-left: 0.5rem;
+        }
+
+        .category-sidebar li a:hover,
+        .category-sidebar li a:focus-visible {
+            color: var(--color-accent);
+            border-left-color: var(--color-accent);
+            padding-left: 1rem;
+            opacity: 1;
+        }
+
+        .category-sidebar .active a {
+            color: var(--color-primary);
+            border-left-color: var(--color-primary);
+            font-weight: 600;
+            padding-left: 1rem;
+        }
+
+        /* 右侧瀑布流网格 */
+        .gallery-grid {
+            flex: 1;
+            min-width: 0;
+            columns: 3;
+            column-gap: 1.25rem;
+            padding: 0.5rem 0;
+        }
+
+        @media (max-width: 960px) {
+            .gallery-grid {
+                columns: 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid {
+                columns: 1;
+            }
+        }
+
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 1.25rem;
+            display: inline-block;
+            width: 100%;
+            background-color: var(--color-surface);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(74,55,40,0.12);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            filter: sepia(0.15) contrast(0.95);
+            transition: filter 0.4s;
+        }
+
+        .gallery-item:hover img {
+            filter: sepia(0) contrast(1.02);
+        }
+
+        .gallery-item .caption {
+            padding: 0.6rem 0.9rem 0.9rem;
+            font-size: 0.85rem;
+            color: var(--color-textMuted);
+            background-color: var(--color-surface);
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            border-top: 1px solid var(--color-secondary);
+        }
+
+        .gallery-item .caption span {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 0.1rem;
+        }
+
+        /* ---------- 页脚 ---------- */
+        .site-footer {
+            background-color: var(--color-primary);
+            color: var(--color-background);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .site-footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .site-footer .footer-links a {
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-secondary);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s;
+        }
+
+        .site-footer .footer-links a:hover {
+            border-bottom-color: var(--color-accent);
+            color: var(--color-accent);
+            opacity: 1;
+        }
+
+        .site-footer .copyright {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            opacity: 0.7;
+            letter-spacing: 0.04em;
+        }
+
+        .site-footer .copyright em {
+            font-style: italic;
+            color: var(--color-secondary);
+        }
+
+        /* ---------- 响应式微调 ---------- */
+        @media (max-width: 768px) {
+            .content-area {
+                flex-direction: column;
+                padding: 1.5rem var(--spacing-unit) 2rem;
+                gap: 0.5rem;
+            }
+            .category-sidebar {
+                flex: none;
+                width: 100%;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--color-secondary);
+                padding: 0.5rem 0 1rem;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.8rem;
+            }
+            .category-sidebar h3 {
+                margin-bottom: 0;
+                border-bottom: none;
+                padding-bottom: 0;
+                font-size: 1.1rem;
+                min-width: 4rem;
+            }
+            .category-sidebar ul {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.3rem 0.8rem;
+            }
+            .category-sidebar li a {
+                padding-left: 0.2rem;
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                font-size: 0.9rem;
+            }
+            .category-sidebar li a:hover,
+            .category-sidebar li a:focus-visible {
+                padding-left: 0.2rem;
+                border-left: none;
+                border-bottom-color: var(--color-accent);
+            }
+            .hero-nav {
+                gap: 1.2rem;
+            }
+        }
+
+        /* 辅助类 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="site-wrapper">
+
+        <!-- 沉浸式全屏 Hero -->
+        <header class="hero-full" role="banner">
+            <img src="https://images.pexels.com/photos/8084370/pexels-photo-8084370.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="" loading="eager" aria-hidden="true">
+            <div class="hero-overlay">
+                <h1>菲林之间</h1>
+                <p class="sub">人像 · 街头 · 纪实</p>
+                <nav class="hero-nav" aria-label="主导航">
+                    <a href="portfolio.html">作品集</a>
+                    <a href="about.html">关于</a>
+                    <a href="contact.html">联系</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- 左侧分类 + 右侧瀑布流 -->
+        <section class="content-area" aria-label="作品分类与展示">
+            <aside class="category-sidebar" aria-label="摄影分类">
+                <h3>分类</h3>
+                <ul>
+                    <li class="active"><a href="index.html">全部</a></li>
+                    <li><a href="portfolio.html?cat=portrait">人像写真</a></li>
+                    <li><a href="portfolio.html?cat=street">街头摄影</a></li>
+                    <li><a href="portfolio.html?cat=landscape">风景纪实</a></li>
+                </ul>
+            </aside>
+
+            <div class="gallery-grid" role="list" aria-label="照片瀑布流">
+
+                <!-- 使用素材库 gallery_pool 中的图片 + 额外 gallery 图 -->
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/29569264/pexels-photo-29569264.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="人像写真作品 1" loading="lazy">
+                    <div class="caption"><span>午后光影</span>人像 · 2025</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/37157243/pexels-photo-37157243.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="街头摄影作品" loading="lazy">
+                    <div class="caption"><span>城市呼吸</span>街头 · 2024</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/14525932/pexels-photo-14525932.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="风景纪实作品 1" loading="lazy">
+                    <div class="caption"><span>山脊线</span>风景 · 2023</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/8261778/pexels-photo-8261778.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="人像写真作品 2" loading="lazy">
+                    <div class="caption"><span>静谧肖像</span>人像 · 2025</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/5155932/pexels-photo-5155932.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="风光纪实作品 2" loading="lazy">
+                    <div class="caption"><span>大地的纹路</span>风景 · 2024</div>
+                </div>
+
+                <!-- 使用 feature / about 等素材作为额外网格卡片，增加丰富度 -->
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/20519867/pexels-photo-20519867.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片工作坊" loading="lazy">
+                    <div class="caption"><span>暗房温度</span>纪实 · 2025</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="关于我们 摄影现场" loading="lazy">
+                    <div class="caption"><span>取景器之后</span>创作花絮 · 2024</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/7964358/pexels-photo-7964358.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户评价 胶片记忆" loading="lazy">
+                    <div class="caption"><span>胶片记忆</span>肖像 · 2023</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/20732843/pexels-photo-20732843.jpeg?auto=compress&cs=tinysrgb&h=350" alt="团队创作" loading="lazy">
+                    <div class="caption"><span>我们</span>团队 · 2025</div>
+                </div>
+
+                <div class="gallery-item" role="listitem">
+                    <img src="https://images.pexels.com/photos/4641194/pexels-photo-4641194.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系区 自然光人像" loading="lazy">
+                    <div class="caption"><span>窗外</span>人像 · 2024</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-links" aria-label="底部导航">
+                <a href="portfolio.html">全部作品</a>
+                <a href="about.html">关于</a>
+                <a href="contact.html">联系</a>
+            </nav>
+            <p class="copyright">© 2025 <em>菲林之间</em> · 用胶片记录真实</p>
+        </footer>
+
+    </div>
+
+    <!-- 子页面规划（多页面需求） -->
+    <!-- PAGES_PLAN: [{"name":"portfolio.html","title":"全部作品 · 菲林之间","overview":"展示所有摄影作品，包含分类筛选（人像/街头/风景），使用密集瀑布流网格布局，点击图片可查看详情（后续完善）。","layout":"grid"},{"name":"about.html","title":"关于 · 菲林之间","overview":"摄影师介绍、创作理念、胶片工作流程展示，配以工作现场图片与故事时间线。","layout":"detail"},{"name":"contact.html","title":"联系 · 菲林之间","overview":"包含联系表单（姓名、邮箱、消息）、社交媒体链接、工作室地址地图占位。","layout":"form"}] -->
+</body>
+</html>

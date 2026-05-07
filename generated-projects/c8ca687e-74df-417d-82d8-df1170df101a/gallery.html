@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - 作品集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1C1C1C;
+            --color-secondary: #737373;
+            --color-background: #F8F6F3;
+            --color-surface: #FFFFFF;
+            --color-text: #1E1E1E;
+            --color-textMuted: #6B6B6B;
+            --color-accent: #B08D55;
+            --font-heading: Cormorant Garamond, serif;
+            --font-body: Manrope, sans-serif;
+            --spacing-unit: 0.75rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== 导航栏 ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(248, 246, 243, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 0 calc(var(--spacing-unit) * 6);
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-logo span {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            letter-spacing: 0.04em;
+        }
+
+        .main-nav {
+            list-style: none;
+            display: flex;
+            gap: calc(var(--spacing-unit) * 3);
+            align-items: center;
+        }
+
+        .main-nav li a {
+            display: inline-block;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            padding: 6px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .main-nav li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-accent);
+            transition: width 0.35s ease;
+        }
+
+        .main-nav li a:hover {
+            color: var(--color-primary);
+        }
+
+        .main-nav li a:hover::after {
+            width: 100%;
+        }
+
+        .main-nav li a.active {
+            color: var(--color-primary);
+        }
+
+        .main-nav li a.active::after {
+            width: 100%;
+            background-color: var(--color-primary);
+        }
+
+        /* ===== Hero 头部 ===== */
+        .gallery-hero {
+            margin-top: 72px;
+            padding: 80px calc(var(--spacing-unit) * 6) 60px;
+            text-align: center;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .gallery-hero h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 500;
+            line-height: 1.2;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .gallery-hero p {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ===== 分类过滤器 ===== */
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            padding: 0 calc(var(--spacing-unit) * 6) 40px;
+        }
+
+        .gallery-filters button {
+            background: none;
+            border: none;
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            cursor: pointer;
+            padding: 6px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .gallery-filters button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-accent);
+            transition: width 0.35s ease;
+        }
+
+        .gallery-filters button:hover {
+            color: var(--color-primary);
+        }
+
+        .gallery-filters button:hover::after {
+            width: 100%;
+        }
+
+        .gallery-filters button.active-filter {
+            color: var(--color-primary);
+        }
+
+        .gallery-filters button.active-filter::after {
+            width: 100%;
+            background-color: var(--color-primary);
+        }
+
+        /* ===== 瀑布流网格 ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 0 calc(var(--spacing-unit) * 6) 80px;
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+            background: var(--color-surface);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.03);
+        }
+
+        /* 瀑布流不同高度 */
+        .gallery-item.tall {
+            grid-row: span 2;
+        }
+
+        .gallery-item.medium {
+            grid-row: span 1;
+        }
+
+        .gallery-item.short {
+            grid-row: span 1;
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 16px 16px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.35));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .gallery-item .overlay span {
+            display: block;
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: var(--color-primary);
+            color: rgba(255, 255, 255, 0.75);
+            padding: 48px calc(var(--spacing-unit) * 6) 40px;
+            text-align: center;
+        }
+
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px 36px;
+            margin-bottom: 28px;
+        }
+
+        footer .footer-links a {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            transition: color 0.3s ease;
+        }
+
+        footer .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        footer .footer-copy {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.06em;
+            margin-top: 8px;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 968px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 calc(var(--spacing-unit) * 3) 60px;
+            }
+            nav {
+                padding: 0 calc(var(--spacing-unit) * 3);
+            }
+            .gallery-hero {
+                padding: 60px calc(var(--spacing-unit) * 3) 40px;
+            }
+            .gallery-hero h1 {
+                font-size: 2.6rem;
+            }
+            .gallery-filters {
+                padding: 0 calc(var(--spacing-unit) * 3) 30px;
+            }
+            footer {
+                padding: 40px calc(var(--spacing-unit) * 3) 32px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 0 calc(var(--spacing-unit) * 2) 48px;
+            }
+            .gallery-item.tall {
+                grid-row: span 1;
+            }
+            nav {
+                padding: 0 calc(var(--spacing-unit) * 2);
+                height: 64px;
+            }
+            .main-nav {
+                gap: calc(var(--spacing-unit) * 1.5);
+            }
+            .main-nav li a {
+                font-size: 0.7rem;
+            }
+            .nav-logo span {
+                font-size: 1rem;
+            }
+            .gallery-hero {
+                margin-top: 64px;
+                padding: 48px calc(var(--spacing-unit) * 2) 32px;
+            }
+            .gallery-hero h1 {
+                font-size: 2.2rem;
+            }
+            .gallery-filters {
+                gap: 8px 16px;
+                padding: 0 calc(var(--spacing-unit) * 2) 24px;
+            }
+            .gallery-filters button {
+                font-size: 0.65rem;
+            }
+            footer {
+                padding: 32px calc(var(--spacing-unit) * 2) 28px;
+            }
+            footer .footer-links {
+                gap: 14px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav>
+        <div class="nav-logo">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/96/20260507/c70535fc/d448a388-78a1-4140-bf63-317769c4e10f-1.png?Expires=1778222907&OSSAccessKeyId=STS.NXrq1joTBFGgQBofv5AgTaiKQ&Signature=qNNyCPw7IVKklSsB%2FPxSDMbgMwA%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5vHOovegotj8YWMU2TegnZgTeh4jqzgszz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb42IvJRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGgs6ICQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET8spAGvCuU5wGoABkdP1DzDJl01L9PGlXloAsdm%2BCodkHe2RimV4f6zpTPd3l8MlPrd5RICIV2uN%2Bu9bHVRUWOGHiFkwDbPPR5odJ44kBW%2FBNO95h0jgpANCnwMdqqYHVWCp2iSKgbVKXczS7TFrYwbezoRi57Km6w%2BuqNnM8ajeTvvzP70xcZoDkGAgAA%3D%3D" alt="Logo">
+            <span>Atelier</span>
+        </div>
+        <ul class="main-nav">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="gallery.html" class="active">作品集</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== Hero 头部 ===== -->
+    <section class="gallery-hero">
+        <h1>精选作品</h1>
+        <p>肖像 · 空间 · 自然 — 在光与影的呼吸之间，捕捉静谧的叙事。</p>
+    </section>
+
+    <!-- ===== 分类过滤器 ===== -->
+    <div class="gallery-filters">
+        <button class="active-filter" data-filter="all">全部</button>
+        <button data-filter="portrait">肖像</button>
+        <button data-filter="space">空间</button>
+        <button data-filter="nature">自然</button>
+    </div>
+
+    <!-- ===== 瀑布流网格 ===== -->
+    <div class="gallery-grid" id="galleryGrid">
+        <!-- 肖像类 -->
+        <div class="gallery-item tall" data-category="portrait">
+            <img src="https://images.pexels.com/photos/14539605/pexels-photo-14539605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Portrait 1" loading="lazy">
+            <div class="overlay"><span>肖像 · 寂静</span></div>
+        </div>
+        <div class="gallery-item medium" data-category="portrait">
+            <img src="https://images.pexels.com/photos/19177223/pexels-photo-19177223.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Portrait 2" loading="lazy">
+            <div class="overlay"><span>肖像 · 凝望</span></div>
+        </div>
+        <div class="gallery-item short" data-category="portrait">
+            <img src="https://images.pexels.com/photos/33072061/pexels-photo-33072061.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Portrait 3" loading="lazy">
+            <div class="overlay"><span>肖像 · 柔光</span></div>
+        </div>
+
+        <!-- 空间类 -->
+        <div class="gallery-item short" data-category="space">
+            <img src="https://images.pexels.com/photos/6693138/pexels-photo-6693138.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Space 1" loading="lazy">
+            <div class="overlay"><span>空间 · 秩序</span></div>
+        </div>
+        <div class="gallery-item tall" data-category="space">
+            <img src="https://images.pexels.com/photos/8960464/pexels-photo-8960464.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Space 2" loading="lazy">
+            <div class="overlay"><span>空间 · 留白</span></div>
+        </div>
+        <div class="gallery-item medium" data-category="space">
+            <img src="https://images.pexels.com/photos/12260845/pexels-photo-12260845.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Space 3" loading="lazy">
+            <div class="overlay"><span>空间 · 光影</span></div>
+        </div>
+
+        <!-- 自然类 -->
+        <div class="gallery-item medium" data-category="nature">
+            <img src="https://images.pexels.com/photos/33829176/pexels-photo-33829176.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Nature 1" loading="lazy">
+            <div class="overlay"><span>自然 · 静谧</span></div>
+        </div>
+        <div class="gallery-item short" data-category="nature">
+            <img src="https://images.pexels.com/photos/8798119/pexels-photo-8798119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Nature 2" loading="lazy">
+            <div class="overlay"><span>自然 · 脉动</span></div>
+        </div>
+        <div class="gallery-item tall" data-category="nature">
+            <img src="https://images.pexels.com/photos/29085927/pexels-photo-29085927.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Nature 3" loading="lazy">
+            <div class="overlay"><span>自然 · 呼吸</span></div>
+        </div>
+
+        <!-- 补充素材图片（混合分类） -->
+        <div class="gallery-item medium" data-category="nature">
+            <img src="https://images.pexels.com/photos/7668385/pexels-photo-7668385.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Nature 4" loading="lazy">
+            <div class="overlay"><span>自然 · 生长</span></div>
+        </div>
+        <div class="gallery-item short" data-category="space">
+            <img src="https://images.pexels.com/photos/8290865/pexels-photo-8290865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Space 4" loading="lazy">
+            <div class="overlay"><span>空间 · 建筑</span></div>
+        </div>
+        <div class="gallery-item tall" data-category="portrait">
+            <img src="https://images.pexels.com/photos/8798119/pexels-photo-8798119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Portrait 4" loading="lazy">
+            <div class="overlay"><span>肖像 · 轮廓</span></div>
+        </div>
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="gallery.html">作品集</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2025 Atelier. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ===== 过滤器 JS ===== -->
+    <script>
+        (function() {
+            const buttons = document.querySelectorAll('.gallery-filters button');
+            const items = document.querySelectorAll('.gallery-item');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    buttons.forEach(b => b.classList.remove('active-filter'));
+                    this.classList.add('active-filter');
+
+                    const filter = this.dataset.filter;
+
+                    items.forEach(item => {
+                        if (filter === 'all') {
+                            item.style.display = 'block';
+                        } else {
+                            if (item.dataset.category === filter) {
+                                item.style.display = 'block';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gallery | 静帧摄影</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #6B7A6E;
+      --color-secondary: #A89E8F;
+      --color-background: #F4F0E8;
+      --color-surface: #EAE5DB;
+      --color-text: #3D3C38;
+      --color-textMuted: #8F8A82;
+      --color-accent: #B89A7A;
+      --font-heading: 'Cormorant Garamond', serif;
+      --font-body: 'Source Sans 3', sans-serif;
+      --spacing-unit: 1rem;
+    }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.7;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.75) contrast(1.02) brightness(0.95);
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+    }
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: calc(var(--spacing-unit) * 1.5) 0;
+      background: rgba(244, 240, 232, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(169, 158, 143, 0.2);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 calc(var(--spacing-unit) * 2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--color-text);
+    }
+    .nav-divider {
+      width: 1px;
+      height: 1.2rem;
+      background-color: var(--color-secondary);
+      opacity: 0.5;
+    }
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--color-text);
+    }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background-color: var(--color-accent);
+      border-radius: 50%;
+    }
+    .page-header {
+      padding-top: calc(var(--spacing-unit) * 9);
+      padding-bottom: calc(var(--spacing-unit) * 3);
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .page-title {
+      font-family: var(--font-heading);
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 0.5);
+      letter-spacing: 0.05em;
+    }
+    .page-subtitle {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--color-textMuted);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+    }
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: calc(var(--spacing-unit) * 1.5);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      padding: 0 calc(var(--spacing-unit) * 2);
+    }
+    .filter-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--color-textMuted);
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      letter-spacing: 0.05em;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      color: var(--color-text);
+    }
+    .filter-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 1px;
+      background-color: var(--color-accent);
+    }
+    .gallery-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 6);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: calc(var(--spacing-unit) * 1.5);
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background-color: var(--color-surface);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .gallery-item.hidden {
+      display: none;
+    }
+    .gallery-item img {
+      aspect-ratio: 3 / 4;
+      transform: scale(1.03);
+    }
+    .gallery-item:hover img {
+      transform: scale(1.08);
+      filter: saturate(0.85) contrast(1.05) brightness(0.98);
+    }
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: calc(var(--spacing-unit) * 2);
+      background: linear-gradient(to top, rgba(61, 60, 56, 0.65), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+    .gallery-caption {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: #F4F0E8;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .gallery-category {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: rgba(244, 240, 232, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(45, 44, 40, 0.92);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+      backdrop-filter: blur(8px);
+    }
+    .lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 85vh;
+      position: relative;
+    }
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      filter: saturate(0.8) contrast(1.05);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: none;
+      border: none;
+      color: #F4F0E8;
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.3s ease;
+    }
+    .lightbox-close:hover {
+      color: var(--color-accent);
+    }
+    .footer {
+      border-top: 1px solid rgba(169, 158, 143, 0.3);
+      padding: calc(var(--spacing-unit) * 3) 0;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 2);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+    .footer-link {
+      font-size: 0.85rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease;
+    }
+    .footer-link:hover {
+      color: var(--color-text);
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--color-textMuted);
+      opacity: 0.6;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2.5rem;
+      }
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      }
+      .nav-inner {
+        gap: calc(var(--spacing-unit) * 1);
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">静帧</a>
+      <span class="nav-divider"></span>
+      <a href="gallery.html" class="nav-link active">作品</a>
+      <a href="blog.html" class="nav-link">手记</a>
+      <a href="about.html" class="nav-link">关于</a>
+      <a href="contact.html" class="nav-link">联络</a>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <h1 class="page-title">Gallery</h1>
+    <p class="page-subtitle">光影切片 · 主题辑录</p>
+  </header>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="humanities">人文</button>
+    <button class="filter-btn" data-filter="landscape">风景</button>
+    <button class="filter-btn" data-filter="stilllife">静物</button>
+    <button class="filter-btn" data-filter="portrait">人像</button>
+  </div>
+
+  <main class="gallery-container">
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-item" data-category="landscape">
+        <img src="https://images.pexels.com/photos/32001812/pexels-photo-32001812.jpeg?auto=compress&cs=tinysrgb&w=800" alt="晨雾山谷">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">晨雾山谷</div>
+          <div class="gallery-category">风景</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="portrait">
+        <img src="https://images.pexels.com/photos/35874785/pexels-photo-35874785.jpeg?auto=compress&cs=tinysrgb&w=800" alt="凝视">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">凝视</div>
+          <div class="gallery-category">人像</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="humanities">
+        <img src="https://images.pexels.com/photos/9941176/pexels-photo-9941176.jpeg?auto=compress&cs=tinysrgb&w=800" alt="街角叙事">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">街角叙事</div>
+          <div class="gallery-category">人文</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="stilllife">
+        <img src="https://images.pexels.com/photos/9903568/pexels-photo-9903568.jpeg?auto=compress&cs=tinysrgb&w=800" alt="静默之物">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">静默之物</div>
+          <div class="gallery-category">静物</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="landscape">
+        <img src="https://images.pexels.com/photos/6155298/pexels-photo-6155298.jpeg?auto=compress&cs=tinysrgb&w=800" alt="荒原独行">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">荒原独行</div>
+          <div class="gallery-category">风景</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="portrait">
+        <img src="https://images.pexels.com/photos/37093455/pexels-photo-37093455.jpeg?auto=compress&cs=tinysrgb&w=800" alt="午后光影">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">午后光影</div>
+          <div class="gallery-category">人像</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="humanities">
+        <img src="https://images.pexels.com/photos/35336016/pexels-photo-35336016.jpeg?auto=compress&cs=tinysrgb&w=800" alt="岁月留痕">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">岁月留痕</div>
+          <div class="gallery-category">人文</div>
+        </div>
+      </div>
+      <div class="gallery-item" data-category="stilllife">
+        <img src="https://images.pexels.com/photos/20519867/pexels-photo-20519867.jpeg?auto=compress&cs=tinysrgb&w=800" alt="器皿与光">
+        <div class="gallery-overlay">
+          <div class="gallery-caption">器皿与光</div>
+          <div class="gallery-category">静物</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose">&times;</button>
+      <img src="" alt="全屏查看" id="lightboxImg">
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="index.html" class="footer-link">首页</a>
+      <a href="gallery.html" class="footer-link">作品</a>
+      <a href="blog.html" class="footer-link">手记</a>
+      <a href="about.html" class="footer-link">关于</a>
+      <a href="contact.html" class="footer-link">联络</a>
+    </div>
+    <p class="footer-copy">&copy; 2024 静帧摄影 Still Frame. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+
+        galleryItems.forEach(item => {
+          if (filter === 'all' || item.getAttribute('data-category') === filter) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    galleryItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const imgSrc = item.querySelector('img').src;
+        const highResSrc = imgSrc.replace('w=800', 'w=1600');
+        lightboxImg.src = highResSrc;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => { lightboxImg.src = ''; }, 400);
+    };
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox();
+    });
+  </script>
+</body>
+</html>

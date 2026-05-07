@@ -1,0 +1,9 @@
+{
+  "projectId" : "9d433c47-5640-4e4b-bc6c-fda8cca1da23",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>LENS & VOID | Visual Narratives</title>\n  <meta name=\"description\" content=\"Contemporary photography portfolio exploring light, form, and atmosphere.\">\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n  <link href=\"https://fonts.googleapis.com/css2?family=Instrument...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#EAEAEA\",\n    \"secondary\": \"#2A2A2D\",\n    \"background\": \"#0B0B0D\",\n    \"surface\": \"#161618\",\n    \"text\": \"#F5F5F5\",\n    \"textMuted\": \"#88888A\",\n    \"accent\": \"#C8956C\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Syne, system-ui, sans-serif\",\n    \"bodyFont\": \"Instrument Sans, system-ui, sans-serif\",\n    \"scale\": \"1.25\"\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": \"1.5\"\n  },\n  \"layoutDirection\": \"顶部悬浮极简导航+全屏视觉Hero+响应式非对称画廊网格+留白式博客排版\",\n  \"mood\": \"电影质感、现代克制、先锋艺术\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 29, 17, 52, 24, 959651700 ]
+}

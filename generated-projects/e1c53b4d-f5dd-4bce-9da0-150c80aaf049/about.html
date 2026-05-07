@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 镜界 | 个人摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0F0F0F;
+            --color-secondary: #707070;
+            --color-background: #080808;
+            --color-surface: #141414;
+            --color-text: #F0F0F0;
+            --color-textMuted: #999;
+            --color-accent: #C9A87C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 8px;
+        }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        ul {
+            list-style: none;
+        }
+        /* ===== 导航栏 (与首页一致) ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 8);
+            background: linear-gradient(180deg, rgba(8,8,8,0.85) 0%, rgba(8,8,8,0) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: background 0.4s;
+        }
+        .logo {
+            flex-shrink: 0;
+        }
+        .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 168, 124, 0.3);
+            display: block;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 6);
+        }
+        .nav-links li a {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            padding: 4px 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.35s ease;
+        }
+        .nav-links li a:hover {
+            color: var(--color-text);
+        }
+        .nav-links li a:hover::after {
+            width: 100%;
+        }
+        .nav-links li a.active {
+            color: var(--color-accent);
+        }
+        .nav-links li a.active::after {
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+            }
+            .nav-links {
+                gap: calc(var(--spacing-unit) * 3);
+            }
+            .nav-links li a {
+                font-size: 0.75rem;
+                letter-spacing: 0.08em;
+            }
+        }
+        /* ===== About 页面独有布局 (detail布局) ===== */
+        .about-hero {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 480px;
+            overflow: hidden;
+        }
+        .about-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 40%;
+            filter: brightness(0.35) saturate(0.75);
+        }
+        .about-hero .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: calc(var(--spacing-unit) * 12) calc(var(--spacing-unit) * 10);
+            background: linear-gradient(0deg, rgba(8,8,8,0.9) 0%, rgba(8,8,8,0) 100%);
+        }
+        .about-hero .hero-overlay h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.8rem, 8vw, 5.6rem);
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            color: var(--color-text);
+            line-height: 1.1;
+        }
+        .about-hero .hero-overlay p {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.08em;
+            margin-top: calc(var(--spacing-unit) * 1);
+            text-transform: uppercase;
+        }
+        @media (max-width: 768px) {
+            .about-hero {
+                height: 60vh;
+                min-height: 360px;
+            }
+            .about-hero .hero-overlay {
+                padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+            }
+        }
+        /* ===== 履历 + 理念 区块 ===== */
+        .bio-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: calc(var(--spacing-unit) * 16) calc(var(--spacing-unit) * 6);
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: calc(var(--spacing-unit) * 12);
+            align-items: start;
+        }
+        .bio-section .bio-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+        }
+        .bio-section .bio-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            min-height: 380px;
+            filter: brightness(0.75) saturate(0.9);
+            transition: transform 0.6s ease, filter 0.6s ease;
+        }
+        .bio-section .bio-image:hover img {
+            transform: scale(1.03);
+            filter: brightness(0.9) saturate(1.05);
+        }
+        .bio-section .bio-content {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--spacing-unit) * 6);
+        }
+        .bio-section .bio-content .label {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            border-bottom: 1px solid rgba(201,168,124,0.25);
+            padding-bottom: calc(var(--spacing-unit) * 2);
+            display: inline-block;
+            align-self: flex-start;
+        }
+        .bio-section .bio-content h2 {
+            font-family: var(--font-heading);
+            font-weight: 300;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: 0.02em;
+            color: var(--color-text);
+            line-height: 1.25;
+        }
+        .bio-section .bio-content h2 em {
+            font-style: italic;
+            color: var(--color-accent);
+        }
+        .bio-section .bio-content .description {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-textMuted);
+            max-width: 540px;
+        }
+        .bio-section .bio-content .description p + p {
+            margin-top: calc(var(--spacing-unit) * 4);
+        }
+        .bio-section .bio-content .description .highlight {
+            color: var(--color-accent);
+            font-weight: 400;
+        }
+        @media (max-width: 968px) {
+            .bio-section {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 8);
+                padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 4);
+            }
+            .bio-section .bio-image img {
+                min-height: 300px;
+                max-height: 420px;
+            }
+        }
+        /* ===== 私人工作照 画廊 ===== */
+        .work-gallery {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 20);
+        }
+        .work-gallery .section-header {
+            text-align: center;
+            margin-bottom: calc(var(--spacing-unit) * 12);
+        }
+        .work-gallery .section-header .label {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+        }
+        .work-gallery .section-header h2 {
+            font-family: var(--font-heading);
+            font-weight: 300;
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            color: var(--color-text);
+            letter-spacing: 0.04em;
+            margin-top: calc(var(--spacing-unit) * 1);
+        }
+        .work-gallery .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: calc(var(--spacing-unit) * 4);
+        }
+        .work-gallery .gallery-grid .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3 / 4;
+            cursor: pointer;
+        }
+        .work-gallery .gallery-grid .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.75) saturate(0.85);
+            transition: transform 0.6s ease, filter 0.6s ease;
+        }
+        .work-gallery .gallery-grid .gallery-item:hover img {
+            transform: scale(1.04);
+            filter: brightness(0.95) saturate(1.05);
+        }
+        .work-gallery .gallery-grid .gallery-item:nth-child(2) {
+            aspect-ratio: 4 / 5;
+        }
+        .work-gallery .gallery-grid .gallery-item:nth-child(4) {
+            aspect-ratio: 1 / 1.2;
+        }
+        @media (max-width: 868px) {
+            .work-gallery .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: calc(var(--spacing-unit) * 3);
+            }
+        }
+        @media (max-width: 540px) {
+            .work-gallery .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .work-gallery {
+                padding: 0 calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 12);
+            }
+        }
+        /* ===== 合作品牌区 ===== */
+        .brands-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 20);
+        }
+        .brands-section .section-header {
+            text-align: center;
+            margin-bottom: calc(var(--spacing-unit) * 10);
+        }
+        .brands-section .section-header .label {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+        }
+        .brands-section .section-header h2 {
+            font-family: var(--font-heading);
+            font-weight: 300;
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            color: var(--color-text);
+            letter-spacing: 0.04em;
+            margin-top: calc(var(--spacing-unit) * 1);
+        }
+        .brands-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 14);
+            align-items: center;
+        }
+        .brands-grid .brand-item {
+            flex: 0 0 auto;
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--color-textMuted);
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(201,168,124,0.15);
+            padding-bottom: calc(var(--spacing-unit) * 1);
+            transition: color 0.3s, border-color 0.3s;
+            cursor: default;
+        }
+        .brands-grid .brand-item:hover {
+            color: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+        @media (max-width: 768px) {
+            .brands-grid {
+                gap: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 8);
+            }
+            .brands-grid .brand-item {
+                font-size: 1.1rem;
+            }
+        }
+        /* ===== Footer (与首页一致) ===== */
+        .footer {
+            background-color: var(--color-primary);
+            border-top: 1px solid rgba(201,168,124,0.15);
+            padding: calc(var(--spacing-unit) * 12) calc(var(--spacing-unit) * 6);
+            text-align: center;
+        }
+        .footer .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 10);
+            margin-bottom: calc(var(--spacing-unit) * 6);
+        }
+        .footer .footer-links a {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s;
+        }
+        .footer .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        .footer .footer-copy {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 0.75rem;
+            color: var(--color-secondary);
+            letter-spacing: 0.06em;
+        }
+        @media (max-width: 600px) {
+            .footer {
+                padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 3);
+            }
+            .footer .footer-links {
+                gap: calc(var(--spacing-unit) * 4);
+            }
+            .footer .footer-links a {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 (与首页结构一致, 当前页面标记active) -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/f1/20260507/c70535fc/8e3aee66-2592-46ca-922a-452448d628cc-1.png?Expires=1778215225&OSSAccessKeyId=STS.NZgDREdWDm4dnXLMTZ9Vowj55&Signature=9b4BcAnVZ8iy6AweT8V2YDwyqaQ%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nSD%2BjxiYhl2vaPbH79qVQPNdlDmK%2Be1zz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb428xQBWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGgsUEIAKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET7q394HCuU5wGoABdSRt1Dmh9IpNcvlGqnuS4dOJnlcyj5fRaXSRjXUoTcTXsFfPcbjgW%2BcNeB8qPK7dus5YC8ur%2Bmn85yfv5zxVJK0rYovGfXsrCgk9bzhJUXZs1rt11wGurjA4%2BaXXqknC%2Fb8NHH5%2BKMscStKLc6JWQqIqADb51cmHYZzbpiovwb4gAA%3D%3D"
+                 alt="镜界 logo"
+                 loading="eager"
+                 width="48" height="48">
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html#gallery">作品</a></li>
+            <li><a href="about.html" class="active">叙事</a></li>
+            <li><a href="index.html#contact">联系</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero 区 -->
+    <section class="about-hero">
+        <img src="https://images.pexels.com/photos/19177223/pexels-photo-19177223.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+             alt="摄影师工作场景"
+             loading="eager">
+        <div class="hero-overlay">
+            <h1>关于</h1>
+            <p>光影捕手 · 视觉叙事者</p>
+        </div>
+    </section>
+
+    <!-- 履历 + 创作理念 -->
+    <section class="bio-section">
+        <div class="bio-image">
+            <img src="https://images.pexels.com/photos/31036662/pexels-photo-31036662.jpeg?auto=compress&cs=tinysrgb&h=350"
+                 alt="摄影师个人工作照"
+                 loading="lazy">
+        </div>
+        <div class="bio-content">
+            <span class="label">履历 · 理念</span>
+            <h2>镜头背后<br><em>的真实</em></h2>
+            <div class="description">
+                <p>
+                    我是陈默，一位常驻上海与巴黎的独立摄影师。自2013年起，我将镜头对准那些被日常遮蔽的瞬间——街角的光影、人像中的情绪、建筑与自然之间的沉默对话。<span class="highlight">我不追逐宏大的叙事</span>，而是相信每一寸光线都藏着一个故事。
+                </p>
+                <p>
+                    我的创作理念根植于<span class="highlight">“沉静凝视”</span>——在喧嚣中寻找秩序，在平凡中提炼诗意。黑白胶片与数字媒介在我手中不是工具，而是延伸的感官。我倾向使用大画幅与中画幅相机，让每一次快门都成为一次冥想。
+                </p>
+                <p>
+                    至今，我已为超过40个国际品牌及独立杂志创作影像，包括服饰、美妆与生活方式领域。但我始终认为，<span class="highlight">最好的作品永远是下一张</span>。摄影于我，不是记录，而是相遇。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 私人工作照画廊 -->
+    <section class="work-gallery">
+        <div class="section-header">
+            <span class="label">工作侧影</span>
+            <h2>私人暗房</h2>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/8798119/pexels-photo-8798119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                     alt="工作照 01"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/11234295/pexels-photo-11234295.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="工作照 02"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/29293968/pexels-photo-29293968.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="工作照 03"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/8166008/pexels-photo-8166008.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="工作照 04"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/6708400/pexels-photo-6708400.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="工作照 05"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.pexels.com/photos/11489977/pexels-photo-11489977.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                     alt="工作照 06"
+                     loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- 合作品牌区 -->
+    <section class="brands-section">
+        <div class="section-header">
+            <span class="label">合作品牌</span>
+            <h2>曾与这些名字同行</h2>
+        </div>
+        <div class="brands-grid">
+            <span class="brand-item">Aēsop</span>
+            <span class="brand-item">Leica</span>
+            <span class="brand-item">MUJI</span>
+            <span class="brand-item">Kinfolk</span>
+            <span class="brand-item">Hermès</span>
+            <span class="brand-item">Acne Studios</span>
+            <span class="brand-item">Monocle</span>
+        </div>
+    </section>
+
+    <!-- Footer (与首页一致) -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="index.html#gallery">作品</a>
+            <a href="about.html">叙事</a>
+            <a href="index.html#contact">联系</a>
+            <a href="portfolio.html">Portfolio</a>
+        </div>
+        <div class="footer-copy">
+            © 2025 镜界 · 默摄影工作室
+        </div>
+    </footer>
+
+</body>
+</html>

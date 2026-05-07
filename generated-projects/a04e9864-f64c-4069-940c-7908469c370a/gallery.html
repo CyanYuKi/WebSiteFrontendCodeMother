@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集 - 人像摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --color-primary: #D4AF37;
+            --color-secondary: #B89A2B;
+            --color-background: #0A0A0A;
+            --color-surface: #141414;
+            --color-text: #F8F8F8;
+            --color-textMuted: #7A7A7A;
+            --color-accent: #E6C200;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Source Sans Pro', sans-serif;
+            --spacing-unit: 1rem;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-weight: 300;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        /* ===== Navigation (consistent with index) ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.5rem 3rem;
+            background: linear-gradient(180deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .navbar-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+        }
+        .navbar-links li a {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s ease;
+            padding-bottom: 4px;
+            border-bottom: 1px solid transparent;
+        }
+        .navbar-links li a:hover {
+            color: var(--color-primary);
+        }
+        .navbar-links li a.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        #lang-switcher {
+            color: var(--color-textMuted);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid var(--color-textMuted);
+            border-radius: 2px;
+            transition: all 0.3s;
+            display: inline-block;
+            font-family: var(--font-body);
+            text-transform: uppercase;
+        }
+        #lang-switcher:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* ===== Page Header ===== */
+        .page-header {
+            padding: 10rem 2rem 3rem 2rem;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 3.2rem;
+            letter-spacing: 0.08em;
+            color: var(--color-text);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .page-header h1 span {
+            color: var(--color-primary);
+        }
+        .page-header p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.03em;
+            max-width: 500px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* ===== Filter Buttons ===== */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+            padding: 0 2rem 3rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--color-textMuted);
+            color: var(--color-textMuted);
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.5rem 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* ===== Gallery Grid (asymmetric magazine style) ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            padding: 0 3rem 5rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 280px;
+            background-color: var(--color-surface);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+            filter: grayscale(0.3) brightness(0.75);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0) brightness(0.9);
+        }
+        .gallery-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 1.2rem;
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+        .gallery-item .overlay span {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            color: var(--color-primary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .gallery-item .overlay p {
+            font-size: 0.85rem;
+            color: var(--color-text);
+            margin-top: 0.3rem;
+            font-weight: 300;
+        }
+
+        /* Asymmetric spans */
+        .gallery-item.wide {
+            grid-column: span 2;
+        }
+        .gallery-item.tall {
+            grid-row: span 2;
+        }
+        .gallery-item.full {
+            grid-column: 1 / -1;
+            max-height: 500px;
+        }
+
+        /* ===== Lightbox ===== */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 2rem;
+        }
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            border-radius: 0;
+            transition: transform 0.3s ease;
+        }
+        .lightbox-close {
+            position: fixed;
+            top: 2rem;
+            right: 2.5rem;
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 2.5rem;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 300;
+            transition: color 0.3s;
+            z-index: 2001;
+            line-height: 1;
+        }
+        .lightbox-close:hover {
+            color: var(--color-primary);
+        }
+        .lightbox-prev,
+        .lightbox-next {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--color-textMuted);
+            font-size: 2.8rem;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 200;
+            transition: color 0.3s, transform 0.2s;
+            z-index: 2001;
+            padding: 0 1.5rem;
+            user-select: none;
+        }
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            color: var(--color-primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .lightbox-prev { left: 1rem; }
+        .lightbox-next { right: 1rem; }
+        .lightbox-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-textMuted);
+            font-size: 0.8rem;
+            font-family: var(--font-body);
+            letter-spacing: 0.05em;
+            z-index: 2001;
+        }
+
+        /* ===== Footer ===== */
+        .gallery-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 3rem 2rem;
+            text-align: center;
+            background-color: var(--color-surface);
+            margin-top: 2rem;
+        }
+        .gallery-footer p {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.8rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem 2.5rem;
+            margin-top: 1rem;
+        }
+        .footer-links a {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 2rem 4rem 2rem;
+                gap: 1rem;
+            }
+            .gallery-item.wide {
+                grid-column: span 2;
+            }
+            .gallery-item.tall {
+                grid-row: span 1;
+            }
+        }
+        @media (max-width: 640px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            .navbar-links {
+                gap: 1.2rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .navbar-links li a {
+                font-size: 0.7rem;
+            }
+            .page-header {
+                padding-top: 7rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            .filter-bar {
+                gap: 0.5rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .filter-btn {
+                font-size: 0.65rem;
+                padding: 0.4rem 1rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem 3rem 1rem;
+                gap: 0.8rem;
+            }
+            .gallery-item.wide {
+                grid-column: span 1;
+            }
+            .gallery-item.tall {
+                grid-row: span 1;
+            }
+            .gallery-item .overlay {
+                opacity: 1;
+                padding: 0.8rem;
+            }
+            .lightbox-prev { left: 0.5rem; font-size: 2rem; }
+            .lightbox-next { right: 0.5rem; font-size: 2rem; }
+            .lightbox-close { top: 1rem; right: 1.5rem; font-size: 2rem; }
+            .footer-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation (identical structure to index) -->
+    <nav>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="gallery.html" class="active">作品集</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><span id="lang-switcher">EN</span></li>
+        </ul>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>精选<span>人像</span>作品</h1>
+        <p>每一帧都是光影与情绪的对话 —— 非对称叙事，呈现人像的万千可能。</p>
+    </header>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="portrait">肖像</button>
+        <button class="filter-btn" data-filter="environment">环境人像</button>
+        <button class="filter-btn" data-filter="fashion">时尚</button>
+        <button class="filter-btn" data-filter="film">胶片感</button>
+    </div>
+
+    <!-- Gallery Grid (asymmetric) -->
+    <div class="gallery-grid" id="gallery-grid">
+        <!-- 图片数据 via JS will be injected, but we also provide static fallback -->
+        <!-- statically rendered images from the gallery_pool + provided assets -->
+        <div class="gallery-item wide" data-category="portrait">
+            <img src="https://images.pexels.com/photos/30977559/pexels-photo-30977559.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Portrait 1" loading="lazy">
+            <div class="overlay"><span>肖像</span><p>自然光·情感捕捉</p></div>
+        </div>
+        <div class="gallery-item tall" data-category="environment">
+            <img src="https://images.pexels.com/photos/3298597/pexels-photo-3298597.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Env 1" loading="lazy">
+            <div class="overlay"><span>环境人像</span><p>城市与人的对话</p></div>
+        </div>
+        <div class="gallery-item" data-category="fashion">
+            <img src="https://images.pexels.com/photos/18979925/pexels-photo-18979925.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Fashion 1" loading="lazy">
+            <div class="overlay"><span>时尚</span><p>高定光影</p></div>
+        </div>
+        <div class="gallery-item" data-category="film">
+            <img src="https://images.pexels.com/photos/19379051/pexels-photo-19379051.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Film 1" loading="lazy">
+            <div class="overlay"><span>胶片感</span><p>复古颗粒叙事</p></div>
+        </div>
+        <div class="gallery-item" data-category="portrait">
+            <img src="https://images.pexels.com/photos/20788968/pexels-photo-20788968.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Portrait 2" loading="lazy">
+            <div class="overlay"><span>肖像</span><p>黑白之间</p></div>
+        </div>
+        <div class="gallery-item wide" data-category="fashion">
+            <img src="https://images.pexels.com/photos/18979918/pexels-photo-18979918.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Fashion 2" loading="lazy">
+            <div class="overlay"><span>时尚</span><p>轮廓与光影</p></div>
+        </div>
+        <div class="gallery-item tall" data-category="environment">
+            <img src="https://images.pexels.com/photos/10040314/pexels-photo-10040314.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Env 2" loading="lazy">
+            <div class="overlay"><span>环境人像</span><p>街头即景</p></div>
+        </div>
+        <div class="gallery-item" data-category="portrait">
+            <img src="https://images.pexels.com/photos/20233731/pexels-photo-20233731.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Portrait 3" loading="lazy">
+            <div class="overlay"><span>肖像</span><p>眼神里的故事</p></div>
+        </div>
+        <div class="gallery-item" data-category="film">
+            <img src="https://images.pexels.com/photos/16135645/pexels-photo-16135645.jpeg?auto=compress&cs=tinysrgb&h=350" alt="Film 2" loading="lazy">
+            <div class="overlay"><span>胶片感</span><p>生活碎片</p></div>
+        </div>
+        <div class="gallery-item full" data-category="portrait">
+            <img src="https://images.pexels.com/photos/36697260/pexels-photo-36697260.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Portrait large" loading="lazy">
+            <div class="overlay"><span>肖像 · 精选</span><p>光影巨献</p></div>
+        </div>
+        <div class="gallery-item" data-category="fashion">
+            <img src="https://images.pexels.com/photos/19663735/pexels-photo-19663735.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Fashion 3" loading="lazy">
+            <div class="overlay"><span>时尚</span><p>高级感演绎</p></div>
+        </div>
+        <div class="gallery-item" data-category="environment">
+            <img src="https://images.pexels.com/photos/19663735/pexels-photo-19663735.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Env 3" loading="lazy">
+            <div class="overlay"><span>环境人像</span><p>自然融合</p></div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close">✕</button>
+        <button class="lightbox-prev" id="lightbox-prev">‹</button>
+        <button class="lightbox-next" id="lightbox-next">›</button>
+        <img src="" alt="Lightbox image" id="lightbox-img">
+        <div class="lightbox-counter" id="lightbox-counter"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gallery-footer">
+        <p>&copy; 2025 人像摄影艺术 · 用光影讲述故事</p>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="gallery.html">作品集</a>
+            <a href="blog.html">摄影博客</a>
+            <a href="about.html">关于我</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">联系</a>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            // === Filter functionality ===
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const grid = document.getElementById('gallery-grid');
+            const items = grid.querySelectorAll('.gallery-item');
+
+            function filterGallery(category) {
+                items.forEach(item => {
+                    const cat = item.dataset.category;
+                    if (category === 'all' || cat === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    filterGallery(filter);
+                    // re-init lightbox indices after filter
+                    initLightbox();
+                });
+            });
+
+            // === Lightbox ===
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const closeBtn = document.getElementById('lightbox-close');
+            const prevBtn = document.getElementById('lightbox-prev');
+            const nextBtn = document.getElementById('lightbox-next');
+            const counter = document.getElementById('lightbox-counter');
+            let currentIndex = 0;
+            let visibleItems = [];
+
+            function getVisibleItems() {
+                const allItems = Array.from(document.querySelectorAll('.gallery-item'));
+                return allItems.filter(item => item.style.display !== 'none');
+            }
+
+            function openLightbox(index) {
+                visibleItems = getVisibleItems();
+                if (visibleItems.length === 0) return;
+                currentIndex = index;
+                const imgEl = visibleItems[currentIndex].querySelector('img');
+                if (!imgEl) return;
+                lightboxImg.src = imgEl.src;
+                lightboxImg.alt = imgEl.alt || 'Gallery image';
+                counter.textContent = (currentIndex + 1) + ' / ' + visibleItems.length;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function goPrev() {
+                if (visibleItems.length === 0) return;
+                currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+                const imgEl = visibleItems[currentIndex].querySelector('img');
+                if (imgEl) {
+                    lightboxImg.src = imgEl.src;
+                    lightboxImg.alt = imgEl.alt || 'Gallery image';
+                }
+                counter.textContent = (currentIndex + 1) + ' / ' + visibleItems.length;
+            }
+
+            function goNext() {
+                if (visibleItems.length === 0) return;
+                currentIndex = (currentIndex + 1) % visibleItems.length;
+                const imgEl = visibleItems[currentIndex].querySelector('img');
+                if (imgEl) {
+                    lightboxImg.src = imgEl.src;
+                    lightboxImg.alt = imgEl.alt || 'Gallery image';
+                }
+                counter.textContent = (currentIndex + 1) + ' / ' + visibleItems.length;
+            }
+
+            function initLightbox() {
+                // attach click listeners to all gallery items
+                const allItems = document.querySelectorAll('.gallery-item');
+                allItems.forEach((item, idx) => {
+                    item.removeEventListener('click', item._lightboxHandler);
+                    item._lightboxHandler = function() {
+                        const visible = getVisibleItems();
+                        const index = visible.indexOf(item);
+                        if (index !== -1) {
+                            openLightbox(index);
+                        }
+                    };
+                    item.addEventListener('click', item._lightboxHandler);
+                });
+            }
+
+            // close events
+            closeBtn.addEventListener('click', closeLightbox);
+            prevBtn.addEventListener('click', goPrev);
+            nextBtn.addEventListener('click', goNext);
+            document.addEventListener('keydown', function(e) {
+                if (!lightbox.classList.contains('active')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') goPrev();
+                if (e.key === 'ArrowRight') goNext();
+            });
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            // init
+            initLightbox();
+
+            // also re-init after filter changes (already called inside filterGallery)
+            // override filterGallery to reinit
+            const originalFilter = filterGallery;
+            window.filterGallery = function(cat) {
+                originalFilter(cat);
+                initLightbox();
+            };
+            // rebind
+            filterBtns.forEach(btn => {
+                btn.removeEventListener('click', btn._clickHandler);
+                btn._clickHandler = function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    window.filterGallery(filter);
+                };
+                btn.addEventListener('click', btn._clickHandler);
+            });
+
+        })();
+    </script>
+</body>
+</html>

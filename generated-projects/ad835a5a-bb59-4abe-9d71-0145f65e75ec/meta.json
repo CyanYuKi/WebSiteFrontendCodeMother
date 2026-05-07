@@ -1,0 +1,9 @@
+{
+  "projectId" : "ad835a5a-bb59-4abe-9d71-0145f65e75ec",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>光影叙事 · 个人摄影</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap\" rel=\"stylesheet\"...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#F2F0ED\",\n    \"secondary\": \"#8A8A8A\",\n    \"background\": \"#0A0A0A\",\n    \"surface\": \"#161616\",\n    \"text\": \"#F5F5F5\",\n    \"textMuted\": \"#7D7D7D\",\n    \"accent\": \"#C89B7B\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Playfair Display, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": 1.33\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"顶部悬浮极简导航+全幅沉浸式Hero+不规则瀑布流作品网格+底部对称留白联系区\",\n  \"mood\": \"静谧高级、沉浸质感、现代极简\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 5, 7, 11, 30, 54, 996500500 ]
+}

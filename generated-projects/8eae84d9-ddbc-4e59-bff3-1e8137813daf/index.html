@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光影叙事 · 摄影作品集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #0E1014;
+            --color-secondary: #1B1E24;
+            --color-background: #090A0D;
+            --color-surface: #14161A;
+            --color-text: #E9E4DC;
+            --color-text-muted: #7C808A;
+            --color-accent: #C99A6E;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Manrope', sans-serif;
+            --spacing-unit: 0.75rem;
+            --max-width: 1400px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* ---- 导航 ---- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 0;
+            background: linear-gradient(180deg, rgba(9,10,13,0.95) 60%, transparent);
+            backdrop-filter: blur(8px);
+            transition: background 0.3s;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--color-text);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ---- Hero ---- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4rem;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            filter: brightness(0.45) saturate(0.85) contrast(1.1);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(9,10,13,0.2) 0%, rgba(9,10,13,0.7) 50%, rgba(9,10,13,0.95) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 1.5rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.2rem;
+            color: var(--color-text);
+        }
+
+        .hero-title span {
+            color: var(--color-accent);
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--color-text-muted);
+            max-width: 550px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 2.2rem;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid transparent;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: var(--color-primary);
+            border-color: var(--color-accent);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--color-accent);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--color-text);
+            border-color: rgba(233, 228, 220, 0.25);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        /* ---- Section 通用 ---- */
+        .section {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            margin-bottom: 3.5rem;
+        }
+
+        .section-label {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.2rem, 4vw, 3.4rem);
+            font-weight: 600;
+            line-height: 1.15;
+            color: var(--color-text);
+            margin-bottom: 0.8rem;
+        }
+
+        .section-desc {
+            color: var(--color-text-muted);
+            max-width: 600px;
+            font-size: 1rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* ---- 瀑布流 Gallery ---- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 3/4;
+            background: var(--color-surface);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.6s;
+            filter: brightness(0.8) saturate(0.9);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(1) saturate(1);
+        }
+
+        .gallery-item.wide {
+            grid-column: span 2;
+            aspect-ratio: 16/9;
+        }
+
+        .gallery-item.tall {
+            grid-row: span 2;
+            aspect-ratio: 3/5;
+        }
+
+        .gallery-item .item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(9,10,13,0.6) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .gallery-item:hover .item-overlay {
+            opacity: 1;
+        }
+
+        .item-overlay span {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--color-text);
+            letter-spacing: 0.04em;
+        }
+
+        /* ---- 博客/幕后叙事 ---- */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .blog-card {
+            background: var(--color-surface);
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .blog-card:hover {
+            border-color: rgba(201, 154, 110, 0.25);
+            transform: translateY(-4px);
+        }
+
+        .blog-card-img {
+            aspect-ratio: 16/10;
+            overflow: hidden;
+        }
+
+        .blog-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.75);
+            transition: filter 0.4s, transform 0.5s;
+        }
+
+        .blog-card:hover .blog-card-img img {
+            filter: brightness(1);
+            transform: scale(1.03);
+        }
+
+        .blog-card-body {
+            padding: 1.8rem 1.8rem 2.2rem;
+        }
+
+        .blog-meta {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.6rem;
+        }
+
+        .blog-card-body h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            line-height: 1.3;
+        }
+
+        .blog-card-body p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .blog-card-body .read-more {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .blog-card-body .read-more::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.3s;
+        }
+
+        .blog-card-body .read-more:hover::after {
+            width: 100%;
+        }
+
+        /* ---- 预约/联系 ---- */
+        .contact-section {
+            background: var(--color-secondary);
+            position: relative;
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .contact-image {
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            background: var(--color-surface);
+        }
+
+        .contact-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6) saturate(0.85);
+        }
+
+        .contact-form-wrap {
+            padding: 1rem 0;
+        }
+
+        .contact-form-wrap .section-title {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-text-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 400;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0;
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* ---- 社交媒体整合 ---- */
+        .social-bar {
+            display: flex;
+            gap: 1.8rem;
+            justify-content: center;
+            padding: 2.5rem 0 1rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin-top: 4rem;
+        }
+
+        .social-bar a {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            font-size: 1.3rem;
+            color: var(--color-text-muted);
+        }
+
+        .social-bar a:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            transform: translateY(-3px);
+        }
+
+        /* ---- Footer ---- */
+        .footer {
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .footer p {
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+            font-weight: 300;
+        }
+
+        .footer a {
+            color: var(--color-accent);
+            transition: opacity 0.3s;
+        }
+
+        /* ---- 响应式 ---- */
+        @media (max-width: 900px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-image {
+                aspect-ratio: 16/9;
+                order: -1;
+            }
+
+            .nav-links {
+                gap: 1.2rem;
+                font-size: 0.75rem;
+            }
+
+            .gallery-item.wide,
+            .gallery-item.tall {
+                grid-column: span 1;
+                grid-row: span 1;
+                aspect-ratio: 3/4;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header .container {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-title {
+                font-size: 2.6rem;
+            }
+
+            .section {
+                padding: 4rem 0;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 占位文本图标模拟 */
+        .icon-soc {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">光影叙事</div>
+            <ul class="nav-links">
+                <li><a href="#gallery">作品</a></li>
+                <li><a href="#blog">幕後</a></li>
+                <li><a href="about.html">關於</a></li>
+                <li><a href="#contact">預約</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-image">
+            <img src="https://images.pexels.com/photos/26050834/pexels-photo-26050834.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="摄影主视觉" loading="eager" />
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">光影之間<br><span>敘事永恆</span></h1>
+            <p class="hero-sub">每按一次快門，都是與時間的對話。探索電影感視覺語言下的真實瞬間。</p>
+            <div class="hero-actions">
+                <a href="#gallery" class="btn btn-primary">探索作品</a>
+                <a href="#contact" class="btn btn-outline">預約拍攝</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 瀑布流作品展示 -->
+    <section class="section" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">精選作品</div>
+                <h2 class="section-title">非對稱敘事</h2>
+                <p class="section-desc">以電影感構圖與克制色調，呈現人物的情緒張力與環境的詩意。</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item tall">
+                    <img src="https://images.pexels.com/photos/36984008/pexels-photo-36984008.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="作品1" loading="eager" />
+                    <div class="item-overlay"><span>孤獨的輪廓</span></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/16313665/pexels-photo-16313665.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品2" loading="eager" />
+                    <div class="item-overlay"><span>晨霧</span></div>
+                </div>
+                <div class="gallery-item wide">
+                    <img src="https://images.pexels.com/photos/13177882/pexels-photo-13177882.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品3" loading="eager" />
+                    <div class="item-overlay"><span>邊界</span></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/35171313/pexels-photo-35171313.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品4" loading="eager" />
+                    <div class="item-overlay"><span>風的形狀</span></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/34853016/pexels-photo-34853016.png?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品5" loading="lazy" />
+                    <div class="item-overlay"><span>城市節奏</span></div>
+                </div>
+                <div class="gallery-item tall">
+                    <img src="https://images.pexels.com/photos/1209840/pexels-photo-1209840.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品6" loading="lazy" />
+                    <div class="item-overlay"><span>肖像</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 博客/幕后故事 -->
+    <section class="section" style="background: var(--color-primary);" id="blog">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">攝影筆記</div>
+                <h2 class="section-title">幕後敘事</h2>
+                <p class="section-desc">從光圈到構圖，從光影到情緒——記錄每一次快門背後的思考與偶然。</p>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-card-img">
+                        <img src="https://images.pexels.com/photos/18880005/pexels-photo-18880005.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="冰島日誌" loading="lazy" />
+                    </div>
+                    <div class="blog-card-body">
+                        <div class="blog-meta">2025 · 04 · 12</div>
+                        <h3>冰島無人區：在風暴中等待光</h3>
+                        <p>三個小時的強風，只為那一秒鐘的黃金光線。電影感色調的秘密藏在RAW文件的陰影細節裡⋯</p>
+                        <a href="blog.html" class="read-more">閱讀全文</a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-card-img">
+                        <img src="https://images.pexels.com/photos/29850611/pexels-photo-29850611.jpeg?auto=compress&cs=tinysrgb&h=350" alt="人像幕後" loading="lazy" />
+                    </div>
+                    <div class="blog-card-body">
+                        <div class="blog-meta">2025 · 03 · 28</div>
+                        <h3>自然光人像：引導情緒的靜默</h3>
+                        <p>不使用補光燈，只用窗戶與反光板。如何讓被攝者放下防備，呈現最真實的敘事狀態。</p>
+                        <a href="blog.html" class="read-more">閱讀全文</a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-card-img">
+                        <img src="https://images.pexels.com/photos/4125514/pexels-photo-4125514.jpeg?auto=compress&cs=tinysrgb&h=350" alt="底片專題" loading="lazy" />
+                    </div>
+                    <div class="blog-card-body">
+                        <div class="blog-meta">2025 · 03 · 10</div>
+                        <h3>底片不死：數位時代的類比靈魂</h3>
+                        <p>偶然拿到一卷過期十年的Kodak Portra，那些不可預測的色偏與顆粒，成了最好的驚喜。</p>
+                        <a href="blog.html" class="read-more">閱讀全文</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 预约/联系 -->
+    <section class="section contact-section" id="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-image">
+                    <img src="https://images.pexels.com/photos/18313029/pexels-photo-18313029.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="聯繫攝影師" loading="lazy" />
+                </div>
+                <div class="contact-form-wrap">
+                    <div class="section-label">預約拍攝</div>
+                    <h2 class="section-title" style="font-size: 2.4rem;">一起創作</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 2rem; font-weight: 300;">無論是個人肖像、品牌形象，還是紀錄片性質的跟拍，讓我們討論你的故事。</p>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" placeholder="你的名字" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="you@domain.com" />
+                        </div>
+                        <div class="form-group">
+                            <label for="message">拍攝想法</label>
+                            <textarea id="message" placeholder="描述你想要的畫面、氛圍、用途⋯"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">發送預約</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 社交媒体整合 -->
+            <div class="social-bar">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="icon-soc">IG</a>
+                <a href="https://500px.com" target="_blank" rel="noopener noreferrer" class="icon-soc">500</a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="icon-soc">YT</a>
+                <a href="https://flickr.com" target="_blank" rel="noopener noreferrer" class="icon-soc">FL</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 光影敘事 · 電影感攝影工作室 &nbsp;|&nbsp; <a href="about.html">關於</a> · <a href="shop.html">線上商店</a></p>
+        </div>
+    </footer>
+
+    <!-- 子页面规划 -->
+    <!-- PAGES_PLAN: [{"name":"about.html","title":"關於 · 光影敘事","overview":"攝影師簡介、創作理念、器材偏好、工作經歷，以及與Magnum Photos風格相關的視覺敘事哲學。","layout":"grid"},{"name":"blog.html","title":"攝影筆記 · 幕後故事","overview":"攝影日誌、拍攝幕後、後製心得、器材評測，面向攝影同好的深度內容。","layout":"list"},{"name":"shop.html","title":"線上商店 · 作品與服務","overview":"可供購買的限量攝影作品、預約拍攝方案及定價，整合線上下單引導。","layout":"grid"}] -->
+
+</body>
+</html>

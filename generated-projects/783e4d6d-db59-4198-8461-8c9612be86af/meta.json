@@ -1,0 +1,9 @@
+{
+  "projectId" : "783e4d6d-db59-4198-8461-8c9612be86af",
+  "originalInput" : "生成一个 个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>光影叙事 · 人像写真</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap\" rel=\"stylesheet\">\n <style>\n    *, *::before, *::after {\n    ...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#2C3E50\",\n    \"secondary\": \"#D4AF37\",\n    \"background\": \"#F8F9FA\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#2D3436\",\n    \"textMuted\": \"#636E72\",\n    \"accent\": \"#E17055\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Playfair Display, Georgia, serif\",\n    \"bodyFont\": \"Lato, system-ui, sans-serif\",\n    \"scale\": 1.35\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": 1.618\n  },\n  \"layoutDirection\": \"全宽Hero视觉+悬浮导航+三列作品网格+侧边联系表单\",\n  \"mood\": \"精致优雅/光影叙事/现代画廊感\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 5, 7, 10, 35, 6, 980552400 ]
+}

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于摄影师 · 个人摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #8C7A6B;
+            --color-secondary: #D4C5B9;
+            --color-background: #F5F0EB;
+            --color-surface: #E8E0D5;
+            --color-text: #3E3530;
+            --color-textMuted: #8A8078;
+            --color-accent: #C47A5A;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lora', serif;
+            --spacing-unit: 1rem;
+            --space-xs: calc(var(--spacing-unit) * 0.5);
+            --space-sm: var(--spacing-unit);
+            --space-md: calc(var(--spacing-unit) * 1.5);
+            --space-lg: calc(var(--spacing-unit) * 2.5);
+            --space-xl: calc(var(--spacing-unit) * 4);
+            --max-width: 1100px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            width: 100%;
+            object-fit: cover;
+            filter: sepia(0.15) brightness(0.98);
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--color-accent);
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        /* ===== 导航 ===== */
+        .site-header {
+            background-color: var(--color-background);
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+
+        .site-header .container {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-textMuted);
+            letter-spacing: 0.02em;
+            padding: var(--space-xs) 0;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s, color 0.2s;
+            border-top: none;
+            font-style: normal;
+            margin-top: 0;
+        }
+
+        .nav-link:hover {
+            color: var(--color-text);
+            border-bottom-color: var(--color-secondary);
+        }
+
+        .nav-link--active {
+            color: var(--color-text);
+            border-bottom-color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* ===== Hero ===== */
+        .hero-about {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 400px;
+            overflow: hidden;
+            background-color: var(--color-surface);
+        }
+
+        .hero-about img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.2) brightness(0.9);
+        }
+
+        .hero-about .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(245, 240, 235, 0.85) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: var(--space-xl);
+        }
+
+        .hero-about .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            color: var(--color-text);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            max-width: 600px;
+        }
+
+        .hero-about .hero-sub {
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            color: var(--color-textMuted);
+            font-style: italic;
+            margin-top: var(--space-sm);
+        }
+
+        /* ===== main content ===== */
+        .about-section {
+            padding: var(--space-xl) 0;
+        }
+
+        .about-section .container {
+            max-width: 780px;
+        }
+
+        .about-section h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: var(--space-md);
+            letter-spacing: 0.01em;
+            border-bottom: 1px solid var(--color-secondary);
+            padding-bottom: var(--space-sm);
+        }
+
+        .about-section h3 {
+            font-family: var(--font-heading);
+            font-size: 1.55rem;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-top: var(--space-lg);
+            margin-bottom: var(--space-sm);
+        }
+
+        .about-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--color-text);
+            margin-bottom: var(--space-md);
+        }
+
+        .about-section .muted {
+            color: var(--color-textMuted);
+            font-style: italic;
+        }
+
+        /* 器材清单 */
+        .gear-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm) var(--space-md);
+            list-style: none;
+            padding: 0;
+            margin: var(--space-sm) 0 var(--space-md);
+        }
+
+        .gear-list li {
+            background-color: var(--color-surface);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: var(--color-text);
+            border-left: 3px solid var(--color-accent);
+        }
+
+        /* 经历/出版/合作 列表 */
+        .exp-list {
+            display: grid;
+            gap: var(--space-sm);
+            margin: var(--space-sm) 0 var(--space-md);
+        }
+
+        .exp-item {
+            background-color: var(--color-surface);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: 4px;
+            font-size: 1rem;
+            border-left: 3px solid var(--color-secondary);
+        }
+
+        .exp-item strong {
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+
+        .exp-item .year {
+            display: inline-block;
+            font-family: var(--font-heading);
+            color: var(--color-primary);
+            font-weight: 500;
+            margin-right: var(--space-sm);
+        }
+
+        /* ===== 联系邀约入口 ===== */
+        .contact-invite {
+            margin-top: var(--space-xl);
+            padding: var(--space-lg) var(--space-md);
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .contact-invite h3 {
+            margin-top: 0;
+            margin-bottom: var(--space-sm);
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        .contact-invite p {
+            font-size: 1.05rem;
+            color: var(--color-textMuted);
+            margin-bottom: var(--space-md);
+        }
+
+        .btn-invite {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: 40px;
+            letter-spacing: 0.03em;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            font-weight: 400;
+            margin-top: 0;
+            border-top: none;
+            font-style: normal;
+        }
+
+        .btn-invite:hover {
+            background-color: var(--color-accent);
+            color: #fff;
+        }
+
+        /* ===== footer ===== */
+        .site-footer {
+            background-color: var(--color-background);
+            padding: var(--space-lg) 0 var(--space-md);
+            border-top: 1px solid var(--color-secondary);
+            text-align: center;
+        }
+
+        .site-footer .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+            margin-bottom: var(--space-sm);
+        }
+
+        .site-footer .footer-links a {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            font-style: italic;
+            letter-spacing: 0.02em;
+            padding: var(--space-xs) 0;
+            border-top: none;
+            margin-top: 0;
+        }
+
+        .site-footer .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        .site-footer .copyright {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            opacity: 0.7;
+            margin-top: var(--space-sm);
+        }
+
+        @media (max-width: 600px) {
+            .site-header .container {
+                gap: var(--space-sm);
+            }
+
+            .hero-about {
+                height: 55vh;
+                min-height: 300px;
+            }
+
+            .hero-about .overlay {
+                padding: var(--space-md);
+            }
+
+            .hero-about .hero-title {
+                font-size: 2rem;
+            }
+
+            .about-section .container {
+                padding: 0 var(--space-sm);
+            }
+
+            .contact-invite {
+                padding: var(--space-md);
+            }
+
+            .site-footer .footer-links {
+                gap: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航 -->
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="nav-link">首页</a>
+            <a href="gallery.html" class="nav-link">作品</a>
+            <a href="journal.html" class="nav-link">日志</a>
+            <a href="about.html" class="nav-link nav-link--active">关于</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-about">
+        <img src="https://images.pexels.com/photos/18325138/pexels-photo-18325138.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="摄影师主视觉" loading="lazy">
+        <div class="overlay">
+            <h1 class="hero-title">用光影书写故事</h1>
+            <p class="hero-sub">每一帧，都是对时间的致敬</p>
+        </div>
+    </section>
+
+    <!-- 主要内容 -->
+    <main class="about-section">
+        <div class="container">
+
+            <!-- 个人故事 -->
+            <h2>关于我</h2>
+            <p>
+                我叫林远，是一名胶片摄影师，现居云南。从十岁那年在父亲的暗房里第一次看见影像显影的那一刻，我便知道，这一生都将与光纠缠。
+                我偏爱中画幅和大画幅胶片，喜欢那种缓慢、诚恳的创作节奏。对我来说，摄影不是记录，而是与这个世界安静对话的方式。
+            </p>
+            <p>
+                我的作品常常游离在纪实与诗意之间，关注日常中被忽略的细节——一束穿过尘埃的光，一片被风揉皱的水面，或者陌生人眼底一瞬的温柔。
+                我希望能通过我的镜头，让你看见那些平凡事物里潜藏的诗意。
+            </p>
+
+            <!-- 使用器材清单 -->
+            <h3>常用器材</h3>
+            <ul class="gear-list">
+                <li>Hasselblad 503CW · 80mm f/2.8</li>
+                <li>Fujifilm GF670 · 折叠中画幅</li>
+                <li>Leica M6 · 35mm f/1.4</li>
+                <li>Rolleiflex 2.8GX · TLR</li>
+                <li>Canon EOS 1v · 135胶片</li>
+                <li>大画幅 Chamonix 45F2 · 150mm f/5.6</li>
+            </ul>
+
+            <!-- 展览经历 -->
+            <h3>展览经历</h3>
+            <div class="exp-list">
+                <div class="exp-item">
+                    <span class="year">2024</span> <strong>「静默的河流」</strong> 个人摄影展 · 昆明当代美术馆
+                </div>
+                <div class="exp-item">
+                    <span class="year">2023</span> <strong>「日常的仪式」</strong> 联合展览 · 上海M50艺术区
+                </div>
+                <div class="exp-item">
+                    <span class="year">2022</span> <strong>「南境」</strong> 三人展 · 大理摄影博物馆
+                </div>
+                <div class="exp-item">
+                    <span class="year">2021</span> <strong>「胶片纪元」</strong> 群展 · 北京三影堂摄影艺术中心
+                </div>
+            </div>
+
+            <!-- 出版与合作信息 -->
+            <h3>出版与合作</h3>
+            <div class="exp-list">
+                <div class="exp-item">
+                    <strong>《光尘·云南》</strong> 个人摄影集 · 2024年出版 · 浙江摄影出版社
+                </div>
+                <div class="exp-item">
+                    长期合作媒体：<strong>《国家地理》</strong>中文版、《生活月刊》、《旅行家》
+                </div>
+                <div class="exp-item">
+                    品牌合作：<strong>富士胶片</strong>中国区合作摄影师 · 徕卡学院客座讲师
+                </div>
+                <div class="exp-item">
+                    作品曾收录于<strong>《中国当代摄影年鉴》</strong>（2022-2023卷）
+                </div>
+            </div>
+
+            <!-- 联系邀约入口 -->
+            <div class="contact-invite">
+                <h3>一起创造</h3>
+                <p>无论是项目合作、展览邀约，还是单纯想聊聊胶片与光，都欢迎来信。</p>
+                <a href="mailto:hello@linyuanphoto.com" class="btn-invite" target="_blank" rel="noopener noreferrer">发送邮件</a>
+                <p style="margin-top: var(--space-sm); font-size: 0.95rem; color: var(--color-textMuted);">
+                    或私信 Instagram: <a href="https://www.instagram.com/linyuan.photo" target="_blank" rel="noopener noreferrer">@linyuan.photo</a>
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="gallery.html">作品</a>
+                <a href="journal.html">日志</a>
+                <a href="about.html">关于</a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 林远 · 个人摄影作品
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

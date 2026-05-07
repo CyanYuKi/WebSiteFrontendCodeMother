@@ -1,0 +1,9 @@
+{
+  "projectId" : "ec157cad-9098-47cf-af84-9c1272bc8a36",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>光之切片 · 个人摄影</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap\" rel=\"stylesheet\">\n    <style>\n       ...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#1A1A1A\",\n    \"secondary\": \"#D4D0C8\",\n    \"background\": \"#F7F5F2\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#1C1C1C\",\n    \"textMuted\": \"#7A756D\",\n    \"accent\": \"#B89B5A\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": \"1.25\"\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": \"1.5\"\n  },\n  \"layoutDirection\": \"全屏沉浸式Hero+非对称网格画廊+顶部透明悬浮导航+底部极简联系区\",\n  \"mood\": \"静谧高雅、聚焦影像、极简留白\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 7, 16, 7, 7, 351781700 ]
+}

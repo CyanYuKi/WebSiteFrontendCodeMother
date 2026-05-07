@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>作品集 - 风景摄影</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #1C1C1E;
+      --color-secondary: #4A5D50;
+      --color-background: #F5F5F0;
+      --color-surface: #FFFFFF;
+      --color-text: #1A1A1A;
+      --color-textMuted: #6E6E72;
+      --color-accent: #C8A47A;
+      --font-heading: 'Cormorant Garamond', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --spacing-unit: 1rem;
+      --spacing-xs: calc(0.5 * var(--spacing-unit));
+      --spacing-sm: calc(0.75 * var(--spacing-unit));
+      --spacing-md: calc(1.25 * var(--spacing-unit));
+      --spacing-lg: calc(2 * var(--spacing-unit));
+      --spacing-xl: calc(3 * var(--spacing-unit));
+      --spacing-2xl: calc(4.5 * var(--spacing-unit));
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: opacity var(--transition);
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      padding: 1rem 2rem;
+      background-color: rgba(245, 245, 240, 0.92);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .main-nav a {
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      color: var(--color-textMuted);
+      text-transform: uppercase;
+      position: relative;
+      padding: 0.25rem 0;
+      transition: color var(--transition);
+    }
+    .main-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-secondary);
+      transition: width var(--transition);
+    }
+    .main-nav a:hover {
+      color: var(--color-text);
+    }
+    .main-nav a:hover::after {
+      width: 100%;
+    }
+    .main-nav a.active {
+      color: var(--color-text);
+    }
+    .main-nav a.active::after {
+      width: 100%;
+    }
+    .page-hero {
+      margin-top: 72px;
+      padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+      text-align: center;
+      background-color: var(--color-background);
+    }
+    .page-hero h1 {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-sm);
+    }
+    .page-hero p {
+      font-size: 1.05rem;
+      color: var(--color-textMuted);
+      max-width: 540px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      padding: 0 var(--spacing-lg) var(--spacing-2xl);
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .gallery-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition), transform var(--transition);
+      cursor: pointer;
+      aspect-ratio: 4 / 3;
+    }
+    .gallery-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+    .gallery-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      display: block;
+    }
+    .gallery-card:hover img {
+      transform: scale(1.05);
+    }
+    .gallery-card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 1.25rem 1.25rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+      color: #fff;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .gallery-card:hover .gallery-card-overlay {
+      opacity: 1;
+    }
+    .gallery-card-overlay h3 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.15rem;
+    }
+    .gallery-card-overlay p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      opacity: 0.8;
+      letter-spacing: 0.02em;
+    }
+    .gallery-card-overlay p span {
+      display: inline-block;
+      margin-left: 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+    .see-all-wrapper {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+    .see-all-wrapper a {
+      display: inline-block;
+      border: 1px solid var(--color-secondary);
+      color: var(--color-secondary);
+      padding: 0.6rem 2rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      transition: background var(--transition), color var(--transition);
+      background: transparent;
+    }
+    .see-all-wrapper a:hover {
+      background: var(--color-secondary);
+      color: #fff;
+    }
+    .footer {
+      background-color: var(--color-primary);
+      color: rgba(245, 245, 240, 0.7);
+      padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+      text-align: center;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: var(--spacing-md);
+    }
+    .footer-nav a {
+      color: rgba(245, 245, 240, 0.5);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: color var(--transition);
+    }
+    .footer-nav a:hover {
+      color: #fff;
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: rgba(245, 245, 240, 0.35);
+      letter-spacing: 0.02em;
+    }
+    @media (max-width: 768px) {
+      .page-hero h1 {
+        font-size: 2.2rem;
+      }
+      .page-hero {
+        padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        padding: 0 var(--spacing-md) var(--spacing-xl);
+        gap: 1rem;
+      }
+      .gallery-card {
+        aspect-ratio: 4 / 3;
+      }
+      .main-nav {
+        gap: 1.2rem;
+        padding: 0.8rem 1rem;
+      }
+      .main-nav a {
+        font-size: 0.75rem;
+      }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <nav class="main-nav" id="mainNav">
+    <a href="index.html">首页</a>
+    <a href="gallery.html" class="active">作品集</a>
+    <a href="about.html">关于</a>
+    <a href="contact.html">联系</a>
+ </nav>
+
+ <section class="page-hero">
+    <h1>作品画廊</h1>
+    <p>每一帧都是对自然之美的凝视，精选风景摄影作品，记录大地与光影的对话。</p>
+ </section>
+
+ <section class="gallery-grid">
+    <div class="gallery-card">
+      <img src="https://images.pexels.com/photos/27429837/pexels-photo-27429837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="山间晨雾" loading="lazy">
+      <div class="gallery-card-overlay">
+        <h3>山间晨雾</h3>
+        <p>落基山脉<span>加拿大</span></p>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <img src="https://images.pexels.com/photos/34806779/pexels-photo-34806779.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="寂静湖泊" loading="lazy">
+      <div class="gallery-card-overlay">
+        <h3>寂静湖泊</h3>
+        <p>班夫国家公园<span>加拿大</span></p>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <img src="https://images.pexels.com/photos/13633968/pexels-photo-13633968.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="金色草原" loading="lazy">
+      <div class="gallery-card-overlay">
+        <h3>金色草原</h3>
+        <p>黄石国家公园<span>美国</span></p>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <img src="https://images.pexels.com/photos/17783015/pexels-photo-17783015.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="暮色海岸" loading="lazy">
+      <div class="gallery-card-overlay">
+        <h3>暮色海岸</h3>
+        <p>冰岛南岸<span>冰岛</span></p>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <img src="https://images.pexels.com/photos/16611422/pexels-photo-16611422.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="森林深处" loading="lazy">
+      <div class="gallery-card-overlay">
+        <h3>森林深处</h3>
+        <p>奥林匹克国家公园<span>美国</span></p>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <img src="https://images.pexels.com/photos/8200208/pexels-photo-8200208.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="雪山倒影" loading="lazy">
+      <div class="gallery-card-overlay">
+        <h3>雪山倒影</h3>
+        <p>阿尔卑斯山区<span>瑞士</span></p>
+      </div>
+    </div>
+ </section>
+
+ <div class="see-all-wrapper">
+    <a href="#gallery" onclick="return false;">浏览全部作品</a>
+ </div>
+
+ <footer class="footer">
+    <div class="footer-nav">
+      <a href="index.html">首页</a>
+      <a href="gallery.html">作品集</a>
+      <a href="about.html">关于</a>
+      <a href="contact.html">联系</a>
+    </div>
+    <p class="footer-copy">&copy; 2025 风景摄影. All rights reserved.</p>
+ </footer>
+
+</body>
+</html>

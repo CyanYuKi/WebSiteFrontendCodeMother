@@ -1,0 +1,9 @@
+{
+  "projectId" : "d9a7058e-ca85-476e-9a0f-047236795084",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>山水之间 · 风景摄影</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap\" rel=\"stylesheet\">\n <style>...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#1C1C1E\",\n    \"secondary\": \"#4A5D50\",\n    \"background\": \"#F5F5F0\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#1A1A1A\",\n    \"textMuted\": \"#6E6E72\",\n    \"accent\": \"#C8A47A\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": \"1.25\"\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": \"1.5\"\n  },\n  \"layoutDirection\": \"顶部极简固定导航+全宽沉浸式Hero主视觉+双列/三列响应式瀑布流画廊+底部对称式联系与页脚区\",\n  \"mood\": \"自然静谧, 极简留白, 沉浸专业\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 7, 10, 17, 1, 118527700 ]
+}

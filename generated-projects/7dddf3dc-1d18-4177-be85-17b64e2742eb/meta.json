@@ -1,0 +1,9 @@
+{
+  "projectId" : "7dddf3dc-1d18-4177-be85-17b64e2742eb",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>静默影像 · 摄影叙事</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap\" rel=\"stylesheet\">\n <style>...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#1A1A1A\",\n    \"secondary\": \"#6B7280\",\n    \"background\": \"#F9F8F6\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#111111\",\n    \"textMuted\": \"#666666\",\n    \"accent\": \"#C8A97E\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, Georgia, serif\",\n    \"bodyFont\": \"DM Sans, system-ui, sans-serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"顶部透明极简导航+全宽沉浸式Hero+响应式瀑布流作品画廊+左右交替留白图文区块\",\n  \"mood\": \"静谧留白/现代极简/专注影像叙事\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 7, 11, 10, 40, 53664500 ]
+}

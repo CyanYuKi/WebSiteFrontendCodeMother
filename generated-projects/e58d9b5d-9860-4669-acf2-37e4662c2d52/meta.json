@@ -1,0 +1,9 @@
+{
+  "projectId" : "e58d9b5d-9860-4669-acf2-37e4662c2d52",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>林述白 — 街头摄影</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&display=swap\" rel=\"stylesheet\">\n<style>\n:root {\n  --color-primary: #2A2B2D;\n  --color-sec...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#2A2B2D\",\n    \"secondary\": \"#8B8C8E\",\n    \"background\": \"#F3F2ED\",\n    \"surface\": \"#FAFAF6\",\n    \"text\": \"#141416\",\n    \"textMuted\": \"#78787C\",\n    \"accent\": \"#9D8B7D\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Syne, sans-serif\",\n    \"bodyFont\": \"Manrope, sans-serif\",\n    \"scale\": 1.35\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.618\n  },\n  \"layoutDirection\": \"全屏沉浸式非对称网格，顶部极简透明导航，内容以大图铺满视口，交互采用边缘留白与居中灯箱过渡，EXIF信息以悬浮微面板呈现\",\n  \"mood\": \"冷静纪实、前卫艺术、视觉沉浸、克制呼吸\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 30, 10, 23, 35, 950822800 ]
+}

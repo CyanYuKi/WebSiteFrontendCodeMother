@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于 — 林叙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #A88A75;
+      --color-secondary: #7A8B8C;
+      --color-background: #F4EFEA;
+      --color-surface: #EBE4DA;
+      --color-text: #3D3832;
+      --color-textMuted: #8C7E6F;
+      --color-accent: #C9A86E;
+      --font-heading: Cormorant Garamond, serif;
+      --font-body: Lora, serif;
+      --spacing-unit: 8px;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.8) contrast(1.02);
+      transition: filter 0.5s ease, transform 0.6s ease;
+    }
+
+    img:hover {
+      filter: saturate(0.95) contrast(1.05);
+      transform: scale(1.02);
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 6);
+      background: rgba(244, 239, 234, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168, 138, 117, 0.1);
+      transition: padding 0.4s ease, background 0.4s ease;
+    }
+
+    .nav.scrolled {
+      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 6);
+      background: rgba(244, 239, 234, 0.95);
+    }
+
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--color-text);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: calc(var(--spacing-unit) * 5);
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--color-textMuted);
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--color-text);
+    }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--color-text);
+      transition: all 0.3s ease;
+    }
+
+    /* ===== PAGE HERO ===== */
+    .page-hero {
+      padding-top: calc(var(--spacing-unit) * 16);
+      padding-bottom: calc(var(--spacing-unit) * 8);
+      text-align: center;
+    }
+
+    .page-hero-label {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+
+    .page-hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .page-hero-divider {
+      width: 48px;
+      height: 1px;
+      background: var(--color-primary);
+      margin: calc(var(--spacing-unit) * 4) auto 0;
+    }
+
+    /* ===== DETAIL CONTENT ===== */
+    .detail-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 calc(var(--spacing-unit) * 4);
+    }
+
+    /* Portrait Section */
+    .portrait-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 8);
+      align-items: center;
+      margin-bottom: calc(var(--spacing-unit) * 14);
+    }
+
+    .portrait-image {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .portrait-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(168, 138, 117, 0.2);
+      border-radius: 2px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .portrait-image img {
+      aspect-ratio: 3 / 4;
+    }
+
+    .portrait-text h2 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      line-height: 1.4;
+    }
+
+    .portrait-text p {
+      font-size: 0.95rem;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+      line-height: 1.9;
+    }
+
+    /* Philosophy Section */
+    .philosophy-section {
+      margin-bottom: calc(var(--spacing-unit) * 14);
+      text-align: center;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      display: block;
+    }
+
+    .philosophy-section h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--color-text);
+      line-height: 1.5;
+      margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+
+    .philosophy-section p {
+      font-size: 0.95rem;
+      color: var(--color-textMuted);
+      line-height: 2;
+    }
+
+    .philosophy-quote {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--color-primary);
+      border-left: 2px solid var(--color-accent);
+      padding-left: calc(var(--spacing-unit) * 4);
+      margin: calc(var(--spacing-unit) * 6) 0;
+      text-align: left;
+      line-height: 1.7;
+    }
+
+    /* Experience Section */
+    .experience-section {
+      margin-bottom: calc(var(--spacing-unit) * 14);
+    }
+
+    .experience-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 6);
+    }
+
+    .experience-card {
+      background: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 5);
+      border-radius: 2px;
+      border: 1px solid rgba(168, 138, 117, 0.12);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .experience-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(61, 56, 50, 0.06);
+    }
+
+    .experience-card .card-year {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--color-accent);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+    }
+
+    .experience-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .experience-card p {
+      font-size: 0.85rem;
+      color: var(--color-textMuted);
+      line-height: 1.8;
+    }
+
+    /* Equipment Section */
+    .equipment-section {
+      margin-bottom: calc(var(--spacing-unit) * 14);
+    }
+
+    .equipment-section > h2 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--color-text);
+      text-align: center;
+      margin-bottom: calc(var(--spacing-unit) * 6);
+    }
+
+    .equipment-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: calc(var(--spacing-unit) * 8);
+      align-items: center;
+    }
+
+    .equipment-image {
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .equipment-image img {
+      aspect-ratio: 4 / 3;
+    }
+
+    .equipment-list {
+      list-style: none;
+    }
+
+    .equipment-list li {
+      padding: calc(var(--spacing-unit) * 2.5) 0;
+      border-bottom: 1px solid rgba(168, 138, 117, 0.15);
+      display: flex;
+      align-items: baseline;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+
+    .equipment-list li:last-child {
+      border-bottom: none;
+    }
+
+    .equipment-list .eq-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .equipment-list .eq-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .equipment-list .eq-desc {
+      font-size: 0.82rem;
+      color: var(--color-textMuted);
+      margin-top: 2px;
+    }
+
+    /* Services Section */
+    .services-section {
+      margin-bottom: calc(var(--spacing-unit) * 14);
+    }
+
+    .services-section > h2 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--color-text);
+      text-align: center;
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+
+    .services-subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 7);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: calc(var(--spacing-unit) * 4);
+    }
+
+    .service-card {
+      background: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 4);
+      border-radius: 2px;
+      border: 1px solid rgba(168, 138, 117, 0.1);
+      text-align: center;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(61, 56, 50, 0.06);
+    }
+
+    .service-icon {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      color: var(--color-accent);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+      line-height: 1;
+    }
+
+    .service-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .service-card p {
+      font-size: 0.82rem;
+      color: var(--color-textMuted);
+      line-height: 1.8;
+    }
+
+    /* CTA Section */
+    .about-cta {
+      text-align: center;
+      padding: calc(var(--spacing-unit) * 10) 0;
+      margin-bottom: calc(var(--spacing-unit) * 6);
+    }
+
+    .about-cta p {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 4);
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      color: var(--color-background);
+      background: var(--color-primary);
+      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 6);
+      border: 1px solid var(--color-primary);
+      border-radius: 1px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--color-primary);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--color-surface);
+      border-top: 1px solid rgba(168, 138, 117, 0.15);
+      padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 6);
+    }
+
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: calc(var(--spacing-unit) * 3);
+    }
+
+    .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--color-text);
+      letter-spacing: 0.06em;
+    }
+
+    .footer-links {
+      display: flex;
+      list-style: none;
+      gap: calc(var(--spacing-unit) * 4);
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text);
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.04em;
+      width: 100%;
+      text-align: center;
+      margin-top: calc(var(--spacing-unit) * 4);
+      padding-top: calc(var(--spacing-unit) * 3);
+      border-top: 1px solid rgba(168, 138, 117, 0.1);
+    }
+
+    /* ===== GRAIN OVERLAY ===== */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav {
+        padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 4);
+      }
+
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(244, 239, 234, 0.97);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: calc(var(--spacing-unit) * 5);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        font-size: 1.1rem;
+      }
+
+      .nav-toggle {
+        display: flex;
+        z-index: 1001;
+      }
+
+      .nav-toggle.open span:nth-child(1) {
+        transform: rotate(45deg) translate(4px, 4px);
+      }
+      .nav-toggle.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .nav-toggle.open span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+
+      .portrait-section {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 5);
+      }
+
+      .portrait-image {
+        max-width: 360px;
+        margin: 0 auto;
+      }
+
+      .experience-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .equipment-wrapper {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 5);
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-container {
+        padding: 0 calc(var(--spacing-unit) * 3);
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-hero h1 {
+        font-size: 2rem;
+      }
+
+      .philosophy-quote {
+        font-size: 1.1rem;
+        padding-left: calc(var(--spacing-unit) * 3);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain-overlay"></div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav-brand">林叙</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="gallery.html">作品</a></li>
+      <li><a href="blog.html">日记</a></li>
+      <li><a href="about.html" class="active">关于</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <header class="page-hero">
+    <div class="detail-container">
+      <span class="page-hero-label">About</span>
+      <h1>关于我</h1>
+      <div class="page-hero-divider"></div>
+    </div>
+  </header>
+
+  <!-- PORTRAIT + INTRO -->
+  <section class="portrait-section detail-container">
+    <div class="portrait-image">
+      <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="林叙 — 摄影师肖像" loading="lazy">
+    </div>
+    <div class="portrait-text">
+      <h2>你好，我是林叙</h2>
+      <p>
+        一个用镜头书写故事的摄影师。出生于南方的一个小城，从小在稻田与河流之间长大，对光线和季节的变化有着天然的敏感。
+      </p>
+      <p>
+        2015 年开始接触胶片摄影，从此沉迷于那种无法被数码替代的温润质感。我相信每一张照片都是一段时间的切片，承载着按下快门那一刻的温度与呼吸。
+      </p>
+      <p>
+        目前常驻杭州，专注于人像、纪实与婚礼摄影。工作之余喜欢爬山、阅读和收集老相机。
+      </p>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section class="philosophy-section detail-container">
+    <span class="section-label">创作理念</span>
+    <h2>「光是有记忆的，<br>而我想替它记住。」</h2>
+    <p>
+      我不追求完美无瑕的画面，而是试图捕捉那些稍纵即逝的真实瞬间——一个不经意的微笑、一束穿过窗棂的午后阳光、一对恋人在雨中相拥的剪影。这些画面或许不够精致，但它们有温度，有故事，有生命。
+    </p>
+    <blockquote class="philosophy-quote">
+      "摄影不是制造图像，而是发现已经存在的光与情感，然后安静地将它们安放。"
+    </blockquote>
+    <p>
+      我的拍摄风格偏向自然光与纪实手法，尽量减少人为干预，让被摄者在自己最舒适的状态下呈现最真实的样子。胶片是我偏爱的媒介，它的颗粒感与色彩层次，恰好契合我对"温暖叙事"的理解。
+    </p>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="experience-section detail-container">
+    <span class="section-label" style="text-align:center;display:block;">经历与里程碑</span>
+    <h2 style="font-family:var(--font-heading);font-size:1.8rem;font-weight:400;color:var(--color-text);text-align:center;margin-bottom:calc(var(--spacing-unit)*6);">走过的路</h2>
+    <div class="experience-grid">
+      <div class="experience-card">
+        <div class="card-year">2015</div>
+        <h3>胶片启蒙</h3>
+        <p>购入第一台胶片相机 Pentax K1000，开始自学冲洗与暗房技术，在暗房的红光中第一次看见影像缓缓浮现。</p>
+      </div>
+      <div class="experience-card">
+        <div class="card-year">2017</div>
+        <h3>首次个展</h3>
+        <p>在杭州天目里举办首次个人摄影展《日常的微光》，展出 36 幅胶片作品，记录城市中被忽略的温暖角落。</p>
+      </div>
+      <div class="experience-card">
+        <div class="card-year">2019</div>
+        <h3>全职摄影</h3>
+        <p>辞去设计工作，正式成为独立摄影师。开始接洽人像与婚礼纪实项目，逐渐形成自己的视觉叙事风格。</p>
+      </div>
+      <div class="experience-card">
+        <div class="card-year">2023</div>
+        <h3>出版摄影集</h3>
+        <p>首部摄影集《缓慢的光》由独立出版社发行，收录五年间拍摄的 120 幅作品，获得业内好评。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPMENT -->
+  <section class="equipment-section detail-container">
+    <h2>使用的器材</h2>
+    <div class="equipment-wrapper">
+      <div class="equipment-image">
+        <img src="https://images.pexels.com/photos/15994865/pexels-photo-15994865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影器材" loading="lazy">
+      </div>
+      <ul class="equipment-list">
+        <li>
+          <span class="eq-dot"></span>
+          <div>
+            <div class="eq-name">Contax T2</div>
+            <div class="eq-desc">随身携带的胶片便携机，蔡司镜头的色彩无可替代</div>
+          </div>
+        </li>
+        <li>
+          <span class="eq-dot"></span>
+          <div>
+            <div class="eq-name">Hasselblad 503CW</div>
+            <div class="eq-desc">中画幅胶片主力机，用于人像与商业拍摄</div>
+          </div>
+        </li>
+        <li>
+          <span class="eq-dot"></span>
+          <div>
+            <div class="eq-name">Sony A7IV</div>
+            <div class="eq-desc">数码工作机，婚礼与活动纪实的可靠伙伴</div>
+          </div>
+        </li>
+        <li>
+          <span class="eq-dot"></span>
+          <div>
+            <div class="eq-name">Canon AE-1</div>
+            <div class="eq-desc">入门胶片机，陪伴我走过最初的摄影旅程</div>
+          </div>
+        </li>
+        <li>
+          <span class="eq-dot"></span>
+          <div>
+            <div class="eq-name">Mamiya RZ67</div>
+            <div class="eq-desc">6×7 画幅的沉稳质感，棚拍与慢节奏创作首选</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services-section detail-container">
+    <h2>服务类型</h2>
+    <p class="services-subtitle">
+      每一次拍摄都是一次共同创作，我会根据你的故事与需求，定制专属的视觉方案。
+    </p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">✦</div>
+        <h3>人像写真</h3>
+        <p>自然光下的个人肖像与情绪记录，胶片与数码双格式交付，捕捉你最松弛自在的模样。</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">♡</div>
+        <h3>婚礼纪实</h3>
+        <p>以纪实手法记录婚礼当天的真实情感与细节，不摆拍、不干预，只留存最动人的瞬间。</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">◎</div>
+        <h3>品牌商业</h3>
+        <p>为独立品牌与工作室提供视觉内容创作，包括产品拍摄、空间记录与品牌故事影像。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="about-cta detail-container">
+    <p>如果你也喜欢这样的拍摄方式，欢迎来聊聊。</p>
+    <a href="contact.html" class="btn-primary">联系我</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-brand">林叙</span>
+      <ul class="footer-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="gallery.html">作品</a></li>
+        <li><a href="blog.html">日记</a></li>
+        <li><a href="about.html">关于</a></li>
+        <li><a href="contact.html">联系</a></li>
+      </ul>
+      <p class="footer-copy">© 2024 林叙摄影 · 所有影像均为原创</p>
+    </div>
+  </footer>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    const nav = document.getElementById('nav');
+
+    navToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+      navToggle.classList.toggle('open');
+    });
+
+    navLinks.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+        navToggle.classList.remove('open');
+      });
+    });
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  </script>
+
+</body>
+</html>

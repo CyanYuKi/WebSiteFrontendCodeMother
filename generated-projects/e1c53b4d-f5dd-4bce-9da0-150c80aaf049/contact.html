@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 · 镜界</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0F0F0F;
+            --color-secondary: #707070;
+            --color-background: #080808;
+            --color-surface: #141414;
+            --color-text: #F0F0F0;
+            --color-textMuted: #999;
+            --color-accent: #C9A87C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 8px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 6);
+            background: rgba(8, 8, 8, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(201, 168, 124, 0.12);
+        }
+
+        .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 168, 124, 0.3);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 4);
+        }
+
+        .nav-links li a {
+            position: relative;
+            transition: color 0.3s;
+            padding: 4px 0;
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            border: none;
+            background: none;
+            backdrop-filter: none;
+            border-radius: 0;
+            display: inline;
+            gap: 0;
+        }
+
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-accent);
+            transition: width 0.35s ease;
+        }
+
+        .nav-links li a:hover::after,
+        .nav-links li a.active::after {
+            width: 100%;
+        }
+
+        .nav-links li a.active {
+            color: var(--color-accent);
+        }
+
+        .nav-links li a:hover {
+            color: var(--color-accent);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 3);
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: calc(var(--spacing-unit) * 2);
+                flex-wrap: wrap;
+            }
+            .nav-links li a {
+                font-size: 0.75rem;
+                letter-spacing: 0.1em;
+            }
+        }
+
+        /* ===== 页面独有 ===== */
+        .page-contact {
+            padding: 120px calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 12);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            text-align: center;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            font-weight: 300;
+            max-width: 520px;
+            margin: 0 auto calc(var(--spacing-unit) * 12);
+            letter-spacing: 0.04em;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 10);
+            align-items: start;
+        }
+
+        .form-section {
+            background: var(--color-surface);
+            padding: calc(var(--spacing-unit) * 8);
+            border: 1px solid rgba(201, 168, 124, 0.15);
+        }
+
+        .form-section h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 6);
+            letter-spacing: 0.03em;
+        }
+
+        .form-group {
+            margin-bottom: calc(var(--spacing-unit) * 5);
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            font-weight: 400;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(201, 168, 124, 0.25);
+            padding: calc(var(--spacing-unit) * 2) 0;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--color-text);
+            outline: none;
+            transition: border-color 0.3s;
+            font-weight: 300;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-bottom-color: var(--color-accent);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 2);
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 6);
+            border: 1px solid rgba(201, 168, 124, 0.4);
+            background: rgba(201, 168, 124, 0.06);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.35s ease;
+            border-radius: 0;
+            cursor: pointer;
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .submit-btn:hover {
+            background: rgba(201, 168, 124, 0.18);
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--spacing-unit) * 8);
+        }
+
+        .info-block {
+            background: var(--color-surface);
+            padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 6);
+            border: 1px solid rgba(201, 168, 124, 0.10);
+        }
+
+        .info-block h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            letter-spacing: 0.03em;
+        }
+
+        .info-block p,
+        .info-block li {
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .info-block ul {
+            list-style: none;
+            padding: 0;
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .info-block ul li {
+            padding-left: calc(var(--spacing-unit) * 3);
+            position: relative;
+            margin-bottom: calc(var(--spacing-unit) * 1);
+        }
+
+        .info-block ul li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 4);
+            flex-wrap: wrap;
+            margin-top: calc(var(--spacing-unit) * 3);
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 2);
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 4);
+            border: 1px solid rgba(201, 168, 124, 0.3);
+            background: rgba(201, 168, 124, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: rgba(201, 168, 124, 0.14);
+            color: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .map-container {
+            margin-top: calc(var(--spacing-unit) * 12);
+            width: 100%;
+            height: 340px;
+            background: var(--color-surface);
+            border: 1px solid rgba(201, 168, 124, 0.10);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6) saturate(0.7);
+        }
+
+        .footer {
+            padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 6);
+            text-align: center;
+            border-top: 1px solid rgba(201, 168, 124, 0.08);
+            margin-top: calc(var(--spacing-unit) * 4);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: calc(var(--spacing-unit) * 6);
+            flex-wrap: wrap;
+            margin-bottom: calc(var(--spacing-unit) * 4);
+        }
+
+        .footer-links a {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer p {
+            color: var(--color-textMuted);
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+        }
+
+        @media (max-width: 900px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 8);
+            }
+            .page-contact {
+                padding: 110px calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 8);
+            }
+            .form-section {
+                padding: calc(var(--spacing-unit) * 5);
+            }
+            .page-title {
+                font-size: 2.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .social-links {
+                flex-direction: column;
+            }
+            .map-container {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html">
+                <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/f1/20260507/c70535fc/8e3aee66-2592-46ca-922a-452448d628cc-1.png?Expires=1778215225&OSSAccessKeyId=STS.NZgDREdWDm4dnXLMTZ9Vowj55&Signature=9b4BcAnVZ8iy6AweT8V2YDwyqaQ%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nSD%2BjxiYhl2vaPbH79qVQPNdlDmK%2Be1zz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb428xQBWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGgsUEIAKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET7q394HCuU5wGoABdSRt1Dmh9IpNcvlGqnuS4dOJnlcyj5fRaXSRjXUoTcTXsFfPcbjgW%2BcNeB8qPK7dus5YC8ur%2Bmn85yfv5zxVJK0rYovGfXsrCgk9bzhJUXZs1rt11wGurjA4%2BaXXqknC%2Fb8NHH5%2BKMscStKLc6JWQqIqADb51cmHYZzbpiovwb4gAA%3D%3D"
+                     alt="镜界 logo"
+                     loading="eager"
+                     width="48" height="48">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html#gallery">作品</a></li>
+            <li><a href="index.html#about">叙事</a></li>
+            <li><a href="contact.html" class="active">联系</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+        </ul>
+    </nav>
+
+    <main class="page-contact">
+        <h1 class="page-title">联系镜界</h1>
+        <p class="page-subtitle">我们期待与你的光影故事相遇。无论是拍摄预约还是合作咨询，请随时与我们联系。</p>
+
+        <div class="contact-grid">
+            <!-- 表单 -->
+            <div class="form-section">
+                <h2>发送讯息</h2>
+                <form action="#" method="post">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" name="name" placeholder="你的名字" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">主题</label>
+                        <input type="text" id="subject" name="subject" placeholder="拍摄预约 / 合作咨询">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">留言</label>
+                        <textarea id="message" name="message" placeholder="请描述你的拍摄想法或需求 …" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">发送</button>
+                </form>
+            </div>
+
+            <!-- 右侧信息 -->
+            <div class="info-section">
+                <div class="info-block">
+                    <h3>拍摄预约流程</h3>
+                    <p>从构思到成片，我们与你一同完成每一帧画面。</p>
+                    <ul>
+                        <li>通过表单或社交媒体初步沟通需求</li>
+                        <li>约定时间进行现场或线上创意对谈</li>
+                        <li>定制拍摄方案并确认档期</li>
+                        <li>拍摄日尽情表达，我们负责记录</li>
+                        <li>后期精修交付，留存动人瞬间</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>常见问题</h3>
+                    <ul>
+                        <li><strong>拍摄前需要准备什么？</strong> 我们会提供详细的风格建议与服装搭配指南。</li>
+                        <li><strong>多久可以拿到成片？</strong> 常规交付周期为 7–14 个工作日。</li>
+                        <li><strong>支持外景拍摄吗？</strong> 当然，我们提供棚内与外景多种方案。</li>
+                        <li><strong>可以携带宠物一起拍？</strong> 非常欢迎，提前告知即可。</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>社交媒体</h3>
+                    <p>关注我们，获取最新作品与灵感。</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+                        <a href="https://weibo.com" target="_blank" rel="noopener noreferrer">微博</a>
+                        <a href="https://xiaohongshu.com" target="_blank" rel="noopener noreferrer">小红书</a>
+                        <a href="https://behance.net" target="_blank" rel="noopener noreferrer">Behance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地图位置 -->
+        <div class="map-container">
+            <img src="https://images.pexels.com/photos/6446678/pexels-photo-6446678.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                 alt="镜界工作室位置示意"
+                 loading="lazy">
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="index.html#gallery">作品</a>
+            <a href="index.html#about">叙事</a>
+            <a href="contact.html">联系</a>
+            <a href="portfolio.html">Portfolio</a>
+        </div>
+        <p>&copy; 2025 镜界 · 光影之间</p>
+    </footer>
+
+</body>
+</html>

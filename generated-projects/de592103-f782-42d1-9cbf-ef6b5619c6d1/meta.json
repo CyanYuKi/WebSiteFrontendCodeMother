@@ -1,0 +1,9 @@
+{
+  "projectId" : "de592103-f782-42d1-9cbf-ef6b5619c6d1",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n    <title>菲林之间 · 摄影档案</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=sw...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#4A3728\",\n    \"secondary\": \"#C9B89C\",\n    \"background\": \"#F4EFE6\",\n    \"surface\": \"#EAE3D5\",\n    \"text\": \"#2A221A\",\n    \"textMuted\": \"#7D6E5D\",\n    \"accent\": \"#B85E3C\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Karla, sans-serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"0.75rem\",\n    \"scale\": 1.33\n  },\n  \"layoutDirection\": \"全幅沉浸式Hero+左侧固定分类导航与右侧密集多列瀑布流网格画廊\",\n  \"mood\": \"复古胶片质感, 温暖怀旧, 专注沉浸\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 29, 15, 41, 44, 795826600 ]
+}

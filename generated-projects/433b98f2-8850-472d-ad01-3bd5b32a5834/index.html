@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>静帧 — 摄影作品集</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #6B7A6E;
+      --color-secondary: #A89E8F;
+      --color-background: #F4F0E8;
+      --color-surface: #EAE5DB;
+      --color-text: #3D3C38;
+      --color-textMuted: #8F8A82;
+      --color-accent: #B89A7A;
+      --font-heading: Cormorant Garamond, serif;
+      --font-body: Source Sans 3, sans-serif;
+      --spacing-unit: 1rem;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.7;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===== Film Grain Overlay ===== */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* ===== Navigation ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: calc(var(--spacing-unit) * 1.5) 0;
+      transition: background-color 0.4s ease, backdrop-filter 0.4s ease;
+    }
+
+    .nav.scrolled {
+      background-color: rgba(244, 240, 232, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 3);
+      padding: 0 var(--spacing-unit);
+    }
+
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--color-text);
+      text-decoration: none;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 18px;
+      background-color: var(--color-secondary);
+      opacity: 0.5;
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--color-textMuted);
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--color-accent);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--color-text);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* ===== Hero Section ===== */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+    }
+
+    .hero-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.7) contrast(1.05) brightness(0.92);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(244, 240, 232, 0) 40%,
+        rgba(244, 240, 232, 0.6) 75%,
+        rgba(244, 240, 232, 0.95) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+      max-width: 700px;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+      margin-bottom: calc(var(--spacing-unit) * 1.2);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--color-accent);
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      letter-spacing: 0.08em;
+      max-width: 420px;
+      text-wrap: pretty;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: calc(var(--spacing-unit) * 3);
+      right: calc(var(--spacing-unit) * 4);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.5);
+      text-decoration: none;
+    }
+
+    .hero-scroll-text {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      writing-mode: vertical-rl;
+    }
+
+    .hero-scroll-line {
+      width: 1px;
+      height: 50px;
+      background-color: var(--color-secondary);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.6); }}
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* ===== Section Common ===== */
+    .section {
+      padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 4);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 0.8);
+    }
+
+    .section-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      color: var(--color-text);
+      line-height: 1.2;
+      margin-bottom: calc(var(--spacing-unit) * 1);
+    }
+
+    .section-desc {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      max-width: 520px;
+      text-wrap: pretty;
+      line-height: 1.8;
+    }
+
+    .section-header {
+      margin-bottom: calc(var(--spacing-unit) * 5);
+    }
+
+    /* ===== Gallery Section ===== */
+    .gallery-section {
+      padding-top: calc(var(--spacing-unit) * 10);
+      padding-bottom: calc(var(--spacing-unit) * 10);
+    }
+
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: var(--spacing-unit);
+      margin-bottom: calc(var(--spacing-unit) * 5);
+    }
+
+    .gallery-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 0.3);
+    }
+
+    .gallery-view-all {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--color-secondary);
+      padding-bottom: 2px;
+      transition: color 0.3s ease, border-color 0.3s ease;
+      align-self: flex-start;
+    }
+
+    .gallery-view-all:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: minmax(80px, auto);
+      gap: calc(var(--spacing-unit) * 1.2);
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.75) contrast(1.02);
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: saturate(0.9) contrast(1.05);
+    }
+
+    .gallery-item::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 60%,
+        rgba(61, 60, 56, 0.25) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    .gallery-item:hover::after {
+      opacity: 1;
+    }
+
+    .gallery-item:nth-child(1) {
+      grid-column: 1 / 8;
+      grid-row: span 6;
+    }
+
+    .gallery-item:nth-child(2) {
+      grid-column: 8 / 13;
+      grid-row: span 4;
+    }
+
+    .gallery-item:nth-child(3) {
+      grid-column: 8 / 13;
+      grid-row: span 3;
+    }
+
+    .gallery-item:nth-child(4) {
+      grid-column: 1 / 5;
+      grid-row: span 4;
+    }
+
+    .gallery-item:nth-child(5) {
+      grid-column: 5 / 8;
+      grid-row: span 4;
+    }
+
+    .gallery-item-caption {
+      position: absolute;
+      bottom: calc(var(--spacing-unit) * 1.2);
+      left: calc(var(--spacing-unit) * 1.2);
+      z-index: 2;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: rgba(244, 240, 232, 0.9);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .gallery-item:hover .gallery-item-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== About Section ===== */
+    .about-section {
+      background-color: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 4);
+    }
+
+    .about-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 6);
+      align-items: center;
+    }
+
+    .about-image-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .about-image-wrapper img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.7) contrast(1.03) brightness(0.95);
+    }
+
+    .about-image-frame {
+      position: absolute;
+      top: calc(var(--spacing-unit) * 1.5);
+      left: calc(var(--spacing-unit) * 1.5);
+      right: calc(var(--spacing-unit) * 1.5);
+      bottom: calc(var(--spacing-unit) * 1.5);
+      border: 1px solid rgba(184, 154, 122, 0.3);
+      pointer-events: none;
+      border-radius: 1px;
+    }
+
+    .about-text {
+      padding: calc(var(--spacing-unit) * 2) 0;
+    }
+
+    .about-text .section-heading {
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+
+    .about-paragraph {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      line-height: 1.9;
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+      text-wrap: pretty;
+    }
+
+    .about-link {
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.6);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: gap 0.3s ease;
+    }
+
+    .about-link:hover {
+      gap: calc(var(--spacing-unit) * 1);
+    }
+
+    .about-link-arrow {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    /* ===== Blog Section ===== */
+    .blog-section {
+      padding-top: calc(var(--spacing-unit) * 10);
+      padding-bottom: calc(var(--spacing-unit) * 10);
+    }
+
+    .blog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: var(--spacing-unit);
+      margin-bottom: calc(var(--spacing-unit) * 5);
+    }
+
+    .blog-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 0.3);
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 3);
+    }
+
+    .blog-card {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: calc(var(--spacing-unit) * 1.2);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.4s ease;
+      border-radius: 2px;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .blog-card-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      border-radius: 2px;
+      filter: saturate(0.72) contrast(1.02);
+      transition: filter 0.5s ease;
+    }
+
+    .blog-card:hover .blog-card-image {
+      filter: saturate(0.88) contrast(1.04);
+    }
+
+    .blog-card-meta {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.8);
+      margin-bottom: calc(var(--spacing-unit) * 0.3);
+    }
+
+    .blog-card-date {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--color-textMuted);
+      text-transform: uppercase;
+    }
+
+    .blog-card-tag {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      background-color: rgba(184, 154, 122, 0.1);
+      padding: 2px 8px;
+      border-radius: 1px;
+    }
+
+    .blog-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--color-text);
+      line-height: 1.3;
+      margin-bottom: calc(var(--spacing-unit) * 0.5);
+    }
+
+    .blog-card-excerpt {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      line-height: 1.7;
+      text-wrap: pretty;
+    }
+
+    .blog-more {
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.5);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--color-secondary);
+      padding-bottom: 2px;
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .blog-more:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    /* ===== Contact CTA ===== */
+    .contact-section {
+      position: relative;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .contact-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.6) contrast(1.05) brightness(0.85);
+    }
+
+    .contact-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(61, 60, 56, 0.55);
+    }
+
+    .contact-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 4);
+      width: 100%;
+    }
+
+    .contact-content .section-label {
+      color: rgba(244, 240, 232, 0.6);
+    }
+
+    .contact-content .section-heading {
+      color: var(--color-background);
+      max-width: 500px;
+      margin-bottom: calc(var(--spacing-unit) * 2.5);
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 0.8);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-background);
+      text-decoration: none;
+      border: 1px solid rgba(244, 240, 232, 0.4);
+      padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 2.5);
+      border-radius: 1px;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    .contact-btn:hover {
+      background-color: var(--color-background);
+      border-color: var(--color-background);
+      color: var(--color-text);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      background-color: var(--color-text);
+      padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 4);
+    }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+
+    .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--color-surface);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2.5);
+    }
+
+    .footer-link {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--color-surface);
+    }
+
+    .footer-copy {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 300;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .about-inner {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 4);
+      }
+
+      .about-image-wrapper {
+        max-width: 500px;
+      }
+
+      .blog-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: auto;
+      }
+
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(2),
+      .gallery-item:nth-child(3),
+      .gallery-item:nth-child(4),
+      .gallery-item:nth-child(5) {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .gallery-item:nth-child(1) {
+        grid-column: 1 / -1;
+      }
+
+      .hero-content {
+        padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 2);
+      }
+
+      .section {
+        padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 2);
+      }
+
+      .nav-inner {
+        gap: calc(var(--spacing-unit) * 1.5);
+      }
+
+      .nav-link {
+        font-size: 0.72rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-divider {
+        display: none;
+      }
+
+      .nav-inner {
+        gap: calc(var(--spacing-unit) * 1.2);
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-item:nth-child(1) {
+        grid-column: auto;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">静帧</a>
+      <span class="nav-divider"></span>
+      <a href="gallery.html" class="nav-link">作品</a>
+      <a href="blog.html" class="nav-link">手记</a>
+      <a href="about.html" class="nav-link">关于</a>
+      <a href="contact.html" class="nav-link">联络</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img
+      src="https://images.pexels.com/photos/32001812/pexels-photo-32001812.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+      alt="主视觉摄影作品"
+      class="hero-image"
+      loading="eager"
+      width="940"
+      height="650"
+    >
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        以光为笔<br><em>以影为墨</em>
+      </h1>
+      <p class="hero-subtitle">
+        在胶片与数码之间，寻找时间的纹理。每一帧画面，都是与世界的一次低声对话。
+      </p>
+    </div>
+    <a href="#gallery" class="hero-scroll">
+      <span class="hero-scroll-text">Scroll</span>
+      <span class="hero-scroll-line"></span>
+    </a>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="section gallery-section" id="gallery">
+    <div class="gallery-header">
+      <div class="gallery-header-left">
+        <span class="section-label">Selected Works</span>
+        <h2 class="section-heading">作品选辑</h2>
+        <p class="section-desc">
+          从街头巷尾到山川湖海，以胶片质感记录那些被忽略的光影瞬间。
+        </p>
+      </div>
+      <a href="gallery.html" class="gallery-view-all">查看全部作品</a>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/9941176/pexels-photo-9941176.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+          alt="摄影作品：暮色中的街巷"
+          loading="eager"
+          width="940"
+          height="650"
+        >
+        <span class="gallery-item-caption">暮色街巷 · 2024</span>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/9903568/pexels-photo-9903568.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="摄影作品：静物与光"
+          loading="eager"
+          width="940"
+          height="650"
+        >
+        <span class="gallery-item-caption">静物与光 · Series III</span>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/35874785/pexels-photo-35874785.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="摄影作品：山间晨雾"
+          loading="eager"
+          width="940"
+          height="650"
+        >
+        <span class="gallery-item-caption">山间晨雾 · Landscape</span>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/6155298/pexels-photo-6155298.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="摄影作品：窗前的午后"
+          loading="lazy"
+          width="940"
+          height="650"
+        >
+        <span class="gallery-item-caption">窗前午后 · Portrait</span>
+      </div>
+      <div class="gallery-item">
+        <img
+          src="https://images.pexels.com/photos/37093455/pexels-photo-37093455.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="摄影作品：纹理与时间"
+          loading="lazy"
+          width="940"
+          height="650"
+        >
+        <span class="gallery-item-caption">纹理与时间 · Detail</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-inner">
+      <div class="about-image-wrapper">
+        <img
+          src="https://images.pexels.com/photos/29979175/pexels-photo-29979175.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="摄影师工作照"
+          loading="eager"
+          width="940"
+          height="650"
+        >
+        <div class="about-image-frame"></div>
+      </div>
+      <div class="about-text">
+        <span class="section-label">About</span>
+        <h2 class="section-heading">关于拍摄者</h2>
+        <p class="about-paragraph">
+          从事摄影创作十余年，偏爱胶片媒介与自然人文题材。相信好的照片不需要解释——它会在观者心里留下一个安静的角落，让时间慢下来。
+        </p>
+        <p class="about-paragraph">
+          作品曾刊于《中国摄影》《Lens》等刊物，并在多个城市举办个展与联展。目前使用 Hasselblad 500C/M 与 Leica M6 进行胶片创作。
+        </p>
+        <a href="about.html" class="about-link">
+          了解更多
+          <span class="about-link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section class="section blog-section" id="blog">
+    <div class="blog-header">
+      <div class="blog-header-left">
+        <span class="section-label">Journal</span>
+        <h2 class="section-heading">拍摄手记</h2>
+      </div>
+      <a href="blog.html" class="blog-more">阅读全部手记</a>
+    </div>
+    <div class="blog-grid">
+      <a href="blog.html" class="blog-card">
+        <img
+          src="https://images.pexels.com/photos/20519867/pexels-photo-20519867.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+          alt="博客配图：胶片的温度"
+          class="blog-card-image"
+          loading="eager"
+          width="940"
+          height="650"
+        >
+        <div class="blog-card-meta">
+          <span class="blog-card-date">2024.12.08</span>
+          <span class="blog-card-tag">胶片</span>
+        </div>
+        <h3 class="blog-card-title">胶片的温度：为什么我还在用胶片拍摄</h3>
+        <p class="blog-card-excerpt">
+          在数码摄影已经足够完美的今天，胶片的不便恰恰是它的珍贵之处。每一次按下快门都是一次不可撤销的决定。
+        </p>
+      </a>
+      <a href="blog.html" class="blog-card">
+        <img
+          src="https://images.pexels.com/photos/33680704/pexels-photo-33680704.jpeg?auto=compress&cs=tinysrgb&h=350"
+          alt="博客配图：光的方向"
+          class="blog-card-image"
+          loading="lazy"
+          width="940"
+          height="650"
+        >
+        <div class="blog-card-meta">
+          <span class="blog-card-date">2024.11.22</span>
+          <span class="blog-card-tag">技法</span>
+        </div>
+        <h3 class="blog-card-title">寻找侧逆光：人像摄影中的光线语言</h3>
+        <p class="blog-card-excerpt">
+          光线是摄影的全部。在自然光条件下寻找那个恰好45度角的侧逆光，往往比任何后期都更有力量。
+        </p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Contact CTA Section -->
+  <section class="contact-section">
+    <img
+      src="https://images.pexels.com/photos/35136018/pexels-photo-35136018.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+      alt="联系区背景"
+      class="contact-image"
+      loading="lazy"
+      width="940"
+      height="650"
+    >
+    <div class="contact-overlay"></div>
+    <div class="contact-content">
+      <span class="section-label">Contact</span>
+      <h2 class="section-heading">期待与您合作</h2>
+      <a href="contact.html" class="contact-btn">
+        取得联系
+        <span>→</span>
+      </a>
+    </div>
+ </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-brand">静帧</span>
+      <div class="footer-links">
+        <a href="gallery.html" class="footer-link">作品</a>
+        <a href="blog.html" class="footer-link">手记</a>
+        <a href="about.html" class="footer-link">关于</a>
+        <a href="contact.html" class="footer-link">联络</a>
+      </div>
+      <span class="footer-copy">&copy; 2024 静帧摄影. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- Nav Scroll Effect -->
+  <script>
+    (function() {
+      var nav = document.getElementById('mainNav');
+      var lastScroll = 0;
+
+      window.addEventListener('scroll', function() {
+        var currentScroll = window.pageYOffset;
+        if (currentScroll > 80) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      });
+    })();
+  </script>
+
+  <!-- PAGES_PLAN: [{"name":"gallery.html","title":"作品画廊","overview":"展示完整摄影作品集合，按主题分类（人文、风景、静物、人像），支持分类筛选与全屏查看","layout":"grid"},{"name":"blog.html","title":"拍摄手记","overview":"博客文章列表页面，展示摄影心得、技法分享、器材评测等图文内容，按时间倒序排列","layout":"list"},{"name":"about.html","title":"关于摄影师","overview":"个人介绍页面，包含创作理念、参展经历、使用器材、联系方式等详细信息","layout":"detail"},{"name":"contact.html","title":"联络我们","overview":"联系表单页面，包含合作咨询、作品购买、拍摄预约等功能表单","layout":"form"}] -->
+
+</body>
+</html>

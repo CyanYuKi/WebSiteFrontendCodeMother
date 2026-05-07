@@ -1,0 +1,9 @@
+{
+  "projectId" : "c8ca687e-74df-417d-82d8-df1170df101a",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>镜·界 | 私人摄影工作室</title>\n    <style>\n        :root {\n            --color-primary: #1C1C1C;\n            --color-secondary: #737373;\n            --color-background: #F8F6F3;\n            --color-surface: #FFFFFF;\n            --color-text: #1E1E1E;\n            --color-textMuted: #6B6B6B;\n            --color-accent: #B08D55;\n            --font-headin...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#1C1C1C\",\n    \"secondary\": \"#737373\",\n    \"background\": \"#F8F6F3\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#1E1E1E\",\n    \"textMuted\": \"#6B6B6B\",\n    \"accent\": \"#B08D55\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Manrope, sans-serif\",\n    \"scale\": \"1.333\"\n  },\n  \"spacing\": {\n    \"unit\": \"0.75rem\",\n    \"scale\": \"1.5\"\n  },\n  \"layoutDirection\": \"全宽沉浸式Hero视觉 + 居中不对称瀑布流画廊 + 极简底部信息区\",\n  \"mood\": \"克制留白、艺术沉浸、自然静谧\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 7, 14, 52, 1, 409670200 ]
+}

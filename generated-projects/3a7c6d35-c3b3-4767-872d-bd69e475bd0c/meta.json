@@ -1,0 +1,9 @@
+{
+  "projectId" : "3a7c6d35-c3b3-4767-872d-bd69e475bd0c",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>拂尘 · 胶片摄影</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap\" rel=\"stylesheet\">\n <style>\n    :root {\n      --colo...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#8C7A6B\",\n    \"secondary\": \"#D4C5B9\",\n    \"background\": \"#F5F0EB\",\n    \"surface\": \"#E8E0D5\",\n    \"text\": \"#3E3530\",\n    \"textMuted\": \"#8A8078\",\n    \"accent\": \"#C47A5A\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Playfair Display, serif\",\n    \"bodyFont\": \"Lora, serif\",\n    \"scale\": 1.35\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全幅Hero影像+居中单列叙事流+瀑布流画廊网格\",\n  \"mood\": \"怀旧质感/艺术沉静/胶片颗粒氛围\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 4, 30, 16, 30, 36, 557339300 ]
+}

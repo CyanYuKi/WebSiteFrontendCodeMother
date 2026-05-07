@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集 - 自然摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2A3D30;
+            --color-secondary: #B8A89A;
+            --color-background: #F9F8F5;
+            --color-surface: #F1F0EC;
+            --color-text: #111;
+            --color-textMuted: #665F55;
+            --color-accent: #C48B5F;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --ratio: 1.5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 导航栏样式 */
+        .site-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 1.8rem 2rem;
+            background: rgba(249, 248, 245, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .site-nav a {
+            color: var(--color-textMuted);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .site-nav a:hover {
+            color: var(--color-primary);
+        }
+
+        .site-nav a.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        .site-nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--color-primary);
+        }
+
+        /* 页面标题 */
+        .page-header {
+            padding: 8rem 2rem 3rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.04em;
+        }
+
+        .page-header p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            max-width: 480px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* 分类筛选 */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0 2rem 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--color-secondary);
+            color: var(--color-textMuted);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.5rem 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 0;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+        }
+
+        /* 瀑布流画廊 Grid 布局 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            padding: 0 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--color-surface);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.03);
+        }
+
+        .gallery-item .item-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.6) 100%);
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .gallery-item:hover .item-info {
+            opacity: 1;
+        }
+
+        .gallery-item .item-info h3 {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+            letter-spacing: 0.02em;
+        }
+
+        .gallery-item .item-info span {
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        /* 不同高度瀑布效果 */
+        .gallery-item.tall {
+            grid-row: span 2;
+        }
+
+        .gallery-item.medium {
+            grid-row: span 1;
+        }
+
+        .gallery-item.short {
+            grid-row: span 1;
+        }
+
+        /* 轻量模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--color-background);
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content img {
+            width: 100%;
+            max-height: 60vh;
+            object-fit: cover;
+        }
+
+        .modal-content .modal-text {
+            padding-right: 2rem;
+        }
+
+        .modal-content .modal-text h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .modal-content .modal-text .category-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.8rem;
+            font-weight: 400;
+        }
+
+        .modal-content .modal-text p {
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--color-textMuted);
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+            padding: 0.2rem 0.5rem;
+            font-family: var(--font-body);
+        }
+
+        .modal-close:hover {
+            color: var(--color-primary);
+        }
+
+        /* Footer */
+        .site-footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--color-surface);
+            color: var(--color-textMuted);
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--color-textMuted);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-nav {
+                gap: 1.5rem;
+                padding: 1.2rem 1rem;
+                font-size: 0.75rem;
+            }
+            .page-header h1 {
+                font-size: 2.4rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0 1rem 3rem;
+            }
+            .filter-bar {
+                gap: 0.8rem;
+            }
+            .filter-btn {
+                padding: 0.4rem 1.2rem;
+                font-size: 0.7rem;
+            }
+            .modal-content {
+                padding: 1.2rem;
+            }
+            .modal-content .modal-text h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-nav {
+                gap: 1rem;
+                padding: 1rem 0.8rem;
+                font-size: 0.65rem;
+                letter-spacing: 0.04em;
+            }
+            .page-header {
+                padding: 6rem 1rem 2rem;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            .filter-bar {
+                gap: 0.5rem;
+                padding: 0 0.5rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏（与首页一致） -->
+    <nav class="site-nav">
+        <a href="index.html">首页</a>
+        <a href="about.html">关于</a>
+        <a href="portfolio.html" class="active">作品集</a>
+        <a href="contact.html">联系</a>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-header">
+        <h1>自然光影</h1>
+        <p>每一帧都是风景的私语，山川、海岸与森林的凝视</p>
+    </header>
+
+    <!-- 分类筛选 -->
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="mountain">山脉</button>
+        <button class="filter-btn" data-filter="coast">海岸</button>
+        <button class="filter-btn" data-filter="forest">森林</button>
+    </div>
+
+    <!-- 瀑布流画廊 -->
+    <div class="gallery-grid" id="galleryGrid">
+        <!-- 山脉系列 -->
+        <div class="gallery-item tall" data-category="mountain" style="aspect-ratio: 0.75;">
+            <img src="https://images.pexels.com/photos/10620138/pexels-photo-10620138.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="雪山之巅" loading="lazy">
+            <div class="item-info">
+                <h3>雪山之巅</h3>
+                <span>山脉</span>
+            </div>
+        </div>
+        <div class="gallery-item medium" data-category="mountain" style="aspect-ratio: 1.2;">
+            <img src="https://images.pexels.com/photos/34333327/pexels-photo-34333327.jpeg?auto=compress&cs=tinysrgb&h=350" alt="晨雾山峦" loading="lazy">
+            <div class="item-info">
+                <h3>晨雾山峦</h3>
+                <span>山脉</span>
+            </div>
+        </div>
+        <div class="gallery-item short" data-category="mountain" style="aspect-ratio: 1.5;">
+            <img src="https://images.pexels.com/photos/122396/pexels-photo-122396.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="暮色山脊" loading="lazy">
+            <div class="item-info">
+                <h3>暮色山脊</h3>
+                <span>山脉</span>
+            </div>
+        </div>
+        <!-- 海岸系列 -->
+        <div class="gallery-item medium" data-category="coast" style="aspect-ratio: 1.3;">
+            <img src="https://images.pexels.com/photos/3216897/pexels-photo-3216897.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="静默海岸" loading="lazy">
+            <div class="item-info">
+                <h3>静默海岸</h3>
+                <span>海岸</span>
+            </div>
+        </div>
+        <div class="gallery-item tall" data-category="coast" style="aspect-ratio: 0.65;">
+            <img src="https://images.pexels.com/photos/19336097/pexels-photo-19336097.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="潮汐低语" loading="lazy">
+            <div class="item-info">
+                <h3>潮汐低语</h3>
+                <span>海岸</span>
+            </div>
+        </div>
+        <div class="gallery-item short" data-category="coast" style="aspect-ratio: 1.6;">
+            <img src="https://images.pexels.com/photos/26263100/pexels-photo-26263100.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="金色海滩" loading="lazy">
+            <div class="item-info">
+                <h3>金色海滩</h3>
+                <span>海岸</span>
+            </div>
+        </div>
+        <!-- 森林系列 -->
+        <div class="gallery-item short" data-category="forest" style="aspect-ratio: 1.4;">
+            <img src="https://images.pexels.com/photos/14520953/pexels-photo-14520953.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="林间光晕" loading="lazy">
+            <div class="item-info">
+                <h3>林间光晕</h3>
+                <span>森林</span>
+            </div>
+        </div>
+        <div class="gallery-item medium" data-category="forest" style="aspect-ratio: 1.1;">
+            <img src="https://images.pexels.com/photos/28344774/pexels-photo-28344774.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="苔藓秘境" loading="lazy">
+            <div class="item-info">
+                <h3>苔藓秘境</h3>
+                <span>森林</span>
+            </div>
+        </div>
+        <div class="gallery-item tall" data-category="forest" style="aspect-ratio: 0.7;">
+            <img src="https://images.pexels.com/photos/12260845/pexels-photo-12260845.jpeg?auto=compress&cs=tinysrgb&h=350" alt="古木参天" loading="lazy">
+            <div class="item-info">
+                <h3>古木参天</h3>
+                <span>森林</span>
+            </div>
+        </div>
+        <!-- 额外混合 -->
+        <div class="gallery-item medium" data-category="mountain" style="aspect-ratio: 1.25;">
+            <img src="https://images.pexels.com/photos/19291684/pexels-photo-19291684.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="远山如黛" loading="lazy">
+            <div class="item-info">
+                <h3>远山如黛</h3>
+                <span>山脉</span>
+            </div>
+        </div>
+        <div class="gallery-item tall" data-category="coast" style="aspect-ratio: 0.68;">
+            <img src="https://images.pexels.com/photos/9903248/pexels-photo-9903248.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="浪花呢喃" loading="lazy">
+            <div class="item-info">
+                <h3>浪花呢喃</h3>
+                <span>海岸</span>
+            </div>
+        </div>
+        <div class="gallery-item short" data-category="forest" style="aspect-ratio: 1.5;">
+            <img src="https://images.pexels.com/photos/122396/pexels-photo-122396.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="绿影斑驳" loading="lazy">
+            <div class="item-info">
+                <h3>绿影斑驳</h3>
+                <span>森林</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <img id="modalImage" src="" alt="">
+            <div class="modal-text">
+                <span class="category-tag" id="modalCategory"></span>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDesc">大自然以其沉默的语言，讲述着时间的沉淀与生命的辽阔。每一道光影都是一种邀请，去感受、去呼吸、去成为风景的一部分。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer（与首页结构一致） -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="about.html">关于</a>
+            <a href="portfolio.html">作品集</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <p>© 2025 自然摄影 · 沉浸于光影之间</p>
+    </footer>
+
+    <script>
+        (function() {
+            // 筛选功能
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    galleryItems.forEach(item => {
+                        if (filter === 'all') {
+                            item.style.display = 'block';
+                        } else {
+                            if (item.dataset.category === filter) {
+                                item.style.display = 'block';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+
+            // 模态框功能
+            const overlay = document.getElementById('modalOverlay');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalDesc = document.getElementById('modalDesc');
+            const closeBtn = document.getElementById('modalClose');
+
+            // 描述库
+            const descMap = {
+                '雪山之巅': '巍峨的雪峰在蓝天下静静矗立，冷峻而神圣，仿佛通往天境的阶梯。',
+                '晨雾山峦': '薄雾缠绕着起伏的山脊，晨光为每一道轮廓镀上柔和的暖意。',
+                '暮色山脊': '日暮时分，山脊线被染成深紫与金红，天地间只剩风的呼吸。',
+                '静默海岸': '潮水平静地拥抱着沙滩，远方的海平线像是永恒的低语。',
+                '潮汐低语': '浪花一遍遍亲吻着礁石，奏出自然古老而温柔的节奏。',
+                '金色海滩': '夕阳把沙滩铺成一张金毯，每一步都踩在光的碎片上。',
+                '林间光晕': '阳光穿透枝叶的缝隙，在林间地面洒下斑驳的光斑。',
+                '苔藓秘境': '青苔覆盖着古树与岩石，空气里弥漫着湿润而宁静的气息。',
+                '古木参天': '巨木直指苍穹，树冠交织成穹顶，守护着森林深处的秘密。',
+                '远山如黛': '层叠的远山在云雾中若隐若现，像一幅淡墨的山水长卷。',
+                '浪花呢喃': '海浪轻声拍打着岸边，每一朵浪花都是大海的私语。',
+                '绿影斑驳': '阳光与树影在林间共舞，整个世界都沉浸在绿色的光影之中。'
+            };
+
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const img = this.querySelector('img');
+                    const info = this.querySelector('.item-info');
+                    const title = info?.querySelector('h3')?.textContent || '自然风景';
+                    const category = info?.querySelector('span')?.textContent || '未知';
+                    const desc = descMap[title] || '大自然以其沉默的语言，讲述着时间的沉淀与生命的辽阔。';
+
+                    modalImage.src = img.src;
+                    modalImage.alt = title;
+                    modalTitle.textContent = title;
+                    modalCategory.textContent = category;
+                    modalDesc.textContent = desc;
+
+                    overlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            function closeModal() {
+                overlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

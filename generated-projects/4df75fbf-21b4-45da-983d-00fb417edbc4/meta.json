@@ -1,0 +1,9 @@
+{
+  "projectId" : "4df75fbf-21b4-45da-983d-00fb417edbc4",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>垣迹 · 摄影</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap\" rel=\"styl...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#E8E4D9\",\n    \"secondary\": \"#7A7670\",\n    \"background\": \"#0C0C0A\",\n    \"surface\": \"#181815\",\n    \"text\": \"#F2F0EB\",\n    \"textMuted\": \"#999691\",\n    \"accent\": \"#C9A675\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Playfair Display, serif\",\n    \"bodyFont\": \"DM Sans, sans-serif\",\n    \"scale\": 1.35\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.6\n  },\n  \"layoutDirection\": \"全屏沉浸式Hero+不对称网格画廊+顶部极简悬浮导航+底部单栏联系区\",\n  \"mood\": \"沉静专注、光影艺术、高级留白\"\n}",
+  "reviewPassed" : false,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 5, 7, 13, 8, 36, 332984700 ]
+}

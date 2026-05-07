@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品 - 胶片印象</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #8C7A6B;
+            --color-secondary: #D4C5B9;
+            --color-background: #F5F0EB;
+            --color-surface: #E8E0D5;
+            --color-text: #3E3530;
+            --color-textMuted: #8A8078;
+            --color-accent: #C47A5A;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lora', serif;
+            --spacing-unit: 1rem;
+            --space-xs: calc(var(--spacing-unit) * 0.5);
+            --space-sm: var(--spacing-unit);
+            --space-md: calc(var(--spacing-unit) * 1.5);
+            --space-lg: calc(var(--spacing-unit) * 2.5);
+            --space-xl: calc(var(--spacing-unit) * 4);
+            --max-width: 1100px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--color-accent);
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: var(--space-sm);
+            padding-right: var(--space-sm);
+        }
+
+        /* 导航栏 */
+        .site-header {
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--color-secondary);
+            background-color: var(--color-background);
+        }
+
+        .site-header .container {
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--color-textMuted);
+            padding: var(--space-xs) var(--space-sm);
+            border-top: 1px solid var(--color-secondary);
+            text-transform: lowercase;
+            letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+            margin-top: var(--space-md);
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+            border-top-color: var(--color-accent);
+        }
+
+        .nav-link--active {
+            color: var(--color-text);
+            border-top-color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            padding: var(--space-xl) var(--space-sm) var(--space-lg);
+        }
+
+        .page-title h1 {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--color-text);
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .page-title p {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            font-style: italic;
+        }
+
+        /* 瀑布流画廊网格 - grid 布局 */
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-md);
+            padding: 0 var(--space-sm) var(--space-xl);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(62, 53, 48, 0.08);
+            background-color: var(--color-surface);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(62, 53, 48, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: sepia(0.15) brightness(0.98);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-tags {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--space-sm) var(--space-md);
+            background: linear-gradient(transparent, rgba(62, 53, 48, 0.7));
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .gallery-item:hover .gallery-tags {
+            opacity: 1;
+        }
+
+        .tag {
+            display: inline-block;
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            color: #f5f0eb;
+            background-color: rgba(196, 122, 90, 0.85);
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(2px);
+        }
+
+        .tag--film {
+            background-color: rgba(140, 122, 107, 0.9);
+        }
+
+        .tag--param {
+            background-color: rgba(62, 53, 48, 0.8);
+        }
+
+        /* 底部翻页导航 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-lg) var(--space-sm) var(--space-xl);
+            max-width: var(--max-width);
+            margin: 0 auto;
+            border-top: 1px solid var(--color-secondary);
+        }
+
+        .pagination a {
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            font-style: italic;
+            color: var(--color-textMuted);
+            padding: var(--space-xs) var(--space-sm);
+            border: 1px solid var(--color-secondary);
+            border-radius: 2px;
+            transition: all 0.2s ease;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .pagination a:hover {
+            color: var(--color-text);
+            border-color: var(--color-accent);
+            background-color: var(--color-surface);
+        }
+
+        .pagination a.active {
+            color: var(--color-text);
+            border-color: var(--color-primary);
+            background-color: var(--color-surface);
+            font-weight: 600;
+        }
+
+        .pagination .prev-next {
+            border: none;
+            border-bottom: 1px solid var(--color-secondary);
+            border-radius: 0;
+            padding-left: var(--space-sm);
+            padding-right: var(--space-sm);
+        }
+
+        .pagination .prev-next:hover {
+            border-bottom-color: var(--color-accent);
+            background-color: transparent;
+        }
+
+        /* 页脚 */
+        .site-footer {
+            padding: var(--space-lg) var(--space-sm);
+            border-top: 1px solid var(--color-secondary);
+            text-align: center;
+        }
+
+        .site-footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--color-textMuted);
+            padding: var(--space-xs) var(--space-sm);
+            border-top: 1px solid var(--color-secondary);
+            margin-top: var(--space-md);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+            border-top-color: var(--color-accent);
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+            opacity: 0.7;
+            margin-top: var(--space-xs);
+        }
+
+        /* 响应式 */
+        @media (max-width: 680px) {
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .masonry-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: var(--space-sm);
+            }
+
+            .site-header .container {
+                gap: var(--space-sm);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .masonry-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .site-header .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="nav-link">首页</a>
+            <a href="gallery.html" class="nav-link nav-link--active">作品</a>
+            <a href="journal.html" class="nav-link">日志</a>
+            <a href="about.html" class="nav-link">关于</a>
+        </div>
+    </header>
+
+    <section class="page-title">
+        <div class="container">
+            <h1>胶片作品</h1>
+            <p>每一帧都是时光的标本 · 精选集</p>
+        </div>
+    </section>
+
+    <!-- 瀑布流画廊网格 -->
+    <div class="masonry-grid">
+        <!-- 作品卡片 1 - 使用主要 gallery 图片 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/7399857/pexels-photo-7399857.png?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 街景光影" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Kodak Portra 400</span>
+                <span class="tag tag--param">50mm f/1.8</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 2 - gallery_pool 第1张 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/12389809/pexels-photo-12389809.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="胶片作品 河畔" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Fujifilm Superia</span>
+                <span class="tag tag--param">35mm f/2.8</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 3 - gallery_pool 第2张 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 人像" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Ilford HP5+</span>
+                <span class="tag tag--param">85mm f/1.4</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 4 - gallery_pool 第3张 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/8290865/pexels-photo-8290865.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 建筑" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Kodak Tri-X</span>
+                <span class="tag tag--param">28mm f/2</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 5 - gallery_pool 第4张 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/33109245/pexels-photo-33109245.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 街角" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Cinestill 800T</span>
+                <span class="tag tag--param">50mm f/1.4</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 6 - 使用 hero 图片 (竖构图) -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/18325138/pexels-photo-18325138.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="胶片作品 光影" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Fujifilm 400H</span>
+                <span class="tag tag--param">35mm f/2</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 7 - 使用 about 图片 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/4985700/pexels-photo-4985700.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 自然" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Kodak Ektar</span>
+                <span class="tag tag--param">24mm f/2.8</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 8 - 使用 feature 图片 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/14539605/pexels-photo-14539605.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 静物" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Ilford Delta</span>
+                <span class="tag tag--param">60mm f/2.8</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 9 - 使用 testimonial 图片 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/18999165/pexels-photo-18999165.jpeg?auto=compress&cs=tinysrgb&h=350" alt="胶片作品 黄昏" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Fujifilm Pro 400H</span>
+                <span class="tag tag--param">45mm f/1.8</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 10 - 使用 contact 图片 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/7610808/pexels-photo-7610808.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片作品 室内" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Kodak Gold 200</span>
+                <span class="tag tag--param">35mm f/2</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 11 - 使用 team 图片 -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/19955870/pexels-photo-19955870.jpeg?auto=compress&cs=tinysrgb&h=350" alt="胶片作品 旅人" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Cinestill 50D</span>
+                <span class="tag tag--param">28mm f/2.8</span>
+            </div>
+        </div>
+
+        <!-- 作品卡片 12 - 复用 gallery_pool 第1张 (补全) -->
+        <div class="gallery-item">
+            <img src="https://images.pexels.com/photos/12389809/pexels-photo-12389809.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="胶片作品 倒影" loading="lazy">
+            <div class="gallery-tags">
+                <span class="tag tag--film">Fujifilm Velvia</span>
+                <span class="tag tag--param">50mm f/2</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部翻页导航 -->
+    <nav class="pagination" aria-label="翻页导航">
+        <a href="#" class="prev-next" aria-label="上一页">← 上一页</a>
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#" class="prev-next" aria-label="下一页">下一页 →</a>
+    </nav>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="gallery.html" class="nav-link--active">作品</a>
+                <a href="journal.html">日志</a>
+                <a href="about.html">关于</a>
+            </div>
+            <p class="footer-copy">© 2025 胶片印象 · 用光影书写故事</p>
+        </div>
+    </footer>
+
+</body>
+</html>

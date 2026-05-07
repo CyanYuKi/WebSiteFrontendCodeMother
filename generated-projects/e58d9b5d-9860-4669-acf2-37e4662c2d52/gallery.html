@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品 — 林述白</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #2A2B2D;
+      --color-secondary: #8B8C8E;
+      --color-background: #F3F2ED;
+      --color-surface: #FAFAF6;
+      --color-text: #141416;
+      --color-textMuted: #78787C;
+      --color-accent: #9D8B7D;
+      --font-heading: Syne, sans-serif;
+      --font-body: Manrope, sans-serif;
+      --spacing-unit: 1rem;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* ========== NAVIGATION ========== */
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+      transition: background 0.4s, backdrop-filter 0.4s, padding 0.4s;
+    }
+
+    .site-nav.scrolled {
+      background: rgba(243, 242, 237, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: calc(var(--spacing-unit) * 1.2) calc(var(--spacing-unit) * 3);
+    }
+
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--color-text);
+      text-transform: none;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2.5);
+    }
+
+    .nav-links li a {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links li a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-text);
+      transition: width 0.4s var(--ease-out-expo);
+    }
+
+    .nav-links li a:hover::after,
+    .nav-links li a.active::after {
+      width: 100%;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--color-text);
+    }
+
+    /* ========== GALLERY PAGE HEADER ========== */
+    .gallery-header {
+      padding-top: calc(var(--spacing-unit) * 10);
+      padding-bottom: calc(var(--spacing-unit) * 4);
+      padding-left: calc(var(--spacing-unit) * 3);
+      padding-right: calc(var(--spacing-unit) * 3);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .gallery-header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+
+    .gallery-header .subtitle {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-top: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .gallery-header .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--color-accent);
+      margin-top: calc(var(--spacing-unit) * 2);
+    }
+
+    /* ========== MASONRY GRID ========== */
+    .gallery-grid {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 calc(var(--spacing-unit) * 2);
+      columns: 3;
+      column-gap: calc(var(--spacing-unit) * 1.2);
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: calc(var(--spacing-unit) * 1.2);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+      transition: transform 1.2s var(--ease-out-expo), filter 0.8s;
+      filter: grayscale(15%);
+      transform: scale(1.02);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+
+    .gallery-item .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+      background: linear-gradient(transparent, rgba(20, 22, 0.7));
+      opacity: 0;
+      transition: opacity 0.5s var(--ease-out-expo);
+      pointer-events: none;
+    }
+
+    .gallery-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .overlay .photo-title {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(250, 250, 246, 0.95);
+      letter-spacing: 0.02em;
+    }
+
+    .overlay .photo-meta {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      color: rgba(250, 250, 246, 0.5);
+      letter-spacing: 0.06em;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    /* ========== LIGHTBOX ========== */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2000;
+      background: rgba(20, 20, 22, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s var(--ease-out-expo), visibility 0.5s;
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lightbox-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 4);
+      max-width: 90vw;
+      max-height: 90vh;
+      position: relative;
+    }
+
+    .lightbox-image-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 85vh;
+      overflow: hidden;
+    }
+
+    .lightbox-image-wrapper img {
+      max-height: 85vh;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: grayscale(0%);
+      transform: scale(1);
+      border-radius: 2px;
+    }
+
+    .lightbox-exif {
+      width: 220px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .lightbox-exif .exif-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(250, 250, 246, 0.95);
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+
+    .lightbox-exif .exif-desc {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      color: rgba(250, 250, 246, 0.4);
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+    }
+
+    .lightbox-exif .exif-params {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 0.8);
+      border-top: 1px solid rgba(250, 250, 246, 0.1);
+      padding-top: calc(var(--spacing-unit) * 1.2);
+    }
+
+    .exif-param {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .exif-param .label {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      color: rgba(250, 250, 246, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .exif-param .value {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      color: rgba(250, 250, 246, 0.7);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: calc(var(--spacing-unit) * 2);
+      right: calc(var(--spacing-unit) * 2);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2001;
+      background: none;
+      border: none;
+      color: rgba(250, 250, 246, 0.5);
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .lightbox-close:hover {
+      color: rgba(250, 250, 246, 0.9);
+    }
+
+    .lightbox-close svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(250, 250, 246, 0.3);
+      cursor: pointer;
+      padding: calc(var(--spacing-unit) * 1.5);
+      transition: color 0.3s;
+      font-size: 0;
+      z-index: 2001;
+    }
+
+    .lightbox-nav:hover {
+      color: rgba(250, 250, 246, 0.8);
+    }
+
+    .lightbox-nav svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .lightbox-prev {
+      left: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .lightbox-next {
+      right: calc(var(--spacing-unit) * 1.5);
+    }
+
+    /* ========== FOOTER ========== */
+    .site-footer {
+      margin-top: calc(var(--spacing-unit) * 8);
+      padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3);
+      border-top: 1px solid rgba(42, 43, 45, 0.08);
+      max-width: 1600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1024px) {
+      .gallery-grid {
+        columns: 2;
+      }
+
+      .lightbox-content {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 2);
+      }
+
+      .lightbox-exif {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: calc(var(--spacing-unit) * 1);
+      }
+
+      .lightbox-exif .exif-params {
+        border-top: none;
+        padding-top: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: calc(var(--spacing-unit) * 1);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .gallery-grid {
+        columns: 1;
+        padding: 0 calc(var(--spacing-unit) * 1.2);
+      }
+
+      .gallery-header {
+        padding-left: calc(var(--spacing-unit) * 1.5);
+        padding-right: calc(var(--spacing-unit) * 1.5);
+      }
+
+      .site-nav {
+        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+      }
+
+      .nav-links {
+        gap: calc(var(--spacing-unit) * 1.5);
+      }
+
+      .lightbox-image-wrapper img {
+        max-height: 70vh;
+      }
+
+      .lightbox-exif {
+        display: none;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: calc(var(--spacing-unit) * 1.5);
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" id="siteNav">
+    <a href="index.html" class="nav-brand">林述白</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html" class="active">作品</a></li>
+      <li><a href="blog.html">日志</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+  </nav>
+
+  <header class="gallery-header">
+    <h1>Gallery</h1>
+    <p class="subtitle">Street &amp; Documentary — 2023 / 2025</p>
+    <div class="divider"></div>
+  </header>
+
+  <main class="gallery-grid" id="galleryGrid">
+
+    <div class="gallery-item" data-index="0" onclick="openLightbox(0)">
+      <img src="https://images.pexels.com/photos/30281992/pexels-photo-30281992.jpeg?auto=compress&cs=tinysrgb&w=800" alt="街角光影" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">街角光影</span>
+        <span class="photo-meta">Tokyo, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="1" onclick="openLightbox(1)">
+      <img src="https://images.pexels.com/photos/34853016/pexels-photo-34853016.png?auto=compress&cs=tinysrgb&w=800" alt="雨后的巷口" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">雨后的巷口</span>
+        <span class="photo-meta">Shanghai, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="2" onclick="openLightbox(2)">
+      <img src="https://images.pexels.com/photos/3653772/pexels-photo-3653772.jpeg?auto=compress&cs=tinysrgb&w=800" alt="黄昏车站" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">黄昏车站</span>
+        <span class="photo-meta">Beijing, 2023</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="3" onclick="openLightbox(3)">
+      <img src="https://images.pexels.com/photos/8114057/pexels-photo-8114057.jpeg?auto=compress&cs=tinysrgb&w=800" alt="旧城叙事" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">旧城叙事</span>
+        <span class="photo-meta">Guangzhou, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="4" onclick="openLightbox(4)">
+      <img src="https://images.pexels.com/photos/25881987/pexels-photo-25881987.jpeg?auto=compress&cs=tinysrgb&w=800" alt="晨光与行人" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">晨光与行人</span>
+        <span class="photo-meta">Hangzhou, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="5" onclick="openLightbox(5)">
+      <img src="https://images.pexels.com/photos/35285704/pexels-photo-35285704.jpeg?auto=compress&cs=tinysrgb&w=800" alt="城市边缘" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">城市边缘</span>
+        <span class="photo-meta">Shenzhen, 2023</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="6" onclick="openLightbox(6)">
+      <img src="https://images.pexels.com/photos/36933577/pexels-photo-36933577.jpeg?auto=compress&cs=tinysrgb&w=800" alt="午后的桥" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">午后的桥</span>
+        <span class="photo-meta">Nanjing, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="7" onclick="openLightbox(7)">
+      <img src="https://images.pexels.com/photos/10276050/pexels-photo-10276050.jpeg?auto=compress&cs=tinysrgb&w=800" alt="弄堂深处" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">弄堂深处</span>
+        <span class="photo-meta">Shanghai, 2023</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="8" onclick="openLightbox(8)">
+      <img src="https://images.pexels.com/photos/16802933/pexels-photo-16802933.jpeg?auto=compress&cs=tinysrgb&w=800" alt="夜归人" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">夜归人</span>
+        <span class="photo-meta">Chengdu, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="9" onclick="openLightbox(9)">
+      <img src="https://images.pexels.com/photos/9329047/pexels-photo-9329047.jpeg?auto=compress&cs=tinysrgb&w=800" alt="窗前的等待" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">窗前的等待</span>
+        <span class="photo-meta">Chongqing, 2024</span>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-index="10" onclick="openLightbox(10)">
+      <img src="https://images.pexels.com/photos/33680704/pexels-photo-33680704.jpeg?auto=compress&cs=tinysrgb&w=800" alt="老街市集" loading="lazy">
+      <div class="overlay">
+        <span class="photo-title">老街市集</span>
+        <span class="photo-meta">Xiamen, 2023</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="关闭">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)" aria-label="上一张">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)" aria-label="下一张">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+    <div class="lightbox-content">
+      <div class="lightbox-image-wrapper">
+        <img id="lightboxImg" src="" alt="">
+      </div>
+      <div class="lightbox-exif">
+        <div>
+          <div class="exif-title" id="exifTitle"></div>
+          <div class="exif-desc" id="exifDesc"></div>
+        </div>
+        <div class="exif-params" id="exifParams"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2025 林述白</span>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="gallery.html">作品</a>
+        <a href="blog.html">日志</a>
+        <a href="about.html">关于</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const photos = [
+      {
+        title: "街角光影",
+        location: "Tokyo, 2024",
+        desc: "涩谷街头的午后，阳光穿过楼宇间隙，在斑马线上投下几何般的光影。",
+        src: "https://images.pexels.com/photos/30281992/pexels-photo-30281992.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Sony A7IV", lens: "35mm f/1.4", aperture: "f/2.8", shutter: "1/500s", iso: "200", focal: "35mm" }
+      },
+      {
+        title: "雨后的巷口",
+        location: "Shanghai, 2024",
+        desc: "梅雨季的上海弄堂，积水倒映着灰白的天空，一把红伞缓缓走过。",
+        src: "https://images.pexels.com/photos/34853016/pexels-photo-34853016.png?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Fujifilm X-T5", lens: "23mm f/1.4", aperture: "f/4.0", shutter: "1/125s", iso: "800", focal: "23mm" }
+      },
+      {
+        title: "黄昏车站",
+        location: "Beijing, 2023",
+        desc: "冬日傍晚的公交站台，暖色路灯与蓝色暮光交织，等车的人各自沉默。",
+        src: "https://images.pexels.com/photos/3653772/pexels-photo-3653772.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Sony A7IV", lens: "50mm f/1.2", aperture: "f/1.8", shutter: "1/200s", iso: "640", focal: "50mm" }
+      },
+      {
+        title: "旧城叙事",
+        location: "Guangzhou, 2024",
+        desc: "老城区的骑楼下，时光仿佛放慢了脚步。斑驳的墙面诉说着城市变迁。",
+        src: "https://images.pexels.com/photos/8114057/pexels-photo-8114057.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Leica Q3", lens: "28mm f/1.7", aperture: "f/5.6", shutter: "1/320s", iso: "100", focal: "28mm" }
+      },
+      {
+        title: "晨光与行人",
+        location: "Hangzhou, 2024",
+        desc: "西湖边的清晨，薄雾未散，晨跑的人穿过断桥，光线从柳枝间洒落。",
+        src: "https://images.pexels.com/photos/25881987/pexels-photo-25881987.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Sony A7IV", lens: "85mm f/1.4", aperture: "f/2.0", shutter: "1/1000s", iso: "100", focal: "85mm" }
+      },
+      {
+        title: "城市边缘",
+        location: "Shenzhen, 2023",
+        desc: "城中村的边界，高楼与握手楼形成强烈对比，城市化的褶皱里藏着生活。",
+        src: "https://images.pexels.com/photos/35285704/pexels-photo-35285704.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Fujifilm X-T5", lens: "16mm f/1.4", aperture: "f/8.0", shutter: "1/250s", iso: "200", focal: "16mm" }
+      },
+      {
+        title: "午后的桥",
+        location: "Nanjing, 2024",
+        desc: "秦淮河上的石桥，午后阳光斜照，桥上的老人与桥下的游船构成时间的对话。",
+        src: "https://images.pexels.com/photos/36933577/pexels-photo-36933577.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Sony A7IV", lens: "24-70mm f/2.8", aperture: "f/4.0", shutter: "1/400s", iso: "100", focal: "50mm" }
+      },
+      {
+        title: "弄堂深处",
+        location: "Shanghai, 2023",
+        desc: "法租界的深秋，梧桐叶铺满弄堂，阳光被枝叶切割成碎片洒在青砖上。",
+        src: "https://images.pexels.com/photos/10276050/pexels-photo-10276050.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Leica Q3", lens: "28mm f/1.7", aperture: "f/2.8", shutter: "1/160s", iso: "400", focal: "28mm" }
+      },
+      {
+        title: "夜归人",
+        location: "Chengdu, 2024",
+        desc: "凌晨两点的玉林路，烧烤摊的灯光温暖而孤独，夜归的人拖着疲惫的影子。",
+        src: "https://images.pexels.com/photos/16802933/pexels-photo-16802933.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Sony A7IV", lens: "35mm f/1.4", aperture: "f/1.4", shutter: "1/60s", iso: "3200", focal: "35mm" }
+      },
+      {
+        title: "窗前的等待",
+        location: "Chongqing, 2024",
+        desc: "山城的老楼窗前，一位老人静静坐着，窗外是层叠的楼宇与江雾。",
+        src: "https://images.pexels.com/photos/9329047/pexels-photo-9329047.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Fujifilm X-T5", lens: "56mm f/1.2", aperture: "f/2.0", shutter: "1/180s", iso: "500", focal: "56mm" }
+      },
+      {
+        title: "老街市集",
+        location: "Xiamen, 2023",
+        desc: "八市的清晨，海鲜摊贩的吆喝声与潮湿的海风混在一起，烟火气扑面而来。",
+        src: "https://images.pexels.com/photos/33680704/pexels-photo-33680704.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        exif: { camera: "Sony A7IV", lens: "24mm f/1.4", aperture: "f/3.5", shutter: "

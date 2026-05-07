@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光之切片 · 个人摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1A1A1A;
+            --color-secondary: #D4D0C8;
+            --color-background: #F7F5F2;
+            --color-surface: #FFFFFF;
+            --color-text: #1C1C1C;
+            --color-text-muted: #7A756D;
+            --color-accent: #B89B5A;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 8px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+
+        /* ---------- 导航 ---------- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 5);
+            background: transparent;
+            mix-blend-mode: difference;
+            color: #fff;
+            pointer-events: none;
+        }
+        .navbar * {
+            pointer-events: auto;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .navbar-logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            aspect-ratio: 1/1;
+        }
+        .navbar-logo span {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            letter-spacing: 0.06em;
+            font-weight: 400;
+            color: #fff;
+        }
+        .navbar-links {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 4);
+            list-style: none;
+            font-size: 0.85rem;
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .navbar-links a {
+            text-decoration: none;
+            color: inherit;
+            opacity: 0.8;
+            transition: opacity 0.25s;
+        }
+        .navbar-links a:hover {
+            opacity: 1;
+        }
+        .navbar-cta {
+            font-size: 0.8rem;
+            padding: 8px 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 24px;
+            background: transparent;
+            color: #fff;
+            text-decoration: none;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .navbar-cta:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: #fff;
+        }
+
+        @media (max-width: 720px) {
+            .navbar {
+                padding: 16px 20px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .navbar-links {
+                display: none;
+            }
+            .navbar-cta {
+                font-size: 0.75rem;
+                padding: 6px 14px;
+            }
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(26,26,26,0.55) 0%, rgba(26,26,26,0.15) 70%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            max-width: 780px;
+            padding: 0 24px;
+        }
+        .hero-content h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 9vw, 6.2rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: 0.02em;
+            text-wrap: pretty;
+        }
+        .hero-content p {
+            margin-top: calc(var(--spacing-unit) * 3);
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            opacity: 0.85;
+            text-wrap: pretty;
+        }
+        .hero-content .indicator {
+            margin-top: calc(var(--spacing-unit) * 8);
+            display: inline-block;
+            width: 1px;
+            height: 48px;
+            background: rgba(255,255,255,0.5);
+            animation: pulse-down 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-down {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* ---------- 画廊 ---------- */
+        .gallery-section {
+            padding: calc(var(--spacing-unit) * 14) calc(var(--spacing-unit) * 4);
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        .gallery-section .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 0.9fr;
+            gap: calc(var(--spacing-unit) * 3);
+        }
+        .gallery-grid .grid-item {
+            overflow: hidden;
+            border-radius: 4px;
+            background: var(--color-secondary);
+        }
+        .gallery-grid .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .gallery-grid .grid-item:hover img {
+            transform: scale(1.04);
+        }
+        .gallery-grid .item-tall {
+            grid-row: span 2;
+        }
+        .gallery-grid .item-wide {
+            grid-column: span 2;
+        }
+
+        .gallery-grid-2 {
+            margin-top: calc(var(--spacing-unit) * 5);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 3);
+        }
+        .gallery-grid-2 .grid-item {
+            overflow: hidden;
+            border-radius: 4px;
+            background: var(--color-secondary);
+        }
+        .gallery-grid-2 .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 3 / 4;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .gallery-grid-2 .grid-item:hover img {
+            transform: scale(1.04);
+        }
+
+        @media (max-width: 900px) {
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .gallery-grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .gallery-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .gallery-section {
+                padding: 48px 16px;
+            }
+        }
+
+        /* ---------- 关于 ---------- */
+        .about-strip {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: calc(var(--spacing-unit) * 12) calc(var(--spacing-unit) * 4);
+            gap: calc(var(--spacing-unit) * 6);
+        }
+        .about-strip .about-image {
+            flex: 1 1 380px;
+            min-height: 320px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .about-strip .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 4 / 5;
+        }
+        .about-strip .about-text {
+            flex: 1 1 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .about-text .subhead {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 12px;
+        }
+        .about-text h2 {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 400;
+            line-height: 1.15;
+            color: var(--color-primary);
+            text-wrap: pretty;
+        }
+        .about-text p {
+            margin-top: 20px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--color-text-muted);
+            max-width: 480px;
+        }
+        .about-text .about-cta {
+            display: inline-block;
+            margin-top: 28px;
+            padding: 12px 32px;
+            border: 1px solid var(--color-primary);
+            border-radius: 30px;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            text-decoration: none;
+            color: var(--color-primary);
+            transition: background 0.3s, color 0.3s;
+            width: fit-content;
+        }
+        .about-text .about-cta:hover {
+            background: var(--color-primary);
+            color: var(--color-background);
+        }
+
+        @media (max-width: 800px) {
+            .about-text h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* ---------- 特色 ---------- */
+        .features-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 4);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: calc(var(--spacing-unit) * 6);
+        }
+        .feature-card {
+            text-align: left;
+        }
+        .feature-card .feat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-secondary);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .feature-card .feat-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .feature-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+        .feature-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--color-text-muted);
+        }
+
+        @media (max-width: 800px) {
+            .features-section {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                padding: 48px 20px;
+            }
+        }
+
+        /* ---------- 联系/CTA ---------- */
+        .contact-cta {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: calc(var(--spacing-unit) * 12) calc(var(--spacing-unit) * 4);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 6);
+        }
+        .contact-cta .cta-text {
+            flex: 1 1 300px;
+        }
+        .contact-cta .cta-text h2 {
+            font-family: var(--font-heading);
+            font-size: 2.4rem;
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--color-primary);
+            text-wrap: pretty;
+        }
+        .contact-cta .cta-text p {
+            margin-top: 16px;
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+        .contact-cta .cta-image {
+            flex: 1 1 280px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .contact-cta .cta-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 3 / 2;
+        }
+        .cta-btn-group {
+            margin-top: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .cta-btn-group a {
+            padding: 12px 32px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .cta-btn-group .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-background);
+            border: 1px solid var(--color-primary);
+        }
+        .cta-btn-group .btn-primary:hover {
+            background: transparent;
+            color: var(--color-primary);
+        }
+        .cta-btn-group .btn-outline {
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+        .cta-btn-group .btn-outline:hover {
+            background: var(--color-primary);
+            color: var(--color-background);
+        }
+
+        @media (max-width: 700px) {
+            .contact-cta {
+                padding: 48px 20px;
+            }
+            .contact-cta .cta-text h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ---------- Footer ---------- */
+        .site-footer {
+            border-top: 1px solid rgba(26,26,26,0.08);
+            padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 4);
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+        .site-footer .footer-left {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        .site-footer a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .site-footer a:hover {
+            color: var(--color-primary);
+        }
+        .site-footer .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .site-footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 32px 20px;
+            }
+            .site-footer .footer-left {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        /* ---------- 工具类 ---------- */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- nav -->
+    <nav class="navbar" role="navigation">
+        <a href="index.html" class="navbar-logo">
+            <img src="https://images.pexels.com/photos/1208360/pexels-photo-1208360.jpeg?auto=compress&cs=tinysrgb&w=80&h=80" alt="logo" loading="eager">
+            <span>光影句</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="portfolio.html">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+        <a href="contact.html" class="navbar-cta">预约拍摄</a>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <img class="hero-image" src="https://images.pexels.com/photos/33926823/pexels-photo-33926823.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="光影主视觉" loading="eager">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>光之切片</h1>
+            <p>每一帧都是对瞬间的敬礼 · 个人影像叙事</p>
+            <div class="indicator" role="img" aria-label="向下滚动"></div>
+        </div>
+    </header>
+
+    <!-- 画廊展示 -->
+    <section class="gallery-section">
+        <div class="section-label">精选作品</div>
+        <div class="gallery-grid">
+            <div class="grid-item item-tall">
+                <img src="https://images.pexels.com/photos/30618178/pexels-photo-30618178.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影作品大图" loading="eager">
+            </div>
+            <div class="grid-item">
+                <img src="https://images.pexels.com/photos/1208360/pexels-photo-1208360.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影小品" loading="eager">
+            </div>
+            <div class="grid-item">
+                <img src="https://images.pexels.com/photos/4018810/pexels-photo-4018810.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="光影人像" loading="eager">
+            </div>
+            <div class="grid-item item-wide">
+                <img src="https://images.pexels.com/photos/11884527/pexels-photo-11884527.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="远景风光" loading="lazy">
+            </div>
+        </div>
+        <div class="gallery-grid-2">
+            <div class="grid-item">
+                <img src="https://images.pexels.com/photos/11119786/pexels-photo-11119786.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="抽象光影" loading="lazy">
+            </div>
+            <div class="grid-item">
+                <img src="https://images.pexels.com/photos/17913256/pexels-photo-17913256.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="胶片风格" loading="lazy">
+            </div>
+            <div class="grid-item">
+                <img src="https://images.pexels.com/photos/37273005/pexels-photo-37273005.png?auto=compress&cs=tinysrgb&h=350" alt="街拍瞬间" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于 -->
+    <section class="about-strip">
+        <div class="about-image">
+            <img src="https://images.pexels.com/photos/17913256/pexels-photo-17913256.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影师肖像" loading="lazy">
+        </div>
+        <div class="about-text">
+            <div class="subhead">关于 · 叙事者</div>
+            <h2>用镜头写诗的人</h2>
+            <p>我是林默，一名以光影为母语的视觉记录者。相信摄影的本质是凝视——在流动的世界里捕捉那些转瞬即逝的静谧。每一个画面，都是一次无声的对话。</p>
+            <a href="about.html" class="about-cta">了解更多</a>
+        </div>
+    </section>
+
+    <!-- 特色 -->
+    <section class="features-section">
+        <div class="feature-card">
+            <div class="feat-icon">
+                <img src="https://images.pexels.com/photos/65661/lens-nikon-glass-light-65661.jpeg?auto=compress&cs=tinysrgb&h=100&w=100" alt="镜头图标" loading="lazy">
+            </div>
+            <h3>纯粹光线</h3>
+            <p>只使用自然光与单灯，保留场景最真实的质感与情绪。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">
+                <img src="https://images.pexels.com/photos/65661/lens-nikon-glass-light-65661.jpeg?auto=compress&cs=tinysrgb&h=100&w=100" alt="构图图标" loading="lazy">
+            </div>
+            <h3>非对称叙事</h3>
+            <p>打破传统构图，用留白与负空间引导视线，讲述未完成的故事。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">
+                <img src="https://images.pexels.com/photos/65661/lens-nikon-glass-light-65661.jpeg?auto=compress&cs=tinysrgb&h=100&w=100" alt="胶片图标" loading="lazy">
+            </div>
+            <h3>手工调色</h3>
+            <p>每一张底片经手工影调整，呈现出低饱和、暖灰基调的专属质感。</p>
+        </div>
+    </section>
+
+    <!-- 联系CTA -->
+    <section class="contact-cta">
+        <div class="cta-text">
+            <h2>让瞬间成为永恒</h2>
+            <p>无论是个人肖像、情侣记录还是品牌影像，我愿成为你的观看者。一切从一次简单的对话开始。</p>
+            <div class="cta-btn-group">
+                <a href="contact.html" class="btn-primary">预约拍摄</a>
+                <a href="portfolio.html" class="btn-outline">浏览作品</a>
+            </div>
+        </div>
+        <div class="cta-image">
+            <img src="https://images.pexels.com/photos/8472496/pexels-photo-8472496.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系区域配图" loading="lazy">
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-left">
+            <span>© 2025 光影句 · 林默</span>
+            <a href="about.html">关于</a>
+            <a href="portfolio.html">作品</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="social-links">
+            <a href="#" target="_blank" rel="noopener noreferrer">微博</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">小红书</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">Ins</a>
+        </div>
+    </footer>
+
+    <!-- PAGES_PLAN -->
+    <!-- PAGES_PLAN: [{"name":"portfolio.html","title":"作品集","overview":"展示摄影师完整作品集的非对称瀑布流网格，包含风光、人像、街拍三大分类，支持鼠标悬停放大预览效果","layout":"grid"},{"name":"about.html","title":"关于摄影师","overview":"摄影师个人故事、创作理念、工作流程介绍，搭配采访式排版与工作室环境图，底部嵌入客户评价引语","layout":"detail"},{"name":"contact.html","title":"预约联系","overview":"简洁联系表单包括姓名、邮箱、拍摄类型、日期与留言，右侧展示摄影师的联系信息与社会媒体链接","layout":"form"}] -->
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.example.websitemother.controller;
 
+import com.example.websitemother.entity.User;
 import com.example.websitemother.service.ChatModelService;
 import com.example.websitemother.service.GraphWorkflowService;
 import com.example.websitemother.service.ProjectStorageService;
@@ -90,7 +91,8 @@ public class GenerateController {
      * 推送 stage / html_token / complete / error 事件
      */
     @PostMapping(value = "/resume-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter resumeStream(@RequestBody ResumeRequest request) {
+    public SseEmitter resumeStream(@RequestBody ResumeRequest request,
+                                   @RequestAttribute("currentUser") User currentUser) {
         String sessionId = request.getSessionId();
         log.info("[GenerateController] /resume-stream 收到请求: sessionId={}", sessionId);
 
@@ -135,8 +137,7 @@ public class GenerateController {
                 ProjectState finalState = graphWorkflowService.resume(updatedState);
                 sessionStore.put(sessionId, finalState);
 
-                String projectId = projectStorageService.saveProject(finalState);
-
+                String projectId = projectStorageService.saveProject(finalState, currentUser.getId());
                 // 异步生成截图（不阻塞 SSE 响应）
                 executor.execute(() -> {
                     try {
@@ -216,7 +217,8 @@ public class GenerateController {
      * 继续生成流程（提交清单答案后）- 同步版本，保留向后兼容
      */
     @PostMapping("/resume")
-    public ResumeResponse resume(@RequestBody ResumeRequest request) {
+    public ResumeResponse resume(@RequestBody ResumeRequest request,
+                                 @RequestAttribute("currentUser") User currentUser) {
         String sessionId = request.getSessionId();
         log.info("[GenerateController] /resume 收到请求: sessionId={}", sessionId);
 
@@ -241,7 +243,7 @@ public class GenerateController {
         sessionStore.put(sessionId, finalState);
 
         // 持久化保存生成的 HTML 项目
-        String projectId = projectStorageService.saveProject(finalState);
+        String projectId = projectStorageService.saveProject(finalState, currentUser.getId());
 
         ResumeResponse response = new ResumeResponse();
         response.setProjectId(projectId);

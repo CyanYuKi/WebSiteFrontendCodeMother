@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>联系 - 林叙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #A88A75;
+      --color-secondary: #7A8B8C;
+      --color-background: #F4EFEA;
+      --color-surface: #EBE4DA;
+      --color-text: #3D3832;
+      --color-textMuted: #8C7E6F;
+      --color-accent: #C9A86E;
+      --font-heading: Cormorant Garamond, serif;
+      --font-body: Lora, serif;
+      --spacing-unit: 8px;
+    }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.8) contrast(1.02);
+      transition: filter 0.4s ease, transform 0.6s ease;
+    }
+    img:hover {
+      filter: saturate(0.95) contrast(1.05);
+      transform: scale(1.02);
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 6);
+      background: rgba(244, 239, 234, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168, 138, 117, 0.1);
+    }
+    .nav-brand {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--color-text);
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: calc(var(--spacing-unit) * 4);
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--color-textMuted);
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-primary);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--color-text);
+    }
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--color-text);
+      transition: all 0.3s ease;
+    }
+
+    /* Page Header */
+    .page-header {
+      padding-top: calc(var(--spacing-unit) * 16);
+      padding-bottom: calc(var(--spacing-unit) * 6);
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+      padding-left: calc(var(--spacing-unit) * 4);
+      padding-right: calc(var(--spacing-unit) * 4);
+    }
+    .page-header h1 {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    .page-header .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--color-primary);
+      margin: calc(var(--spacing-unit) * 3) auto;
+      opacity: 0.6;
+    }
+    .page-header p {
+      font-size: 0.95rem;
+      color: var(--color-textMuted);
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    /* Contact Layout */
+    .contact-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 12);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 8);
+      align-items: start;
+    }
+
+    /* Form Section */
+    .contact-form-section {
+      background: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 6);
+      border-radius: 2px;
+      border: 1px solid rgba(168, 138, 117, 0.15);
+    }
+    .contact-form-section h2 {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 4);
+      letter-spacing: 0.05em;
+    }
+    .form-group {
+      margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    .form-group label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--color-text);
+      background: var(--color-background);
+      border: 1px solid rgba(168, 138, 117, 0.25);
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      line-height: 1.6;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--color-textMuted);
+      opacity: 0.6;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(168, 138, 117, 0.1);
+    }
+    .form-group select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238C7E6F' stroke-width='1.2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: calc(var(--spacing-unit) * 5);
+      cursor: pointer;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 3);
+    }
+    .form-submit {
+      margin-top: calc(var(--spacing-unit) * 4);
+    }
+    .btn-submit {
+      display: inline-block;
+      padding: calc(var(--spacing-unit) * 1.8) calc(var(--spacing-unit) * 6);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-background);
+      background: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+      background: transparent;
+      color: var(--color-primary);
+    }
+
+    /* Info Section */
+    .contact-info-section {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 5);
+    }
+    .contact-image-wrapper {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .contact-info-card {
+      background: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 5);
+      border-radius: 2px;
+      border: 1px solid rgba(168, 138, 117, 0.15);
+    }
+    .contact-info-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      letter-spacing: 0.05em;
+    }
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: calc(var(--spacing-unit) * 2);
+      margin-bottom: calc(var(--spacing-unit) * 2.5);
+    }
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+    .info-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 3px;
+      color: var(--color-primary);
+    }
+    .info-item .info-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      margin-bottom: 2px;
+    }
+    .info-item .info-value {
+      font-size: 0.9rem;
+      color: var(--color-text);
+    }
+    .info-item .info-value a {
+      color: var(--color-primary);
+      transition: color 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .info-item .info-value a:hover {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* Social Links */
+    .social-section {
+      background: var(--color-surface);
+      padding: calc(var(--spacing-unit) * 5);
+      border-radius: 2px;
+      border: 1px solid rgba(168, 138, 117, 0.15);
+    }
+    .social-section h3 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      letter-spacing: 0.05em;
+    }
+    .social-links {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+      flex-wrap: wrap;
+    }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 1);
+      padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 2.5);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      color: var(--color-textMuted);
+      border: 1px solid rgba(168, 138, 117, 0.2);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .social-link:hover {
+      color: var(--color-text);
+      border-color: var(--color-primary);
+      background: rgba(168, 138, 117, 0.08);
+    }
+    .social-link svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Response Note */
+    .response-note {
+      text-align: center;
+      max-width: 500px;
+      margin: calc(var(--spacing-unit) * 2) auto 0;
+      padding: calc(var(--spacing-unit) * 3);
+      font-size: 0.82rem;
+      color: var(--color-textMuted);
+      font-style: italic;
+      line-height: 1.8;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--color-surface);
+      border-top: 1px solid rgba(168, 138, 117, 0.15);
+      padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: calc(var(--spacing-unit) * 4);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--color-textMuted);
+      letter-spacing: 0.06em;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: var(--color-text);
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--color-textMuted);
+      opacity: 0.7;
+      letter-spacing: 0.04em;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+      }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(244, 239, 234, 0.97);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: calc(var(--spacing-unit) * 5);
+      }
+      .nav-links.open {
+        display: flex;
+      }
+      .nav-links a {
+        font-size: 1.2rem;
+        color: var(--color-text);
+      }
+      .nav-toggle {
+        display: flex;
+        z-index: 1001;
+      }
+      .page-header h1 {
+        font-size: 2.2rem;
+      }
+      .contact-layout {
+        grid-template-columns: 1fr;
+        gap: calc(var(--spacing-unit) * 5);
+        padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 8);
+      }
+      .contact-form-section {
+        padding: calc(var(--spacing-unit) * 4);
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .contact-image-wrapper {
+        aspect-ratio: 16 / 9;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav-brand">林叙</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="gallery.html">作品</a></li>
+      <li><a href="blog.html">日记</a></li>
+      <li><a href="about.html">关于</a></li>
+      <li><a href="contact.html" class="active">联系</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <header class="page-header">
+    <h1>联系</h1>
+    <div class="divider"></div>
+    <p>如果你有一个故事想要被记录，或只是想聊聊光影与胶片，欢迎写信给我。每一封来信，我都会认真阅读。</p>
+  </header>
+
+  <main class="contact-layout">
+
+    <section class="contact-form-section">
+      <h2>发送消息</h2>
+      <form id="contactForm" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name" placeholder="你的名字" required>
+          </div>
+          <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="type">拍摄类型</label>
+          <select id="type" name="type">
+            <option value="" disabled selected>请选择拍摄类型</option>
+            <option value="portrait">人像写真</option>
+            <option value="wedding">婚礼纪实</option>
+            <option value="family">家庭记录</option>
+            <option value="commercial">商业拍摄</option>
+            <option value="travel">旅行跟拍</option>
+            <option value="other">其他合作</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">留言内容</label>
+          <textarea id="message" name="message" placeholder="告诉我你的想法、期待的故事，或任何想说的话……" required></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" class="btn-submit">发送消息</button>
+        </div>
+      </form>
+      <p class="response-note">通常会在 2–3 个工作日内回复。若事情紧急，也可直接发送邮件。</p>
+    </section>
+
+    <aside class="contact-info-section">
+      <div class="contact-image-wrapper">
+        <img src="https://images.pexels.com/photos/14348173/pexels-photo-14348173.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系配图 — 温暖的胶片色调" loading="lazy">
+      </div>
+
+      <div class="contact-info-card">
+        <h3>联系方式</h3>
+        <div class="info-item">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M22 4L12 13 2 4"/>
+          </svg>
+          <div>
+            <div class="info-label">邮箱</div>
+            <div class="info-value"><a href="mailto:hello@linxu.photo">hello@linxu.photo</a></div>
+          </div>
+        </div>
+        <div class="info-item">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <div>
+            <div class="info-label">所在地</div>
+            <div class="info-value">中国 · 杭州</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <div>
+            <div class="info-label">工作时间</div>
+            <div class="info-value">周一至周五 · 9:00 – 18:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="social-section">
+        <h3>社交媒体</h3>
+        <div class="social-links">
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="social-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="5"/>
+              <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+            </svg>
+            Instagram
+          </a>
+          <a href="https://weibo.com" target="_blank" rel="noopener noreferrer" class="social-link">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10.1 18.3c-3.5.4-6.6-1.2-6.8-3.6-.3-2.4 2.4-4.7 5.9-5.1 3.5-.4 6.6 1.2 6.8 3.6.3 2.4-2.4 4.7-5.9 5.1zm6.9-9.1c-.3-.9-1.3-1.4-2.2-1.1-.9.3-1.4 1.3-1.1 2.2.3.9 1.3 1.4 2.2 1.1.9-.3 1.4-1.3 1.1-2.2zm2.1-2.3c-.5-1.3-2-2.2-3.3-1.9-1.3-2 1.6-1.6 2.9.4 1.2 1.8 2 3.1 1.7 1.3-.3 2.1-1.5 1.8-2.7zM20.5 10c-.2-.5-.8-.8-1.3-.6-.5.2-.8.8-.6 1.3.2.5.8.8 1.3.6.5-.2.8-.8.6-1.3z"/>
+            </svg>
+            微博
+          </a>
+          <a href="https://www.xiaohongshu.com" target="_blank" rel="noopener noreferrer" class="social-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/>
+              <circle cx="17" cy="17" r="3"/>
+            </svg>
+            小红书
+          </a>
+          <a href="https://500px.com" target="_blank" rel="noopener noreferrer" class="social-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4-2 4-2"/>
+              <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/>
+              <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            500px
+          </a>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="gallery.html">作品</a>
+      <a href="blog.html">日记</a>
+      <a href="about.html">关于</a>
+      <a href="contact.html">联系</a>
+    </div>
+    <p class="footer-copy">© 2024 林叙摄影 · 用胶片记录时光的温度</p>
+  </footer>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      var btn = e.target.querySelector('.btn-submit');
+      var originalText = btn.textContent;
+      btn.textContent = '已发送 ✓';
+      btn.style.background = 'var(--color-secondary)';
+      btn.style.borderColor = 'var(--color-secondary)';
+      btn.style.color = 'var(--color-background)';
+      setTimeout(function() {
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        e.target.reset();
+      }, 2500);
+    }
+  </script>
+
+</body>
+</html>

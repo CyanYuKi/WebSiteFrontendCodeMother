@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 · 光映</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #F2F0ED;
+            --color-secondary: #8A8A8A;
+            --color-background: #0A0A0A;
+            --color-surface: #161616;
+            --color-text: #F5F5F5;
+            --color-textMuted: #7D7D7D;
+            --color-accent: #C89B7B;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --gap-sm: calc(var(--spacing-unit) * 0.75);
+            --gap-md: calc(var(--spacing-unit) * 1.5);
+            --gap-lg: calc(var(--spacing-unit) * 3);
+            --gap-xl: calc(var(--spacing-unit) * 5);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2.5rem;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(242, 240, 237, 0.06);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .navbar-brand span {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: var(--color-text);
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-lg);
+        }
+
+        .navbar-links li a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+            position: relative;
+            display: inline-block;
+        }
+
+        .navbar-links li a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 100%;
+            height: 1px;
+            background: var(--color-accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.35s var(--ease-out);
+        }
+
+        .navbar-links li a:hover {
+            color: var(--color-text);
+        }
+
+        .navbar-links li a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .navbar-links li a.active {
+            color: var(--color-accent);
+        }
+
+        .navbar-links li a.active::after {
+            transform: scaleX(1);
+            background: var(--color-accent);
+        }
+
+        /* ===== Contact Page 特有布局 (form) ===== */
+        .contact-page {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 2rem 80px;
+            overflow: hidden;
+        }
+
+        .contact-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .contact-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.35) brightness(0.35) contrast(1.1);
+        }
+
+        .contact-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.7) 0%, rgba(10, 10, 10, 0.3) 100%);
+            pointer-events: none;
+        }
+
+        .contact-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--gap-xl);
+            max-width: 1120px;
+            width: 100%;
+            align-items: start;
+        }
+
+        /* 左侧：联系信息 */
+        .contact-info {
+            padding-top: 0.5rem;
+        }
+
+        .contact-info h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--color-text);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info h1 span {
+            color: var(--color-accent);
+        }
+
+        .contact-desc {
+            font-size: 1rem;
+            color: var(--color-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 380px;
+            line-height: 1.7;
+        }
+
+        .contact-detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-detail-item .icon-box {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--color-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(200, 155, 123, 0.2);
+            color: var(--color-accent);
+            font-size: 1rem;
+        }
+
+        .contact-detail-item .detail-text {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.5;
+        }
+
+        .contact-detail-item .detail-text strong {
+            display: block;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 0.2rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--color-surface);
+            border: 1px solid rgba(242, 240, 237, 0.08);
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            transition: all 0.35s var(--ease-out);
+        }
+
+        .social-links a:hover {
+            background: var(--color-accent);
+            color: var(--color-background);
+            border-color: var(--color-accent);
+            transform: translateY(-2px);
+        }
+
+        /* 右侧：联系表单 */
+        .contact-form-wrapper {
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(242, 240, 237, 0.06);
+            backdrop-filter: blur(4px);
+        }
+
+        .contact-form-wrapper .form-title {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .contact-form-wrapper .form-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-textMuted);
+            margin-bottom: 2rem;
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .contact-form label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: rgba(10, 10, 10, 0.6);
+            border: 1px solid rgba(242, 240, 237, 0.08);
+            border-radius: var(--radius-sm);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 300;
+            transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+            outline: none;
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: var(--color-textMuted);
+            opacity: 0.6;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: var(--color-accent);
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        .contact-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .contact-form .submit-btn {
+            display: inline-block;
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 14px 40px;
+            border: 1px solid var(--color-accent);
+            color: var(--color-accent);
+            background: transparent;
+            border-radius: var(--radius-sm);
+            transition: all 0.35s var(--ease-out);
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .contact-form .submit-btn:hover {
+            background: var(--color-accent);
+            color: var(--color-background);
+        }
+
+        .contact-form .submit-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: var(--color-textMuted);
+            color: var(--color-textMuted);
+        }
+
+        .contact-form .submit-btn:disabled:hover {
+            background: transparent;
+            color: var(--color-textMuted);
+        }
+
+        /* 感谢提示 */
+        .thank-you-message {
+            display: none;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .thank-you-message .thanks-icon {
+            font-size: 2.5rem;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        .thank-you-message h3 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .thank-you-message p {
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+        }
+
+        .form-active .contact-form {
+            display: block;
+        }
+
+        .form-active .thank-you-message {
+            display: none;
+        }
+
+        .form-submitted .contact-form {
+            display: none;
+        }
+
+        .form-submitted .thank-you-message {
+            display: block;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            padding: 3rem 2.5rem;
+            border-top: 1px solid rgba(242, 240, 237, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--gap-md);
+            background: var(--color-background);
+        }
+
+        .footer-brand {
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.04em;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--gap-lg);
+        }
+
+        .footer-links a {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-social a {
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+            margin-left: 1.5rem;
+        }
+
+        .footer-social a:hover {
+            color: var(--color-accent);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: var(--gap-lg);
+            }
+
+            .contact-info h1 {
+                font-size: 2.2rem;
+            }
+
+            .contact-info {
+                padding-top: 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .navbar {
+                padding: 0.75rem 1.2rem;
+            }
+
+            .navbar-links {
+                gap: var(--gap-sm);
+            }
+
+            .navbar-links li a {
+                font-size: 0.75rem;
+            }
+
+            .contact-page {
+                padding: 100px 1.2rem 60px;
+            }
+
+            .contact-form-wrapper {
+                padding: 1.8rem 1.2rem;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: var(--gap-sm);
+                padding: 2rem 1.2rem;
+            }
+
+            .footer-links {
+                gap: var(--gap-md);
+            }
+
+            .footer-social a {
+                margin: 0 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <header class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/23/20260507/c70535fc/6871c55c-7647-4001-81a3-bc94925914b7-1.png?Expires=1778210741&OSSAccessKeyId=STS.NYWJPDiwfjcEhQn3uXEuxCSAm&Signature=gZ72DMBYo07C3v1icloyKDyjD2s%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5riAerwhKhH3aGuanff13UNSfpUrJbqjzz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb4zY1JRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGIsyCCQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET5wK7%2BTCuU5wGoABP8MUGFSUCIpv2y4obgwLTLj1aiW3SD5fAMiHd%2Bde4fhcz2LAJg1TYJh%2Fo2DZv%2FZPTbZfks6hiP78tsaRUKfJfOGU39497ptXirp6OY%2FhYVEGWpPGnWx1GiN2SHawIS2EBuDyUEuLZMxsHkZNNdssArxog%2BnfPrglKbvFJOCdy%2FUgAA%3D%3D" alt="光映徽记" loading="eager" width="36" height="36">
+            <span>光映</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="portfolio.html">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html" class="active">联系</a></li>
+        </ul>
+    </header>
+
+    <!-- ===== 联系页面主体 ===== -->
+    <main class="contact-page">
+
+        <!-- 背景图 -->
+        <div class="contact-bg">
+            <img src="https://images.pexels.com/photos/6893345/pexels-photo-6893345.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="暗调环境相片" loading="lazy">
+        </div>
+
+        <div class="contact-container">
+
+            <!-- 左侧：工作室地址与社交 -->
+            <div class="contact-info">
+                <h1>让我们<br><span>对话</span></h1>
+                <p class="contact-desc">每一帧光影背后，都藏着故事。期待聆听你的想法，一起创造属于你的影像记忆。</p>
+
+                <div class="contact-detail-item">
+                    <div class="icon-box">📍</div>
+                    <div class="detail-text">
+                        <strong>工作室地址</strong>
+                        上海市徐汇区衡山路 8 号 <br> 光映影像工作室
+                    </div>
+                </div>
+                <div class="contact-detail-item">
+                    <div class="icon-box">✉️</div>
+                    <div class="detail-text">
+                        <strong>电子邮箱</strong>
+                        hello@guangying.photo
+                    </div>
+                </div>
+                <div class="contact-detail-item">
+                    <div class="icon-box">📞</div>
+                    <div class="detail-text">
+                        <strong>联系电话</strong>
+                        +86 21 6431 8800
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a>
+                    <a href="https://weibo.com" target="_blank" rel="noopener noreferrer" aria-label="Weibo">WB</a>
+                    <a href="https://behance.net" target="_blank" rel="noopener noreferrer" aria-label="Behance">Be</a>
+                    <a href="https://xiaohongshu.com" target="_blank" rel="noopener noreferrer" aria-label="小红书">📕</a>
+                </div>
+            </div>
+
+            <!-- 右侧：联系表单 -->
+            <div class="contact-form-wrapper" id="contactFormWrapper">
+                <div class="form-active" id="formState">
+                    <div class="form-title">发送消息</div>
+                    <p class="form-subtitle">填写以下信息，我们会尽快回复</p>
+                    <form class="contact-form" id="contactForm" novalidate>
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" name="name" placeholder="你的名字" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">留言</label>
+                            <textarea id="message" name="message" placeholder="写下你想说的话……" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn" id="submitBtn">发送</button>
+                    </form>
+                </div>
+                <div class="thank-you-message" id="thankYouMessage">
+                    <div class="thanks-icon">✓</div>
+                    <h3>感谢你的来信</h3>
+                    <p>我们已收到你的消息，会尽快通过邮件与你联系。</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+        <div class="footer-brand">© 2025 光映 · 影像工作室</div>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="portfolio.html">作品</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-social">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://weibo.com" target="_blank" rel="noopener noreferrer">微博</a>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            const form = document.getElementById('contactForm');
+            const wrapper = document.getElementById('contactFormWrapper');
+            const formState = document.getElementById('formState');
+            const thankYou = document.getElementById('thankYouMessage');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (!form || !wrapper || !formState || !thankYou || !submitBtn) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // 简单验证
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                if (!name || !email || !message) {
+                    alert('请填写所有必填字段。');
+                    return;
+                }
+
+                // 禁用按钮防止重复提交
+                submitBtn.disabled = true;
+                submitBtn.textContent = '发送中…';
+
+                // 模拟提交延迟
+                setTimeout(function() {
+                    formState.classList.remove('form-active');
+                    formState.classList.add('form-submitted');
+                    wrapper.classList.add('form-submitted');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '发送';
+                    // 重置表单
+                    form.reset();
+                }, 800);
+            });
+        })();
+    </script>
+
+</body>
+</html>

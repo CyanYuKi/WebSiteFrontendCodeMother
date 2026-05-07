@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 · 风景摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,200..1000;1,9..40,200..1000&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1C1C1E;
+            --color-secondary: #4A5D50;
+            --color-background: #F5F5F0;
+            --color-surface: #FFFFFF;
+            --color-text: #1A1A1A;
+            --color-textMuted: #6E6E72;
+            --color-accent: #C8A47A;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --spacing-xs: calc(0.5 * var(--spacing-unit));
+            --spacing-sm: calc(0.75 * var(--spacing-unit));
+            --spacing-md: calc(1.25 * var(--spacing-unit));
+            --spacing-lg: calc(2 * var(--spacing-unit));
+            --spacing-xl: calc(3 * var(--spacing-unit));
+            --spacing-2xl: calc(4.5 * var(--spacing-unit));
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+            --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity var(--transition);
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            padding: 1.5rem 2rem;
+            background: rgba(245, 245, 240, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(28, 28, 30, 0.06);
+        }
+
+        .main-nav a {
+            font-family: var(--font-body);
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            position: relative;
+            padding-bottom: 4px;
+            transition: color var(--transition);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-secondary);
+            transition: width var(--transition);
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--color-primary);
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .main-nav a.active {
+            color: var(--color-secondary);
+        }
+
+        /* ---- Contact Page Specific Layout (form) ---- */
+        .contact-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 4rem;
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-2xl);
+            align-items: center;
+        }
+
+        .contact-image-wrapper {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            height: 560px;
+        }
+
+        .contact-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contact-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .contact-content h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 0.02em;
+            line-height: 1.15;
+        }
+
+        .contact-content .subtitle {
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            max-width: 480px;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+
+        .contact-detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .contact-detail-item .label {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-secondary);
+            min-width: 60px;
+            letter-spacing: 0.04em;
+        }
+
+        .contact-detail-item .value {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            font-weight: 300;
+            word-break: break-word;
+        }
+
+        .contact-detail-item .value a {
+            color: var(--color-text);
+            transition: color var(--transition);
+        }
+
+        .contact-detail-item .value a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Contact form */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-row label {
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+        }
+
+        .form-row input,
+        .form-row textarea {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--color-text);
+            background: var(--color-surface);
+            border: 1px solid rgba(106, 110, 114, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 0.7rem 1rem;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            outline: none;
+        }
+
+        .form-row input:focus,
+        .form-row textarea:focus {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(200, 164, 122, 0.15);
+        }
+
+        .form-row textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--color-accent);
+            color: #fff;
+            padding: 0.8rem 2.2rem;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            border: none;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+            align-self: flex-start;
+            margin-top: var(--spacing-sm);
+        }
+
+        .submit-btn:hover {
+            background: var(--color-secondary);
+            transform: translateY(-1px);
+        }
+
+        /* ---- Footer (consistent with index) ---- */
+        .site-footer {
+            background: var(--color-primary);
+            color: rgba(245, 245, 240, 0.7);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-links a {
+            color: rgba(245, 245, 240, 0.5);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transition: color var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-copy {
+            font-size: 0.72rem;
+            color: rgba(245, 245, 240, 0.3);
+            letter-spacing: 0.03em;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 900px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-xl);
+            }
+
+            .contact-image-wrapper {
+                height: 320px;
+                order: -1;
+            }
+
+            .contact-section {
+                padding: 7rem 1.5rem 3rem;
+            }
+
+            .main-nav {
+                gap: 1.5rem;
+                padding: 1.2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-nav {
+                gap: 1rem;
+                padding: 1rem 1rem;
+                flex-wrap: wrap;
+            }
+
+            .main-nav a {
+                font-size: 0.7rem;
+            }
+
+            .contact-section {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .contact-image-wrapper {
+                height: 220px;
+            }
+
+            .footer-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="main-nav" id="mainNav">
+        <a href="index.html">首页</a>
+        <a href="gallery.html">作品集</a>
+        <a href="about.html">关于</a>
+        <a href="contact.html" class="active">联系</a>
+    </nav>
+
+    <!-- ========== CONTACT SECTION ========== -->
+    <section class="contact-section">
+        <div class="contact-grid">
+            <!-- Left: Studio Image -->
+            <div class="contact-image-wrapper">
+                <img src="https://images.pexels.com/photos/7670738/pexels-photo-7670738.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作室环境" loading="lazy">
+            </div>
+
+            <!-- Right: Form & Info -->
+            <div class="contact-content">
+                <h1>与我联系</h1>
+                <p class="subtitle">
+                    无论是委托拍摄、收藏作品，还是任何风景摄影相关的咨询，都欢迎与我交流。
+                </p>
+
+                <!-- Contact Details -->
+                <div class="contact-details">
+                    <div class="contact-detail-item">
+                        <span class="label">邮箱</span>
+                        <span class="value"><a href="mailto:hello@example.com">hello@example.com</a></span>
+                    </div>
+                    <div class="contact-detail-item">
+                        <span class="label">电话</span>
+                        <span class="value"><a href="tel:+861234567890">+86 123 4567 890</a></span>
+                    </div>
+                    <div class="contact-detail-item">
+                        <span class="label">地址</span>
+                        <span class="value">杭州市西湖区龙井路 88 号<br>摄影工作室 · 风景馆</span>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <form class="contact-form" action="#" method="post">
+                    <div class="form-row">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" name="name" placeholder="您的姓名" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="message">留言</label>
+                        <textarea id="message" name="message" placeholder="请描述您的需求或想法……" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">发送留言</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="gallery.html">作品集</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <p class="footer-copy">&copy; 2025 风景摄影 · 静谧自然</p>
+    </footer>
+
+</body>
+</html>

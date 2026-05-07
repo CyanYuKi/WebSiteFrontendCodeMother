@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 光映</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #F2F0ED;
+            --color-secondary: #8A8A8A;
+            --color-background: #0A0A0A;
+            --color-surface: #161616;
+            --color-text: #F5F5F5;
+            --color-textMuted: #7D7D7D;
+            --color-accent: #C89B7B;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --gap-sm: calc(var(--spacing-unit) * 0.75);
+            --gap-md: calc(var(--spacing-unit) * 1.5);
+            --gap-lg: calc(var(--spacing-unit) * 3);
+            --gap-xl: calc(var(--spacing-unit) * 5);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ===== NAVBAR (与首页完全一致) ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2.5rem;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.4s var(--ease-out);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            letter-spacing: 0.06em;
+            color: var(--color-text);
+            font-weight: 400;
+        }
+
+        .navbar-brand img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .navbar-links li a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+            position: relative;
+        }
+
+        .navbar-links li a:hover,
+        .navbar-links li a.active {
+            color: var(--color-text);
+        }
+
+        .navbar-links li a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width 0.35s var(--ease-out);
+        }
+
+        .navbar-links li a:hover::after,
+        .navbar-links li a.active::after {
+            width: 100%;
+        }
+
+        /* ===== ABOUT PAGE LAYOUT (list 风格) ===== */
+        .about-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8rem 2rem 6rem;
+        }
+
+        .about-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--gap-xl);
+            align-items: end;
+            margin-bottom: var(--gap-xl);
+        }
+
+        .about-hero-image {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 135%;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+        }
+
+        .about-hero-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.15) contrast(1.05);
+            transition: transform 0.8s var(--ease-out);
+        }
+
+        .about-hero-image:hover img {
+            transform: scale(1.02);
+        }
+
+        .about-hero-text {
+            padding-bottom: 2rem;
+        }
+
+        .about-hero-text .subtitle {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .about-hero-text h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .about-hero-text p {
+            color: var(--color-textMuted);
+            font-size: 1.05rem;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+
+        /* 个人详细简介区 (list 纵向排列) */
+        .about-detail {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-lg);
+            margin: var(--gap-xl) 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: var(--gap-lg);
+        }
+
+        .about-detail-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: var(--gap-md);
+            align-items: start;
+        }
+
+        .about-detail-item .label {
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            font-weight: 400;
+            padding-top: 0.2rem;
+        }
+
+        .about-detail-item .content {
+            font-size: 1rem;
+            color: var(--color-text);
+            line-height: 1.7;
+            max-width: 640px;
+        }
+
+        .about-detail-item .content p {
+            margin-bottom: 1rem;
+        }
+
+        .about-detail-item .content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== 侧拍环境图 ===== */
+        .about-side-image {
+            width: 100%;
+            height: 0;
+            padding-bottom: 60%;
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--color-surface);
+            margin: var(--gap-lg) 0 var(--gap-xl);
+        }
+
+        .about-side-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.2);
+            transition: transform 0.8s var(--ease-out);
+        }
+
+        .about-side-image:hover img {
+            transform: scale(1.02);
+        }
+
+        /* ===== 荣誉时间线 (list 风格) ===== */
+        .timeline-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: var(--gap-lg);
+            margin-top: var(--gap-lg);
+        }
+
+        .timeline-section .section-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--color-text);
+            margin-bottom: var(--gap-md);
+            letter-spacing: -0.01em;
+        }
+
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: var(--gap-md);
+            align-items: baseline;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 1.25rem;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-year {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--color-accent);
+            font-family: var(--font-body);
+        }
+
+        .timeline-desc {
+            font-size: 1rem;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .timeline-desc .highlight {
+            color: var(--color-textMuted);
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        /* ===== FOOTER (与首页风格一致) ===== */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 2rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 1.5rem;
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-textMuted);
+            transition: color 0.3s var(--ease-out);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        /* ===== responsive ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.8rem 1.5rem;
+            }
+            .navbar-links {
+                gap: 1.2rem;
+            }
+            .about-hero {
+                grid-template-columns: 1fr;
+                gap: var(--gap-md);
+            }
+            .about-hero-text h1 {
+                font-size: 2.2rem;
+            }
+            .about-hero-image {
+                padding-bottom: 120%;
+            }
+            .about-detail-item {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+            .timeline-item {
+                grid-template-columns: 80px 1fr;
+                gap: 0.75rem;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-links li a {
+                font-size: 0.75rem;
+            }
+            .about-hero-text h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 (与首页结构一致) ===== -->
+    <header class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/23/20260507/c70535fc/6871c55c-7647-4001-81a3-bc94925914b7-1.png?Expires=1778210741&OSSAccessKeyId=STS.NYWJPDiwfjcEhQn3uXEuxCSAm&Signature=gZ72DMBYo07C3v1icloyKDyjD2s%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5riAerwhKhH3aGuanff13UNSfpUrJbqjzz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb4zY1JRWM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGIsyCCQKeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET5wK7%2BTCuU5wGoABP8MUGFSUCIpv2y4obgwLTLj1aiW3SD5fAMiHd%2Bde4fhcz2LAJg1TYJh%2Fo2DZv%2FZPTbZfks6hiP78tsaRUKfJfOGU39497ptXirp6OY%2FhYVEGWpPGnWx1GiN2SHawIS2EBuDyUEuLZMxsHkZNNdssArxog%2BnfPrglKbvFJOCdy%2FUgAA%3D%3D" alt="光映徽记" loading="eager" width="36" height="36">
+            <span>光映</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="portfolio.html">作品</a></li>
+            <li><a href="about.html" class="active">关于</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+    </header>
+
+    <!-- ===== ABOUT 内容区 ===== -->
+    <main class="about-wrapper">
+
+        <!-- Hero: 肖像 + 简介 -->
+        <section class="about-hero">
+            <div class="about-hero-image">
+                <img src="https://images.pexels.com/photos/16313654/pexels-photo-16313654.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="摄影师肖像">
+            </div>
+            <div class="about-hero-text">
+                <span class="subtitle">关于我</span>
+                <h1>以光为笔<br>以影为诗</h1>
+                <p>十年来，我始终在自然光与人造光之间寻找平衡，用镜头捕捉那些转瞬即逝的真实情绪。每一张照片，都是对世界的一次安静提问。</p>
+            </div>
+        </section>
+
+        <!-- 环境侧拍图 (增加沉浸感) -->
+        <div class="about-side-image">
+            <img src="https://images.pexels.com/photos/12716745/pexels-photo-12716745.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" loading="lazy" alt="环境侧拍">
+        </div>
+
+        <!-- 个人简介文字区 (list 纵向) -->
+        <div class="about-detail">
+            <div class="about-detail-item">
+                <span class="label">创作理念</span>
+                <div class="content">
+                    <p>我相信摄影的本质是「观看」—— 不是用眼睛，而是用感受。我的作品往往从静谧的场景出发，试图剥离多余的干扰，让画面回归到光线、构图与情绪本身。不追求刻意的戏剧性，更在意画面里是否存有呼吸的空间。</p>
+                    <p>无论是人物肖像还是环境记录，我都希望与拍摄对象建立一种短暂的默契，在信任的氛围里捕捉最自然的片刻。每一张照片都是我与世界之间的一次对话，安静却有力。</p>
+                </div>
+            </div>
+
+            <div class="about-detail-item">
+                <span class="label">从业经历</span>
+                <div class="content">
+                    <p>2014 年正式进入商业摄影领域，最初在东京担任摄影助理，期间深受日本「侘寂」美学影响。2016 年回国创立个人工作室「光映」，专注于时尚、静物与空间摄影。合作品牌涵盖国际时装、独立设计师及生活方式杂志。</p>
+                    <p>2020 年起，我开始尝试将更多纪实手法融入商业拍摄，作品逐渐形成「静谧质感」的视觉语言。2023 年出版首本摄影集《无声的对话》，收录了五年间的精选作品。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 荣誉时间线 (list 风格) -->
+        <section class="timeline-section">
+            <h2 class="section-title">荣誉与展览</h2>
+            <div class="timeline-list">
+                <div class="timeline-item">
+                    <span class="timeline-year">2024</span>
+                    <div class="timeline-desc">
+                        上海当代摄影双年展 · 特邀参展
+                        <span class="highlight">作品《静谧之域》系列于上海余德耀美术馆展出</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2023</span>
+                    <div class="timeline-desc">
+                        出版个人摄影集《无声的对话》
+                        <span class="highlight">由浙江摄影出版社发行，收录 86 幅作品</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2022</span>
+                    <div class="timeline-desc">
+                        日本「奈良国际摄影奖」· 银奖
+                        <span class="highlight">系列作品《间隙》获得评委特别推荐</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2021</span>
+                    <div class="timeline-desc">
+                        「无界」青年摄影师联展 · 北京
+                        <span class="highlight">三组作品在 798 艺术区映画廊展出</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2019</span>
+                    <div class="timeline-desc">
+                        入选「索尼青年摄影师发展计划」
+                        <span class="highlight">获得项目资助并完成个人专题《光之容器》</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER (与首页一致) ===== -->
+    <footer class="footer">
+        <span class="footer-copy">© 2025 光映 · 摄影工作室</span>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="portfolio.html">作品</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+    </footer>
+
+</body>
+</html>

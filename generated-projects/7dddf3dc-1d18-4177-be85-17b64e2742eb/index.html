@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>静默影像 · 摄影叙事</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+ <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-primary: #1A1A1A;
+      --color-secondary: #6B7280;
+      --color-background: #F9F8F6;
+      --color-surface: #FFFFFF;
+      --color-text: #111;
+      --color-textMuted: #666;
+      --color-accent: #C8A97E;
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --spacing-unit: 1rem;
+      --space-xs: calc(var(--spacing-unit) * 0.5);
+      --space-sm: var(--spacing-unit);
+      --space-md: calc(var(--spacing-unit) * 1.5);
+      --space-lg: calc(var(--spacing-unit) * 2.5);
+      --space-xl: calc(var(--spacing-unit) * 4);
+      --space-2xl: calc(var(--spacing-unit) * 6);
+      --max-width: 1200px;
+      --nav-height: 72px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    /* ─── Header / Nav ─── */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: var(--nav-height);
+      background: transparent;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .site-header.scrolled {
+      background: rgba(249, 248, 246, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-heading);
+      font-weight: 500;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+      color: var(--color-text);
+    }
+
+    .site-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      list-style: none;
+      font-size: 0.875rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+    }
+
+    .nav-links a {
+      transition: color 0.25s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--color-text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-text);
+      padding: 0.5rem 1.25rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-cta:hover {
+      background: var(--color-accent);
+      color: var(--color-surface);
+      border-color: var(--color-accent);
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 640px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: brightness(0.55) saturate(0.85);
+      z-index: 0;
+    }
+
+    .hero-overlay {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: #fff;
+      max-width: 720px;
+      padding: 0 var(--space-md);
+    }
+
+    .hero-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-md);
+      opacity: 0.7;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: var(--space-xs);
+    }
+
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-md);
+      text-wrap: pretty;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      font-weight: 300;
+      opacity: 0.8;
+      max-width: 540px;
+      margin: 0 auto var(--space-lg);
+      line-height: 1.7;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      background: var(--color-accent);
+      color: var(--color-surface);
+      padding: 0.9rem 2.5rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+      transition: opacity 0.25s;
+    }
+
+    .hero-cta:hover {
+      opacity: 0.8;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      animation: float 2.4s ease-in-out infinite;
+    }
+
+    .hero-scroll span {
+      display: block;
+      width: 1px;
+      height: 32px;
+      background: rgba(255,255,255,0.3);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }}
+      50% { transform: translateX(-50%) translateY(-6px); }
+    }
+
+    /* ─── About / 叙事区 ─── */
+    .section-about {
+      padding: var(--space-2xl) 0 var(--space-xl);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      align-items: center;
+    }
+
+    .about-image {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .about-content {
+      padding-right: var(--space-md);
+    }
+
+    .about-content .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .about-content h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 500;
+      line-height: 1.15;
+      margin-bottom: var(--space-md);
+      text-wrap: pretty;
+    }
+
+    .about-content p {
+      color: var(--color-textMuted);
+      font-weight: 300;
+      line-height: 1.8;
+      margin-bottom: var(--space-md);
+      font-size: 1rem;
+    }
+
+    .about-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-accent);
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .about-link:hover {
+      opacity: 0.6;
+    }
+
+    /* ─── Gallery / 瀑布流 ─── */
+    .section-gallery {
+      padding: var(--space-xl) 0 var(--space-2xl);
+      background: var(--color-surface);
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .gallery-header .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .gallery-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 500;
+      margin-bottom: var(--space-sm);
+    }
+
+    .gallery-header p {
+      color: var(--color-textMuted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .gallery-masonry {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 3 / 4;
+    }
+
+    .gallery-item:nth-child(2) {
+      aspect-ratio: 4 / 5;
+    }
+
+    .gallery-item:nth-child(4) {
+      aspect-ratio: 4 / 5;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease, filter 0.4s;
+      filter: grayscale(0.15) brightness(0.95);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: grayscale(0) brightness(1);
+    }
+
+    .gallery-item .item-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.3), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-md);
+      color: #fff;
+    }
+
+    .gallery-item:hover .item-overlay {
+      opacity: 1;
+    }
+
+    .gallery-item .item-overlay span {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .gallery-footer {
+      text-align: center;
+      margin-top: var(--space-lg);
+    }
+
+    .gallery-footer a {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--color-text);
+      color: var(--color-text);
+      padding: 0.75rem 2rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .gallery-footer a:hover {
+      background: var(--color-text);
+      color: var(--color-surface);
+    }
+
+    /* ─── Feature / 左右交替 ─── */
+    .section-feature {
+      padding: var(--space-2xl) 0;
+    }
+
+    .feature-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      align-items: center;
+    }
+
+    .feature-block.reverse {
+      direction: rtl;
+    }
+
+    .feature-block.reverse > * {
+      direction: ltr;
+    }
+
+    .feature-image {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+    }
+
+    .feature-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .feature-text {
+      padding: var(--space-md) 0;
+    }
+
+    .feature-text .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .feature-text h3 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-bottom: var(--space-sm);
+      line-height: 1.2;
+    }
+
+    .feature-text p {
+      color: var(--color-textMuted);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ─── Testimonial ─── */
+    .section-testimonial {
+      background: var(--color-surface);
+      padding: var(--space-2xl) 0;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      align-items: center;
+    }
+
+    .testimonial-image {
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+    }
+
+    .testimonial-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .testimonial-content {
+      padding-left: var(--space-md);
+    }
+
+    .testimonial-content .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .testimonial-quote {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--color-text);
+      margin-bottom: var(--space-md);
+      text-wrap: pretty;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .testimonial-author img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .testimonial-author .author-info strong {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .testimonial-author .author-info span {
+      font-size: 0.8rem;
+      color: var(--color-textMuted);
+    }
+
+    /* ─── Contact / CTA ─── */
+    .section-contact {
+      padding: var(--space-2xl) 0;
+      background: var(--color-background);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      align-items: center;
+    }
+
+    .contact-image {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+    }
+
+    .contact-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .contact-info {
+      padding-left: var(--space-md);
+    }
+
+    .contact-info .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: var(--space-sm);
+    }
+
+    .contact-info p {
+      color: var(--color-textMuted);
+      font-weight: 300;
+      margin-bottom: var(--space-md);
+      max-width: 400px;
+    }
+
+    .contact-detail {
+      margin-bottom: var(--space-xs);
+      font-size: 0.9rem;
+    }
+
+    .contact-detail strong {
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .contact-detail span {
+      color: var(--color-textMuted);
+    }
+
+    .contact-btn {
+      display: inline-block;
+      margin-top: var(--space-md);
+      background: transparent;
+      border: 1px solid var(--color-text);
+      color: var(--color-text);
+      padding: 0.75rem 2rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .contact-btn:hover {
+      background: var(--color-text);
+      color: var(--color-surface);
+    }
+
+    /* ─── Footer ─── */
+    .site-footer {
+      background: var(--color-primary);
+      color: rgba(255,255,255,0.7);
+      padding: var(--space-lg) 0 var(--space-md);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-lg);
+    }
+
+    .footer-brand {
+      max-width: 260px;
+    }
+
+    .footer-brand .site-logo {
+      color: #fff;
+      margin-bottom: var(--space-sm);
+    }
+
+    .footer-brand p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: var(--space-lg);
+      list-style: none;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .footer-nav a {
+      color: rgba(255,255,255,0.6);
+      transition: color 0.25s;
+    }
+
+    .footer-nav a:hover {
+      color: #fff;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .footer-social a {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      transition: border-color 0.25s, color 0.25s;
+    }
+
+    .footer-social a:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .footer-bottom {
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .footer-bottom a {
+      color: rgba(255,255,255,0.45);
+      transition: color 0.2s;
+    }
+
+    .footer-bottom a:hover {
+      color: #fff;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .about-grid,
+      .feature-block,
+      .testimonial-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+      }
+
+      .about-content,
+      .testimonial-content,
+      .contact-info {
+        padding: 0;
+      }
+
+      .feature-block.reverse {
+        direction: ltr;
+      }
+
+      .gallery-masonry {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-links {
+        gap: var(--space-md);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .gallery-masonry {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery-item:nth-child(2),
+      .gallery-item:nth-child(4) {
+        aspect-ratio: 3 / 4;
+      }
+
+      .nav-links li:not(.nav-cta-li) {
+        display: none;
+      }
+
+      .site-header.scrolled .nav-links li:not(.nav-cta-li) {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+ </style>
+</head>
+<body>
+ <!-- ─── Header ─── -->
+ <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/20/20260507/c70535fc/2a7ae863-8da6-4ebd-83ef-02d0f49a8b77-1.png?Expires=1778209526&OSSAccessKeyId=STS.NYmRVWhNpTrjEZCaPr1AQYmdg&Signature=niki87VfnnnyxuuF1Dp5eequo7o%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rYGezjhZFR47CBR3zyhVAnPc59tqjPhTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb41ZINBSM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGQmyf5Bgcansbe4QdDgFERdQX%2BIMAZtfUovgr615%2BKZEDu95Cknl8CWBcOuAWsL6QFrHRT7I%2BM8bCuU5wGoABTPMDcxn6l67PuFYL11X3ia3qcHVdg4sRFpDFqLYSA9wyDUxIzfl%2BRx%2BfxNntHBXGmBqFb1IxX3LS7F9pZvFxpPY5SXlNGVdFMq79X2YuGZsqqdSAhlcLLCEZLprB2KU7cJNqGPuP8oKjD6d2PrVzTxtp%2BYWoyHp6I401vFOTKp4gAA%3D%3D" alt="静默影像" loading="eager" width="36" height="36">
+        静默影像
+      </a>
+      <ul class="nav-links">
+        <li><a href="gallery.html">作品</a></li>
+        <li><a href="about.html">关于</a></li>
+        <li><a href="contact.html">联系</a></li>
+        <li class="nav-cta-li"><a href="contact.html" class="nav-cta">预约拍摄</a></li>
+      </ul>
+    </div>
+ </header>
+
+ <!-- ─── Hero ─── -->
+ <section class="hero">
+    <img class="hero-bg" src="https://images.pexels.com/photos/30681560/pexels-photo-30681560.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="静谧光影" loading="eager" width="940" height="1410">
+    <div class="hero-overlay">
+      <div class="hero-label">光影叙事</div>
+      <h1>看见静默的<br>力量</h1>
+      <p>在时间缝隙里，捕捉那些不曾被言说的情绪与温度。每一帧，都是独一无二的静默诗篇。</p>
+      <a href="gallery.html" class="hero-cta">浏览作品集</a>
+    </div>
+    <div class="hero-scroll">
+      向下探索
+      <span></span>
+    </div>
+ </section>
+
+ <!-- ─── About ─── -->
+ <section class="section-about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image">
+          <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="关于摄影师" loading="eager" width="940" height="1410">
+        </div>
+        <div class="about-content">
+          <div class="section-label">关于我</div>
+          <h2>用镜头书写<br>静默的诗</h2>
+          <p>我是林曦，一位专注于情绪与氛围的独立摄影师。我相信影像不仅是记录，更是对内在风景的描摹。过去十年，我游走在城市与山海之间，用镜头为时间立传。</p>
+          <p>我的作品常以静谧的氛围、克制的色调和精准的光线为特点，旨在让每一张照片都成为一件可以驻足的视觉诗。</p>
+          <a href="about.html" class="about-link">更深入地了解 →</a>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- ─── Feature ─── -->
+ <section class="section-feature">
+    <div class="container">
+      <div class="feature-block">
+        <div class="feature-image">
+          <img src="https://images.pexels.com/photos/12162522/pexels-photo-12162522.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="环境人像" loading="eager" width="940" height="627">
+        </div>
+        <div class="feature-text">
+          <div class="section-label">专属定制</div>
+          <h3>环境人像 · 情绪氛围</h3>
+          <p>从选景到光线，从造型到情绪引导，每一个环节都为你量身打造。不追求千篇一律的摆拍，只呈现你独有的气质与故事。</p>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <section class="section-feature" style="padding-top:0;">
+    <div class="container">
+      <div class="feature-block reverse">
+        <div class="feature-image">
+          <img src="https://images.pexels.com/photos/5849237/pexels-photo-5849237.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="静物摄影" loading="eager" width="940" height="1410">
+        </div>
+        <div class="feature-text">
+          <div class="section-label">静物 · 空间</div>
+          <h3>让物件与空间<Br>安静地说话</h3>
+          <p>商业静物、空间氛围与生活方式摄影。擅长利用自然光线与极简构图，赋予产品与空间一种宁静高级的质感。</p>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- ─── Gallery 瀑布流 ─── -->
+ <section class="section-gallery">
+    <div class="container">
+      <div class="gallery-header">
+        <div class="section-label">精选作品</div>
+        <h2>近期影像</h2>
+        <p>从人像到静物，每一张都是对静默美学的探索。</p>
+      </div>
+      <div class="gallery-masonry">
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/10879787/pexels-photo-10879787.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品一" loading="eager" width="940" height="627">
+          <div class="item-overlay"><span>风与诗</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/716273/pexels-photo-716273.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品二" loading="lazy" width="940" height="627">
+          <div class="item-overlay"><span>午后窗边</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/3953358/pexels-photo-3953358.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品三" loading="lazy" width="940" height="1253">
+          <div class="item-overlay"><span>寂静的仪式</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/28178704/pexels-photo-28178704.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品四" loading="lazy" width="940" height="1253">
+          <div class="item-overlay"><span>城市切片</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/5849237/pexels-photo-5849237.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="作品五" loading="lazy" width="940" height="1410">
+          <div class="item-overlay"><span>静物诗</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/12162522/pexels-photo-12162522.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="作品六" loading="lazy" width="940" height="627">
+          <div class="item-overlay"><span>山野来信</span></div>
+        </div>
+      </div>
+      <div class="gallery-footer">
+        <a href="gallery.html">查看全部作品</a>
+      </div>
+    </div>
+ </section>
+
+ <!-- ─── Testimonial ─── -->
+ <section class="section-testimonial">
+    <div class="container">
+      <div class="testimonial-grid">
+        <div class="testimonial-image">
+          <img src="https://images.pexels.com/photos/15004186/pexels-photo-15004186.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户评价" loading="lazy" width="350" height="525">
+        </div>
+        <div class="testimonial-content">
+          <div class="section-label">来自她/他们</div>
+          <blockquote class="testimonial-quote">
+            “这是我第一次在镜头前感到如此松弛。林曦的镜头有一种安静的力量，她捕捉到的不是表情，而是那一刻的情绪本身。”
+          </blockquote>
+          <div class="testimonial-author">
+            <img src="https://images.pexels.com/photos/16029826/pexels-photo-16029826.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户头像" loading="lazy" width="48" height="48">
+            <div class="author-info">
+              <strong>陈小姐</strong>
+              <span>肖像客户 · 杭州</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- ─── Contact ─── -->
+ <section class="section-contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-image">
+          <img src="https://images.pexels.com/photos/8960464/pexels-photo-8960464.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系" loading="lazy" width="940" height="627">
+        </div>
+        <div class="contact-info">
+          <div class="section-label">联络</div>
+          <h3>预约属于你的<br>静默时刻</h3>
+          <p>无论是个人的肖像记录、品牌的视觉呈现，还是空间的氛围表达，我都期待与你一起创作。</p>
+          <div class="contact-detail"><strong>邮箱</strong> <span>hello@silence-studio.com</span></div>
+          <div class="contact-detail"><strong>电话</strong> <span>+86 138 0000 1234</span></div>
+          <div class="contact-detail"><strong>地址</strong> <span>杭州市西湖区 · 静默影像工作室</span></div>
+          <a href="contact.html" class="contact-btn">开始对话</a>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- ─── Footer ─── -->
+ <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="site-logo">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/20/20260507/c70535fc/2a7ae863-8da6-4ebd-83ef-02d0f49a8b77-1.png?Expires=1778209526&OSSAccessKeyId=STS.NYmRVWhNpTrjEZCaPr1AQYmdg&Signature=niki87VfnnnyxuuF1Dp5eequo7o%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rYGezjhZFR47CBR3zyhVAnPc59tqjPhTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb41ZINBSM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGQmyf5Bgcansbe4QdDgFERdQX%2BIMAZtfUovgr615%2BKZEDu95Cknl8CWBcOuAWsL6QFrHRT7I%2BM8bCuU5wGoABTPMDcxn6l67PuFYL11X3ia3qcHVdg4sRFpDFqLYSA9wyDUxIzfl%2BRx%2BfxNntHBXGmBqFb1IxX3LS7F9pZvFxpPY5SXlNGVdFMq79X2YuGZsqqdSAhlcLLCEZLprB2KU7cJNqGPuP8oKjD6d2PrVzTxtp%2BYWoyHp6I401vFOTKp4gAA%3D%3D" alt="静默影像" loading="lazy" width="36" height="36">
+            静默影像
+          </div>
+          <p>在静默中发现世界的低语。<br>独立摄影 · 影像叙事 · 视觉定制</p>
+        </div>
+        <ul class="footer-nav">
+          <li><a href="gallery.html">作品</a></li>
+          <li><a href="about.html">关于</a></li>
+          <li><a href="contact.html">联系</a></li>
+        </ul>
+        <div class="footer-social">
+          <a href="#" aria-label="微信" target="_blank" rel="noopener noreferrer">微</a>
+          <a href="#" aria-label="微博" target="_blank" rel="noopener noreferrer">博</a>
+          <a href="#" aria-label="小红书" target="_blank" rel="noopener noreferrer">红</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 静默影像 · 保留所有权利</span>
+        <span><a href="contact.html">联络</a> · <a href="about.html">隐私</a></span>
+      </div>
+    </div>
+ </footer>
+
+ <!-- ─── Nav scroll effect ─── -->
+ <script>
+    const header = document.getElementById('siteHeader');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 60) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+ </script>
+
+ <!-- PAGES_PLAN: [{"name":"gallery.html","title":"全部作品","overview":"展示所有摄影作品的高清大图瀑布流，包含分类筛选（人像/静物/空间），每张作品点击可查看详情与故事。","layout":"grid"},{"name":"about.html","title":"关于静默影像","overview":"介绍摄影师林曦的创作理念、职业经历、展览与合作品牌，配以工作照及客户评价精选。","layout":"list"},{"name":"contact.html","title":"预约联系","overview":"详细的联系方式表单（姓名、邮箱、需求类型、时间选择）与工作室地址、社交媒体链接。","layout":"form"}] -->
+</body>
+</html>

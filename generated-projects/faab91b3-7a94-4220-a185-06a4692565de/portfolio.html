@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>作品集 | 个人摄影</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #1C1C1E;
+      --color-secondary: #E8E4DF;
+      --color-background: #F7F6F3;
+      --color-surface: #FFFFFF;
+      --color-text: #0F0F10;
+      --color-textMuted: #6E6E73;
+      --color-accent: #B89A7A;
+      --font-heading: 'Cormorant Garamond', serif;
+      --font-body: 'Manrope', sans-serif;
+      --spacing-unit: 1rem;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    /* ===== 导航栏 ===== */
+    .main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      padding: 1.2rem 2rem;
+      background: rgba(247, 246, 243, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .main-nav a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .main-nav a:hover {
+      color: var(--color-primary);
+    }
+
+    .main-nav a.active {
+      color: var(--color-primary);
+    }
+
+    .main-nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--color-accent);
+    }
+
+    /* ===== 页面标题 ===== */
+    .page-header {
+      padding: 8rem 2rem 3rem 2rem;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-heading);
+      font-size: 3.2rem;
+      font-weight: 400;
+      color: var(--color-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      color: var(--color-textMuted);
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== 分类过滤器 ===== */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      padding: 0 2rem;
+    }
+
+    .filter-bar button {
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-textMuted);
+      cursor: pointer;
+      padding: 0.3rem 0;
+      transition: color 0.2s, border-color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .filter-bar button:hover {
+      color: var(--color-primary);
+    }
+
+    .filter-bar button.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* ===== 瀑布流画廊 (grid) ===== */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 0 2rem 3rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      break-inside: avoid;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      aspect-ratio: 3 / 4;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .gallery-item .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.2rem 1rem 0.8rem 1rem;
+      background: linear-gradient(to top, rgba(28, 28, 30, 0.5), transparent);
+      color: var(--color-secondary);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .gallery-item .overlay .category {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .gallery-item .overlay .title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      margin-top: 0.2rem;
+      font-weight: 400;
+    }
+
+    /* 瀑布流不同高度（模拟masonry效果） */
+    .gallery-item.tall img {
+      aspect-ratio: 2 / 3;
+    }
+
+    .gallery-item.wide img {
+      aspect-ratio: 4 / 3;
+    }
+
+    .gallery-item.square img {
+      aspect-ratio: 1 / 1;
+    }
+
+    /* ===== 分页 ===== */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 2rem 4rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .pagination span,
+    .pagination a {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-textMuted);
+      background: transparent;
+      transition: background 0.2s, color 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .pagination a:hover {
+      background: var(--color-secondary);
+      color: var(--color-primary);
+    }
+
+    .pagination .current {
+      background: var(--color-primary);
+      color: var(--color-surface);
+      border: 1px solid var(--color-primary);
+    }
+
+    .pagination .next {
+      width: auto;
+      padding: 0 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid var(--color-textMuted);
+    }
+
+    .pagination .next:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-surface);
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      background: var(--color-primary);
+      color: var(--color-secondary);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .footer a:hover {
+      opacity: 1;
+    }
+
+    .footer p {
+      font-size: 0.75rem;
+      opacity: 0.5;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .main-nav {
+        gap: 1.5rem;
+        padding: 1rem 1.2rem;
+      }
+
+      .page-header {
+        padding: 6rem 1.5rem 2rem 1.5rem;
+      }
+
+      .page-header h1 {
+        font-size: 2.2rem;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1rem;
+        padding: 0 1rem 2rem 1rem;
+      }
+
+      .filter-bar {
+        gap: 1.2rem;
+        padding: 0 1.5rem;
+      }
+
+      .filter-bar button {
+        font-size: 0.75rem;
+      }
+
+      .gallery-item .overlay {
+        opacity: 1;
+        padding: 0.8rem 0.8rem 0.5rem 0.8rem;
+      }
+
+      .gallery-item .overlay .title {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+      }
+
+      .main-nav a {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <!-- ====== 导航栏 ====== -->
+ <nav class="main-nav">
+    <a href="index.html">首页</a>
+    <a href="portfolio.html" class="active">作品集</a>
+    <a href="about.html">关于</a>
+    <a href="contact.html">联系</a>
+ </nav>
+
+ <!-- ====== 页面标题 ====== -->
+ <header class="page-header">
+    <h1>作品集</h1>
+    <p>Portfolio — 人像 · 风光 · 纪实</p>
+ </header>
+
+ <!-- ====== 分类过滤器 ====== -->
+ <div class="filter-bar">
+    <button class="active" data-filter="all">全部</button>
+    <button data-filter="portrait">人像</button>
+    <button data-filter="landscape">风光</button>
+    <button data-filter="documentary">纪实</button>
+ </div>
+
+ <!-- ====== 瀑布流画廊 ====== -->
+ <div class="gallery-grid" id="galleryGrid">
+    <!-- 作品 1 —— 人像 -->
+    <div class="gallery-item tall" data-category="portrait">
+      <img src="https://images.pexels.com/photos/3953354/pexels-photo-3953354.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="人像摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">人像</span>
+        <div class="title">寂静的凝视</div>
+      </div>
+    </div>
+
+    <!-- 作品 2 —— 风光 -->
+    <div class="gallery-item wide" data-category="landscape">
+      <img src="https://images.pexels.com/photos/28561637/pexels-photo-28561637.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="风光摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">风光</span>
+        <div class="title">山峦与暮色</div>
+      </div>
+    </div>
+
+    <!-- 作品 3 —— 纪实 -->
+    <div class="gallery-item square" data-category="documentary">
+      <img src="https://images.pexels.com/photos/34415000/pexels-photo-34415000.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="纪实摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">纪实</span>
+        <div class="title">街角的对话</div>
+      </div>
+    </div>
+
+    <!-- 作品 4 —— 人像 -->
+    <div class="gallery-item tall" data-category="portrait">
+      <img src="https://images.pexels.com/photos/34226968/pexels-photo-34226968.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="人像摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">人像</span>
+        <div class="title">光影之间</div>
+      </div>
+    </div>
+
+    <!-- 作品 5 —— 风光 -->
+    <div class="gallery-item square" data-category="landscape">
+      <img src="https://images.pexels.com/photos/28917766/pexels-photo-28917766.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="风光摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">风光</span>
+        <div class="title">静谧湖面</div>
+      </div>
+    </div>
+
+    <!-- 作品 6 —— 纪实 -->
+    <div class="gallery-item wide" data-category="documentary">
+      <img src="https://images.pexels.com/photos/20284524/pexels-photo-20284524.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="纪实摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">纪实</span>
+        <div class="title">日常的秩序</div>
+      </div>
+    </div>
+
+    <!-- 作品 7 —— 人像 -->
+    <div class="gallery-item tall" data-category="portrait">
+      <img src="https://images.pexels.com/photos/33714950/pexels-photo-33714950.jpeg?auto=compress&cs=tinysrgb&h=350" alt="人像摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">人像</span>
+        <div class="title">片刻的温柔</div>
+      </div>
+    </div>
+
+    <!-- 作品 8 —— 风光 -->
+    <div class="gallery-item wide" data-category="landscape">
+      <img src="https://images.pexels.com/photos/36633898/pexels-photo-36633898.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="风光摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">风光</span>
+        <div class="title">地平线</div>
+      </div>
+    </div>
+
+    <!-- 作品 9 —— 纪实 -->
+    <div class="gallery-item square" data-category="documentary">
+      <img src="https://images.pexels.com/photos/8835416/pexels-photo-8835416.jpeg?auto=compress&cs=tinysrgb&h=350" alt="纪实摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">纪实</span>
+        <div class="title">等待</div>
+      </div>
+    </div>
+
+    <!-- 作品 10 —— 人像 -->
+    <div class="gallery-item tall" data-category="portrait">
+      <img src="https://images.pexels.com/photos/6190326/pexels-photo-6190326.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="人像摄影作品" loading="lazy">
+      <div class="overlay">
+        <span class="category">人像</span>
+        <div class="title">目光</div>
+      </div>
+    </div>
+ </div>
+
+ <!-- ====== 分页 ====== -->
+ <div class="pagination">
+    <span class="current">1</span>
+    <a href="#">2</a>
+    <a href="#">3</a>
+    <a href="#" class="next">下一页</a>
+ </div>
+
+ <!-- ====== 底部 ====== -->
+ <footer class="footer">
+    <nav>
+      <a href="index.html">首页</a>
+      <a href="portfolio.html">作品集</a>
+      <a href="about.html">关于</a>
+      <a href="contact.html">联系</a>
+    </nav>
+    <p>&copy; 2025 个人摄影 · 静谧时光</p>
+ </footer>
+
+ <!-- ====== 过滤交互 ====== -->
+ <script>
+    (function() {
+      const buttons = document.querySelectorAll('.filter-bar button');
+      const items = document.querySelectorAll('.gallery-item');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          buttons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          items.forEach(item => {
+            if (filter === 'all') {
+              item.style.display = 'block';
+            } else {
+              if (item.dataset.category === filter) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            }
+          });
+        });
+      });
+    })();
+ </script>
+
+</body>
+</html>

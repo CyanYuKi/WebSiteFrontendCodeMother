@@ -1,0 +1,9 @@
+{
+  "projectId" : "433b98f2-8850-472d-ad01-3bd5b32a5834",
+  "originalInput" : "生成一个个人摄影网站",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>静帧 — 摄影作品集</title>\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n  <link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap\" rel=\"stylesheet\">\n  <s...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#6B7A6E\",\n    \"secondary\": \"#A89E8F\",\n    \"background\": \"#F4F0E8\",\n    \"surface\": \"#EAE5DB\",\n    \"text\": \"#3D3C38\",\n    \"textMuted\": \"#8F8A82\",\n    \"accent\": \"#B89A7A\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Cormorant Garamond, serif\",\n    \"bodyFont\": \"Source Sans 3, sans-serif\",\n    \"scale\": 1.25\n  },\n  \"spacing\": {\n    \"unit\": \"1rem\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全宽沉浸式Hero+顶部居中极简导航+非对称瀑布流画廊+双栏图文博客\",\n  \"mood\": \"静谧雅致，复古胶片质感，人文留白\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 4, 30, 17, 13, 26, 526760500 ]
+}

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 – 个人摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Karla:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #4A3728;
+            --color-secondary: #C9B89C;
+            --color-background: #F4EFE6;
+            --color-surface: #EAE3D5;
+            --color-text: #2A221A;
+            --color-textMuted: #7D6E5D;
+            --color-accent: #B85E3C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Karla', sans-serif;
+            --spacing-unit: 0.75rem;
+            --scale-spacing: 1.33;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        a { color: inherit; text-decoration: none; }
+
+        /* 首页 Hero / 导航区风格 (保持一致) */
+        .hero-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 2rem;
+            padding: 1.5rem 2rem;
+            background-color: var(--color-primary);
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .hero-nav a {
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-background);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s, color 0.25s;
+        }
+        .hero-nav a:hover,
+        .hero-nav a.active {
+            color: var(--color-secondary);
+            border-bottom-color: var(--color-secondary);
+        }
+
+        /* 页脚导航 (与首页保持一致) */
+        .footer-nav {
+            background-color: var(--color-primary);
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+        }
+        .footer-nav .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .footer-nav a {
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-secondary);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: border-color 0.25s;
+        }
+        .footer-nav a:hover {
+            border-bottom-color: var(--color-secondary);
+        }
+        .footer-copy {
+            margin-top: 1.2rem;
+            font-size: 0.8rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+        }
+
+        /* ------ contact 页面独有表单布局 (form layout) ------ */
+        .contact-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1rem 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem 4rem;
+        }
+        .contact-form-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .contact-form-section h1 {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.03em;
+            line-height: 1.2;
+        }
+        .contact-form-section .subhead {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            margin-bottom: 2.2rem;
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 0.6rem;
+            display: inline-block;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 100%;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            padding: 0.8rem 1rem;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-secondary);
+            border-radius: 0;
+            color: var(--color-text);
+            transition: border 0.25s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(74, 55, 40, 0.12);
+        }
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+        .btn-submit {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            font-family: var(--font-body);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: var(--color-primary);
+            color: var(--color-background);
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            font-size: 1rem;
+            align-self: flex-start;
+            margin-top: 0.25rem;
+        }
+        .btn-submit:hover {
+            background: var(--color-accent);
+            transform: scale(1.02);
+        }
+
+        /* 右侧信息区：社交媒体 + 地图占位 + 配图 */
+        .contact-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2.2rem;
+        }
+        .social-links h2,
+        .map-placeholder h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            letter-spacing: 0.02em;
+        }
+        .social-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem 2rem;
+        }
+        .social-icons a {
+            font-family: var(--font-body);
+            font-weight: 500;
+            color: var(--color-textMuted);
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.2rem;
+            transition: color 0.25s, border-color 0.2s;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+        .social-icons a:hover {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        .map-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-secondary);
+            padding: 1rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-textMuted);
+            font-style: italic;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-block img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            filter: sepia(0.2) saturate(0.7);
+        }
+        .map-placeholder-text {
+            position: relative;
+            z-index: 2;
+            background: rgba(244, 239, 230, 0.75);
+            padding: 0.5rem 1.2rem;
+            border-radius: 2px;
+            font-size: 0.95rem;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 响应式 */
+        @media (max-width: 820px) {
+            .contact-page {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .hero-nav {
+                justify-content: center;
+                padding: 1.2rem 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .contact-form-section h1 {
+                font-size: 2.2rem;
+            }
+            .btn-submit {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航（完全复用首页结构，active标记 contact） -->
+    <nav class="hero-nav" aria-label="主导航">
+        <a href="portfolio.html">作品集</a>
+        <a href="about.html">关于</a>
+        <a href="contact.html" class="active">联系</a>
+    </nav>
+
+    <main class="contact-page">
+        <!-- 左侧联系表单 -->
+        <div class="contact-form-section">
+            <h1>让我们聊聊</h1>
+            <span class="subhead">为你的故事找到合适的画面</span>
+            <form class="contact-form" action="#" method="post">
+                <div class="form-group">
+                    <label for="name">姓名</label>
+                    <input type="text" id="name" name="name" placeholder="你的名字" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">消息</label>
+                    <textarea id="message" name="message" placeholder="写下你的想法、项目细节或任何问题…" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">发送</button>
+            </form>
+        </div>
+
+        <!-- 右侧信息：社交媒体 + 地图占位 -->
+        <div class="contact-info-section">
+            <div class="social-links">
+                <h2>社交</h2>
+                <div class="social-icons">
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+                    <a href="https://500px.com" target="_blank" rel="noopener noreferrer">500px</a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+                    <a href="https://flickr.com" target="_blank" rel="noopener noreferrer">Flickr</a>
+                </div>
+            </div>
+            <div class="map-placeholder">
+                <h2>工作室</h2>
+                <div class="map-block">
+                    <img src="https://images.pexels.com/photos/4641194/pexels-photo-4641194.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="工作室环境" loading="lazy">
+                    <span class="map-placeholder-text">📍 北京 · 798 艺术区 ｜ 地图占位</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚（与首页结构一致） -->
+    <footer class="footer-nav">
+        <div class="footer-links">
+            <a href="portfolio.html">作品集</a>
+            <a href="about.html">关于</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-copy">© 2025 个人摄影 · 用镜头凝固时光</div>
+    </footer>
+</body>
+</html>

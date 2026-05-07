@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 · 林远山风光摄影</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #7D6B5D;
+            --color-secondary: #9DA896;
+            --color-background: #FAF8F5;
+            --color-surface: #FFFFFF;
+            --color-text: #2B2826;
+            --color-textMuted: #7A746C;
+            --color-accent: #C9A67C;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 1rem;
+            --max-width: 1200px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-weight: 300;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        /* ===== 导航栏 ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.8rem 2.5rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(250,248,245,0.92) 0%, rgba(250,248,245,0) 100%);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        nav a {
+            display: inline-block;
+            padding: 0.4rem 0;
+            margin-left: 1.5rem;
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 400;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-primary);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after,
+        nav a.active::after {
+            width: 100%;
+        }
+
+        nav a.active {
+            color: var(--color-primary);
+        }
+
+        nav a:first-child {
+            margin-left: 0;
+        }
+
+        /* ===== 页面独有布局：detail ===== */
+        .page-about {
+            padding-top: 6rem;
+        }
+
+        /* --- Hero 模块 (全屏沉浸) --- */
+        .about-hero {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .about-hero img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.75;
+            transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: scale(1.03);
+        }
+
+        .about-hero:hover img {
+            transform: scale(1.02);
+        }
+
+        .about-hero-overlay {
+            position: absolute;
+            bottom: 3rem;
+            left: 3rem;
+            z-index: 2;
+        }
+
+        .about-hero-overlay h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.8rem, 8vw, 5rem);
+            font-weight: 400;
+            color: var(--color-surface);
+            text-shadow: 0 2px 20px rgba(0,0,0,0.25);
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+        }
+
+        .about-hero-overlay p {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.85);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        /* --- 关于介绍 (垂直单列大图留白) --- */
+        .about-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 5rem 2rem 4rem;
+        }
+
+        .about-intro {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            margin-bottom: 5rem;
+        }
+
+        .about-intro-text {
+            max-width: 720px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-intro-text h2 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: var(--color-text);
+            letter-spacing: 0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-intro-text p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            line-height: 1.9;
+            margin-bottom: 1.2rem;
+        }
+
+        .about-intro-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 肖像 + 叙述 */
+        .about-portrait-block {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .about-portrait-block.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .about-portrait-image {
+            flex: 1 1 280px;
+            position: relative;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .about-portrait-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .about-portrait-image:hover img {
+            transform: scale(1.02);
+        }
+
+        .about-portrait-text {
+            flex: 1 1 300px;
+            padding: 0 0.5rem;
+        }
+
+        .about-portrait-text h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.03em;
+        }
+
+        .about-portrait-text .subtitle {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-textMuted);
+            margin-bottom: 1.2rem;
+        }
+
+        .about-portrait-text p {
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* 作品精选 (横图大图留白画廊) */
+        .about-gallery {
+            margin: 5rem 0 3rem;
+        }
+
+        .about-gallery h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 400;
+            text-align: center;
+            color: var(--color-text);
+            letter-spacing: 0.02em;
+            margin-bottom: 2.5rem;
+        }
+
+        .about-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .about-gallery-item {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            border-radius: 3px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            background: var(--color-surface);
+        }
+
+        .about-gallery-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .about-gallery-item:hover img {
+            transform: scale(1.02);
+        }
+
+        /* 分隔装饰 */
+        .about-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--color-secondary);
+            margin: 3rem auto;
+            opacity: 0.5;
+        }
+
+        /* Footer (与首页一致) */
+        footer {
+            text-align: center;
+            padding: 2.5rem 2rem 3rem;
+            color: var(--color-textMuted);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            border-top: 1px solid rgba(125,107,93,0.12);
+            margin-top: 2rem;
+        }
+
+        footer a {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border: none;
+            color: var(--color-textMuted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin: 0 0.3rem;
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.2rem 1.5rem;
+                justify-content: center;
+            }
+            nav a {
+                margin-left: 1rem;
+                margin-right: 1rem;
+                font-size: 0.65rem;
+            }
+            .about-hero {
+                height: 55vh;
+                min-height: 300px;
+            }
+            .about-hero-overlay {
+                bottom: 2rem;
+                left: 1.5rem;
+            }
+            .about-hero-overlay h1 {
+                font-size: 2.4rem;
+            }
+            .about-content {
+                padding: 3rem 1.2rem 2rem;
+            }
+            .about-intro-text h2 {
+                font-size: 1.8rem;
+            }
+            .about-portrait-block {
+                flex-direction: column !important;
+                gap: 1.8rem;
+            }
+            .about-portrait-image {
+                flex: 1 1 auto;
+                width: 100%;
+                aspect-ratio: 3 / 4;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .about-portrait-text {
+                padding: 0;
+                text-align: center;
+            }
+            .about-gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .about-gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏（与首页完全一致） ===== -->
+    <nav>
+        <a href="index.html">作品</a>
+        <a href="about.html" class="active">关于</a>
+        <a href="gallery.html">画廊</a>
+        <a href="contact.html">联系</a>
+    </nav>
+
+    <!-- ===== 页面主体 ===== -->
+    <main class="page-about">
+
+        <!-- 全屏 Hero -->
+        <section class="about-hero">
+            <img src="https://images.pexels.com/photos/8774733/pexels-photo-8774733.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="林远山 · 风光摄影" loading="lazy">
+            <div class="about-hero-overlay">
+                <h1>林远山</h1>
+                <p>风光自然摄影师 · 山野追寻者</p>
+            </div>
+        </section>
+
+        <!-- 关于内容 (detail 布局: 垂直单列大图留白 + 居中对称) -->
+        <section class="about-content">
+
+            <!-- 简介段落 -->
+            <div class="about-intro">
+                <div class="about-intro-text">
+                    <h2>以镜头丈量天地</h2>
+                    <p>我是林远山，一名专注于风光与自然领域的摄影师。过去十年间，我的足迹遍布川西、西藏、新疆、挪威与冰岛。每一次快门的释放，都是对山河静默的回应。我相信最动人的影像不是技术的炫技，而是光、大地与等待的交汇。</p>
+                    <p>摄影之于我，是一场永不停歇的修行。从黎明前的寒风到暮色中的暖霭，我试图在宏大的自然中捕捉那些细微而永恒的瞬间。这些画面既是对地球原始之美的致敬，也是内心宁静的投射。</p>
+                </div>
+            </div>
+
+            <!-- 分隔 -->
+            <div class="about-divider"></div>
+
+            <!-- 肖像 + 叙述 区块 1 -->
+            <div class="about-portrait-block">
+                <div class="about-portrait-image">
+                    <img src="https://images.pexels.com/photos/15638351/pexels-photo-15638351.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="林远山肖像" loading="lazy">
+                </div>
+                <div class="about-portrait-text">
+                    <h3>山野间的漫游者</h3>
+                    <span class="subtitle">始于足下</span>
+                    <p>从小在山村长大，我对自然有着天然的亲近。大学毕业后，我放弃了稳定的设计工作，背起相机走进荒野。最初的日子很拮据，但每一座雪山、每一片湖泊都让我感到前所未有的充实。我学会了在恶劣天气中等待光线，在寂静的星空下与自己对话。</p>
+                </div>
+            </div>
+
+            <!-- 肖像 + 叙述 区块 2 (reverse) -->
+            <div class="about-portrait-block reverse">
+                <div class="about-portrait-image">
+                    <img src="https://images.pexels.com/photos/16008692/pexels-photo-16008692.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="林远山工作照" loading="lazy">
+                </div>
+                <div class="about-portrait-text">
+                    <h3>静默的凝视</h3>
+                    <span class="subtitle">摄影理念</span>
+                    <p>我偏爱使用大画幅相机与定焦镜头，这迫使我在每一张照片前都保持虔诚。我不追求极致的锐度与饱和度，而是注重画面中的气息——风的方向、雾的流动、岩石的纹理。我希望观看者能在我的照片中感受到一种“在场”的静谧，仿佛能听到风声与心跳。</p>
+                </div>
+            </div>
+
+            <!-- 作品精选 -->
+            <div class="about-gallery">
+                <h2>个人作品精选</h2>
+                <div class="about-gallery-grid">
+                    <div class="about-gallery-item">
+                        <img src="https://images.pexels.com/photos/16157646/pexels-photo-16157646.jpeg?auto=compress&cs=tinysrgb&h=350" alt="精选作品 01" loading="lazy">
+                    </div>
+                    <div class="about-gallery-item">
+                        <img src="https://images.pexels.com/photos/14436002/pexels-photo-14436002.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="精选作品 02" loading="lazy">
+                    </div>
+                    <div class="about-gallery-item">
+                        <img src="https://images.pexels.com/photos/6899822/pexels-photo-6899822.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="精选作品 03" loading="lazy">
+                    </div>
+                    <div class="about-gallery-item">
+                        <img src="https://images.pexels.com/photos/13781032/pexels-photo-13781032.jpeg?auto=compress&cs=tinysrgb&h=350" alt="精选作品 04" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-divider"></div>
+
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (与首页一致) ===== -->
+    <footer>
+        <a href="index.html">作品</a>
+        <a href="about.html">关于</a>
+        <a href="gallery.html">画廊</a>
+        <a href="contact.html">联系</a>
+        <p style="margin-top: 1.5rem; opacity: 0.6;">&copy; 2025 林远山 · 风光摄影</p>
+    </footer>
+
+</body>
+</html>
