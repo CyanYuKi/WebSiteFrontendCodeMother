@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 — 光影句</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1A1A1A;
+            --color-secondary: #D4D0C8;
+            --color-background: #F7F5F2;
+            --color-surface: #FFFFFF;
+            --color-text: #1C1C1C;
+            --color-text-muted: #7A756D;
+            --color-accent: #B89B5A;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --spacing-unit: 8px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.25s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 40px;
+            background: rgba(247, 245, 242, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--color-text);
+            opacity: 1;
+            border: none;
+            background: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .navbar-logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            aspect-ratio: 1/1;
+        }
+
+        .navbar-logo span {
+            font-size: 1.1rem;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--color-text);
+            opacity: 0.75;
+            border: none;
+            background: none;
+            padding: 4px 0;
+            border-radius: 0;
+            position: relative;
+            transition: opacity 0.2s;
+        }
+
+        .navbar-links a:hover {
+            opacity: 1;
+        }
+
+        .navbar-links a.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .navbar-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--color-accent);
+        }
+
+        .navbar-cta {
+            padding: 10px 28px;
+            border: 1px solid var(--color-primary);
+            border-radius: 30px;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            background: transparent;
+            color: var(--color-primary);
+            transition: background 0.3s, color 0.3s;
+            opacity: 1;
+        }
+
+        .navbar-cta:hover {
+            background: var(--color-primary);
+            color: var(--color-surface);
+            opacity: 1;
+        }
+
+        /* ===== 联系页面布局 (form layout) ===== */
+        .contact-page {
+            padding-top: 100px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-container {
+            max-width: 1120px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 60px 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        /* 左侧表单区 */
+        .contact-form-wrapper {
+            flex: 1 1 480px;
+            min-width: 300px;
+        }
+
+        .contact-form-wrapper h1 {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .contact-form-wrapper .subtitle {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            margin-bottom: 40px;
+            border-left: 3px solid var(--color-accent);
+            padding-left: 16px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .form-row .form-group {
+            flex: 1 1 200px;
+            min-width: 160px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            padding: 12px 16px;
+            border: 1px solid var(--color-secondary);
+            border-radius: 6px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 2px rgba(184, 155, 90, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237A756D' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .submit-btn {
+            align-self: flex-start;
+            margin-top: 8px;
+            padding: 14px 48px;
+            border: 1px solid var(--color-primary);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            background: var(--color-primary);
+            color: var(--color-surface);
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+            font-family: var(--font-body);
+            font-weight: 500;
+        }
+
+        .submit-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-surface);
+        }
+
+        /* 右侧信息区 */
+        .contact-info-wrapper {
+            flex: 0 0 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding-top: 120px;
+        }
+
+        .contact-info-block {
+            background: var(--color-surface);
+            padding: 32px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .contact-info-block h3 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.02em;
+            color: var(--color-primary);
+            border-bottom: 1px solid var(--color-secondary);
+            padding-bottom: 12px;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            color: var(--color-text);
+        }
+
+        .contact-info-item .icon {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: var(--color-accent);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .contact-info-item .text {
+            line-height: 1.5;
+        }
+
+        .contact-info-item .label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--color-secondary);
+            color: var(--color-text);
+            font-size: 1rem;
+            transition: background 0.25s, color 0.25s, border-color 0.25s;
+            opacity: 1;
+            padding: 0;
+            background: none;
+        }
+
+        .social-links a:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-surface);
+        }
+
+        .contact-image-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .contact-image-wrap img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ===== Footer ===== */
+        .site-footer {
+            background: var(--color-primary);
+            color: var(--color-secondary);
+            padding: 48px 40px 40px;
+            margin-top: 0;
+        }
+
+        .footer-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .footer-inner .footer-brand {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+            color: var(--color-surface);
+            opacity: 0.8;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            color: var(--color-secondary);
+            opacity: 0.7;
+            border: none;
+            background: none;
+            padding: 0;
+            border-radius: 0;
+            transition: opacity 0.2s;
+        }
+
+        .footer-nav a:hover {
+            opacity: 1;
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            opacity: 0.6;
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 14px 20px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .navbar-links {
+                gap: 16px;
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                padding-top: 8px;
+                border-top: 1px solid rgba(0,0,0,0.05);
+            }
+
+            .navbar-links a {
+                font-size: 0.78rem;
+            }
+
+            .navbar-cta {
+                font-size: 0.7rem;
+                padding: 8px 18px;
+            }
+
+            .contact-container {
+                padding: 40px 20px;
+                gap: 40px;
+                flex-direction: column;
+            }
+
+            .contact-form-wrapper h1 {
+                font-size: 2.2rem;
+            }
+
+            .contact-info-wrapper {
+                padding-top: 0;
+                flex: 1 1 auto;
+                width: 100%;
+            }
+
+            .contact-info-wrapper {
+                flex-direction: column-reverse;
+            }
+
+            .submit-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .site-footer {
+                padding: 32px 20px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .form-row .form-group {
+                flex: 1 1 100%;
+                min-width: unset;
+            }
+
+            .contact-form-wrapper h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" role="navigation">
+        <a href="index.html" class="navbar-logo">
+            <img src="https://images.pexels.com/photos/1208360/pexels-photo-1208360.jpeg?auto=compress&cs=tinysrgb&w=80&h=80" alt="logo" loading="eager">
+            <span>光影句</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="portfolio.html">作品</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="contact.html" class="active">联系</a></li>
+        </ul>
+        <a href="contact.html" class="navbar-cta">预约拍摄</a>
+    </nav>
+
+    <!-- 联系页面主体 -->
+    <main class="contact-page">
+        <div class="contact-container">
+            <!-- 左侧：联系表单 -->
+            <div class="contact-form-wrapper">
+                <h1>让我们聊聊<br>你的故事</h1>
+                <p class="subtitle">填写下方信息，我们会尽快与你联系</p>
+
+                <form class="contact-form" action="#" method="post">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" name="name" placeholder="你的名字" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="shoot-type">拍摄类型</label>
+                            <select id="shoot-type" name="shoot_type">
+                                <option value="" disabled selected>选择类型</option>
+                                <option value="portrait">人像写真</option>
+                                <option value="wedding">婚礼纪实</option>
+                                <option value="commercial">商业广告</option>
+                                <option value="event">活动记录</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">期望日期</label>
+                            <input type="date" id="date" name="date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">留言</label>
+                        <textarea id="message" name="message" placeholder="分享你的想法、需求或任何想说的……" rows="5"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">发送消息</button>
+                </form>
+            </div>
+
+            <!-- 右侧：联系信息 + 社交媒体 -->
+            <div class="contact-info-wrapper">
+                <div class="contact-image-wrap">
+                    <img src="https://images.pexels.com/photos/8472496/pexels-photo-8472496.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="摄影工作室环境" loading="lazy">
+                </div>
+
+                <div class="contact-info-block">
+                    <h3>联系信息</h3>
+                    <div class="contact-info-item">
+                        <span class="icon">&#9993;</span>
+                        <div class="text">
+                            <span class="label">邮箱</span>
+                            hello@guangyingju.com
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <span class="icon">&#9742;</span>
+                        <div class="text">
+                            <span class="label">电话</span>
+                            +86 21 6888 8888
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <span class="icon">&#9906;</span>
+                        <div class="text">
+                            <span class="label">地址</span>
+                            上海市徐汇区衡山路 88 号<br>光隐艺术空间 3F
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-info-block">
+                    <h3>社交媒体</h3>
+                    <div class="social-links">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a>
+                        <a href="https://weibo.com" target="_blank" rel="noopener noreferrer" aria-label="Weibo">微</a>
+                        <a href="https://xiaohongshu.com" target="_blank" rel="noopener noreferrer" aria-label="小红书">红</a>
+                        <a href="https://weixin.qq.com" target="_blank" rel="noopener noreferrer" aria-label="微信">信</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">光影句</div>
+            <div class="footer-nav">
+                <a href="index.html">首页</a>
+                <a href="portfolio.html">作品</a>
+                <a href="about.html">关于</a>
+                <a href="contact.html">联系</a>
+            </div>
+            <div class="footer-copy">&copy; 2025 光影句 · 静候光影</div>
+        </div>
+    </footer>
+</body>
+</html>
