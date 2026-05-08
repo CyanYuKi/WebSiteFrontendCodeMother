@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>联系山屿茶 · 联系我们</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #C48B5C;
+      --color-secondary: #E5D0C1;
+      --color-background: #FAF6F2;
+      --color-surface: #FFFFFF;
+      --color-text: #2D2420;
+      --color-textMuted: #8A7B74;
+      --color-accent: #6B9080;
+      --font-heading: 'DM Serif Display', 'Noto Serif SC', serif;
+      --font-body: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --spacing-unit: 0.5rem;
+      --container-max: 1200px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+
+    /* 导航栏样式（与首页一致） */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(250, 246, 242, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(196, 139, 92, 0.15);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .logo span {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      color: var(--color-text);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2.2rem;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--color-textMuted);
+      position: relative;
+      padding-bottom: 0.25rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--color-primary);
+    }
+
+    .nav-links li a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: var(--color-primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links li a:hover::after,
+    .nav-links li a.active::after {
+      width: 100%;
+    }
+
+    /* 页面主体容器 */
+    .contact-page {
+      padding-top: 6rem;
+      padding-bottom: 3rem;
+    }
+
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* 页面标题 */
+    .page-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-heading);
+      font-size: 2.6rem;
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      font-size: 1.05rem;
+      color: var(--color-textMuted);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* 表单布局：两栏式结构 */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* 左侧：门店信息 + 地图占位 */
+    .contact-info-block {
+      background: var(--color-surface);
+      border-radius: 24px;
+      padding: 2rem 2rem 2.5rem 2rem;
+      box-shadow: 0 8px 30px rgba(45, 36, 32, 0.05);
+    }
+
+    .contact-info-block h2 {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+    }
+
+    .map-placeholder {
+      width: 100%;
+      height: 220px;
+      background: var(--color-secondary);
+      border-radius: 16px;
+      margin-bottom: 1.8rem;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-textMuted);
+      font-size: 0.9rem;
+    }
+
+    .map-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .store-details {
+      margin-bottom: 1.5rem;
+    }
+
+    .store-details .detail-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+
+    .detail-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .store-details .detail-text {
+      font-size: 0.95rem;
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    .store-details .detail-text span {
+      color: var(--color-textMuted);
+      font-size: 0.85rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(45, 36, 32, 0.06);
+    }
+
+    .social-links a {
+      display: inline-flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem 1.2rem;
+      background: var(--color-background);
+      border-radius: 40px;
+      font-size: 0.9rem;
+      color: var(--color-text);
+      transition: all 0.25s ease;
+      font-weight: 500;
+    }
+
+    .social-links a:hover {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    /* 右侧：在线表单 + 加盟咨询入口 */
+    .contact-form-block {
+      background: var(--color-surface);
+      border-radius: 24px;
+      padding: 2rem 2rem 2.5rem 2rem;
+      box-shadow: 0 8px 30px rgba(45, 36, 32, 0.05);
+    }
+
+    .contact-form-block h2 {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      background: var(--color-background);
+      border: 1px solid rgba(45, 36, 32, 0.08);
+      border-radius: 12px;
+      color: var(--color-text);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(196, 139, 92, 0.15);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.85rem 2.5rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: #b07a4e;
+      transform: translateY(-2px);
+    }
+
+    .franchise-card {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(45, 36, 32, 0.06);
+      background: var(--color-background);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .franchise-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+      color: var(--color-text);
+    }
+
+    .franchise-card p {
+      font-size: 0.9rem;
+      color: var(--color-textMuted);
+      margin-bottom: 1rem;
+    }
+
+    .franchise-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.8rem;
+      background: transparent;
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-accent);
+      border-radius: 40px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.25s ease, color 0.25s ease;
+      cursor: pointer;
+    }
+
+    .franchise-btn:hover {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    /* 页脚（与首页保持一致风格） */
+    .footer {
+      background: var(--color-text);
+      color: rgba(255, 255, 255, 0.7);
+      padding: 2.5rem 2rem;
+      margin-top: 3rem;
+    }
+
+    .footer-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.6);
+      transition: color 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.03em;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.8rem 1.5rem;
+      }
+      .nav-links {
+        gap: 1.2rem;
+      }
+      .nav-links li a {
+        font-size: 0.85rem;
+      }
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .contact-info-block,
+      .contact-form-block {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        gap: 0.8rem;
+      }
+      .nav-links li a {
+        font-size: 0.8rem;
+      }
+      .logo span {
+        font-size: 1rem;
+      }
+      .page-header h1 {
+        font-size: 1.7rem;
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <!-- 导航栏（与首页结构完全一致，active标记当前页） -->
+ <nav class="navbar">
+    <div class="logo">
+      <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/0c/20260508/c70535fc/ce52bc3b-584b-41f4-be81-d45ddb8eafdc-1.png?Expires=1778304599&OSSAccessKeyId=STS.NZQ5Q4TUNnLVwtgSyWT9GsLn2&Signature=4NlwOGlbIMoi2eTRpZzXGC7XuJ8%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nkfuuAuYpv2Y69dVLWt3kCWLZrnInF0Dz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb40JTbDiM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGwk5MNwyeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET3dIq8zCuU5wGoABo0Bb9vPT8T8Rc%2FDDLR%2FvyHjXeQLAs2xrMxMjECASTBOOTr5vU%2BEB4nagm6YW8l7298uYiK8RgAyRttewR5JQ7qG6ssHgNLpHfTzROSD3StkG3XuyfMBciNXyj5ZceTLhWNyTy%2F6VA9J4AKrt2gkOtwn0qYj0Kjjd8KziMMEkQNIgAA%3D%3D" alt="山屿茶 logo" loading="eager">
+      <span>山屿茶</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="shop.html">线上商城</a></li>
+      <li><a href="contact.html" class="active">联系我们</a></li>
+    </ul>
+ </nav>
+
+ <!-- 主体内容 -->
+ <main class="contact-page">
+    <div class="container">
+      <!-- 页面标题 -->
+      <div class="page-header">
+        <h1>与我们联系</h1>
+        <p>无论是一杯好茶的建议，还是加盟合作的意向，我们都期待你的声音。</p>
+      </div>
+
+      <!-- 双栏表单布局 -->
+      <div class="contact-grid">
+        <!-- 左侧：门店地址地图 -->
+        <div class="contact-info-block">
+          <h2>门店地址</h2>
+          <div class="map-placeholder">
+            <img src="https://images.pexels.com/photos/9101747/pexels-photo-9101747.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="门店位置地图" loading="lazy">
+          </div>
+          <div class="store-details">
+            <div class="detail-item">
+              <div class="detail-icon">📍</div>
+              <div class="detail-text">杭州市西湖区龙井路88号 山屿茶总部<br><span>（龙井茶园旁，停车位充足）</span></div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">🕐</div>
+              <div class="detail-text">每日 09:00 – 21:00<br><span>节假日正常营业</span></div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">📞</div>
+              <div class="detail-text">0571-8789 2365<br><span>客服在线时间 09:00–18:00</span></div>
+            </div>
+          </div>
+          <div class="social-links">
+            <a href="https://weixin.qq.com/" target="_blank" rel="noopener noreferrer">微信</a>
+            <a href="https://weibo.com/" target="_blank" rel="noopener noreferrer">微博</a>
+            <a href="https://www.xiaohongshu.com/" target="_blank" rel="noopener noreferrer">小红书</a>
+          </div>
+        </div>
+
+        <!-- 右侧：在线客服表单 + 加盟咨询入口 -->
+        <div class="contact-form-block">
+          <h2>在线留言</h2>
+          <form action="#" method="post">
+            <div class="form-group">
+              <label for="name">您的姓名</label>
+              <input type="text" id="name" name="name" placeholder="如：张山" required>
+            </div>
+            <div class="form-group">
+              <label for="email">电子邮箱</label>
+              <input type="email" id="email" name="email" placeholder="example@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="subject">主题</label>
+              <select id="subject" name="subject">
+                <option value="">请选择咨询类型</option>
+                <option value="product">产品反馈</option>
+                <option value="franchise">加盟合作</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">留言内容</label>
+              <textarea id="message" name="message" placeholder="请写下你想说的话…" required></textarea>
+            </div>
+            <button type="submit" class="btn-submit">发送留言</button>
+          </form>
+
+          <!-- 加盟咨询入口 -->
+          <div class="franchise-card">
+            <h3>🙌 加盟咨询</h3>
+            <p>如果你希望成为山屿茶的合作伙伴，我们已准备好完善的加盟支持体系。留下信息，招商经理将在2个工作日内联系你。</p>
+            <a href="#" class="franchise-btn">立即了解加盟政策</a>
+          </div>
+        </div>
+      </div>
+    </div>
+ </main>
+
+ <!-- 页脚（与首页风格一致，保留导航链接） -->
+ <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="shop.html">线上商城</a>
+        <a href="contact.html">联系我们</a>
+        <a href="#" target="_blank" rel="noopener noreferrer">隐私政策</a>
+      </div>
+      <div class="footer-copy">© 2025 山屿茶 · 自然本味</div>
+    </div>
+ </footer>
+
+</body>
+</html>

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系 · Vanguard Arms</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,400;87.5,600;87.5,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2B3A30;
+            --color-secondary: #1A1F1C;
+            --color-background: #0B0D0E;
+            --color-surface: #16191C;
+            --color-text: #E8EAED;
+            --color-textMuted: #7A818A;
+            --color-accent: #D4AF37;
+            --font-heading: Archivo, sans-serif;
+            --font-body: Plus Jakarta Sans, sans-serif;
+            --spacing-unit: 8px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        /* ===== 导航栏（与首页完全一致） ===== */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 18px 48px;
+            background: linear-gradient(180deg, rgba(11, 13, 14, 0.95) 60%, transparent);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            gap: 28px;
+        }
+
+        .main-nav a {
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            position: relative;
+            transition: color var(--transition);
+            padding: 0;
+            background: transparent !important;
+            border-radius: 0;
+            font-weight: 400;
+        }
+
+        .main-nav a:hover {
+            color: var(--color-text);
+        }
+
+        .main-nav a.nav-cta {
+            background: var(--color-accent) !important;
+            color: var(--color-secondary) !important;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .main-nav a.nav-cta:hover {
+            background: #c49f2f !important;
+            color: var(--color-secondary) !important;
+        }
+
+        .main-nav a.nav-cta.active {
+            background: var(--color-accent) !important;
+            color: var(--color-secondary) !important;
+            opacity: 1;
+        }
+
+        .main-nav a.active {
+            color: var(--color-accent);
+        }
+
+        /* ===== 页脚（与首页一致） ===== */
+        .site-footer {
+            background-color: var(--color-secondary);
+            padding: 40px 48px 32px;
+            border-top: 1px solid rgba(212, 175, 55, 0.12);
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .footer-inner .footer-links {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .footer-inner a {
+            color: var(--color-textMuted);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            transition: color var(--transition);
+            font-family: var(--font-body);
+            text-transform: none;
+            background: none !important;
+            padding: 0;
+            border-radius: 0;
+            font-weight: 400;
+        }
+
+        .footer-inner a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-inner .copyright {
+            color: var(--color-textMuted);
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* ===== Contact 页面专属样式 (layout: form) ===== */
+        .contact-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hero 区 — 使用 contact 配图作背景 */
+        .contact-hero {
+            position: relative;
+            width: 100%;
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 140px 48px 80px;
+        }
+
+        .contact-hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.3) contrast(1.1);
+            z-index: 0;
+        }
+
+        .contact-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(11, 13, 14, 0.85) 30%, rgba(11, 13, 14, 0.4) 70%);
+            z-index: 1;
+        }
+
+        .contact-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 720px;
+        }
+
+        .contact-hero-content h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--color-text);
+            margin-bottom: 16px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .contact-hero-content h1 span {
+            color: var(--color-accent);
+        }
+
+        .contact-hero-content p {
+            font-size: 1.1rem;
+            color: var(--color-textMuted);
+            max-width: 520px;
+            margin: 0 auto 32px;
+            font-weight: 300;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-badges .badge-item {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            border-left: 2px solid var(--color-accent);
+            padding-left: 14px;
+            opacity: 0.85;
+        }
+
+        /* 主体网格: 左侧表单 + 右侧信息卡片 */
+        .contact-main-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 48px 100px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+            width: 100%;
+        }
+
+        /* 左侧联系表单 */
+        .contact-form-card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 48px 40px;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .contact-form-card h2 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .contact-form-card .form-sub {
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+            font-weight: 300;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background-color: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--color-text);
+            outline: none;
+            transition: border-color var(--transition), background var(--transition);
+            width: 100%;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--color-accent);
+            background-color: rgba(212, 175, 55, 0.06);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%237A818A'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            background-color: var(--color-secondary);
+            color: var(--color-text);
+        }
+
+        .btn-submit {
+            background: var(--color-accent);
+            color: var(--color-secondary);
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 14px 32px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background var(--transition), transform 0.2s;
+            align-self: flex-start;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            background: #c49f2f;
+            transform: translateY(-1px);
+        }
+
+        /* 右侧信息区块 */
+        .contact-info-side {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .info-card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .info-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-accent);
+            letter-spacing: 0.06em;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .info-card p,
+        .info-card a {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.7;
+            display: block;
+        }
+
+        .info-card a {
+            color: var(--color-text);
+            transition: color var(--transition);
+            background: none !important;
+            padding: 0;
+            border-radius: 0;
+            font-weight: 400;
+            font-family: var(--font-body);
+            letter-spacing: 0;
+            text-transform: none;
+            font-size: 0.95rem;
+        }
+
+        .info-card a:hover {
+            color: var(--color-accent);
+        }
+
+        .info-card .phone-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .info-card .phone-row::before {
+            content: "📞";
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .info-card .email-row::before {
+            content: "✉";
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .info-card .email-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .divider-light {
+            height: 1px;
+            background: rgba(212, 175, 55, 0.1);
+            margin: 18px 0;
+        }
+
+        /* 全球经销商列表 */
+        .dealer-list {
+            margin-top: 12px;
+        }
+
+        .dealer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .dealer-item:last-child {
+            border-bottom: none;
+        }
+
+        .dealer-item .region {
+            font-weight: 500;
+            color: var(--color-text);
+            font-size: 0.9rem;
+        }
+
+        .dealer-item .location {
+            color: var(--color-textMuted);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        /* 预约演示 / 批量采购入口 */
+        .cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .cta-group .cta-btn {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 14px 20px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            transition: background var(--transition), border-color var(--transition);
+            text-align: center;
+            display: block;
+            background: none !important;
+            font-weight: 500;
+        }
+
+        .cta-group .cta-btn:hover {
+            background: rgba(212, 175, 55, 0.08) !important;
+            border-color: var(--color-accent);
+        }
+
+        .cta-group .cta-btn.primary-cta {
+            background: var(--color-accent) !important;
+            color: var(--color-secondary) !important;
+            border-color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        .cta-group .cta-btn.primary-cta:hover {
+            background: #c49f2f !important;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 900px) {
+            .contact-main-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 60px 24px 80px;
+            }
+            .main-nav {
+                padding: 16px 24px;
+                gap: 20px;
+            }
+            .contact-hero {
+                padding: 120px 24px 60px;
+                min-height: 40vh;
+            }
+            .contact-hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .contact-form-card {
+                padding: 32px 24px;
+            }
+            .site-footer {
+                padding: 32px 24px 24px;
+            }
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            .footer-inner .footer-links {
+                justify-content: center;
+            }
+            .hero-badges {
+                gap: 20px;
+            }
+            .info-card {
+                padding: 24px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .contact-hero-content h1 {
+                font-size: 1.8rem;
+            }
+            .main-nav {
+                padding: 14px 16px;
+                gap: 16px;
+            }
+            .main-nav a {
+                font-size: 0.65rem;
+                letter-spacing: 0.08em;
+            }
+            .main-nav a.nav-cta {
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-wrapper">
+        <!-- 导航栏（与首页完全一致） -->
+        <nav class="main-nav">
+            <a href="index.html">首页</a>
+            <a href="about.html">品牌</a>
+            <a href="products.html">产品</a>
+            <a href="contact.html" class="nav-cta active">联系</a>
+        </nav>
+
+        <!-- Contact Hero 背景图 -->
+        <section class="contact-hero">
+            <img class="contact-hero-bg" src="https://images.pexels.com/photos/9067690/pexels-photo-9067690.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系区配图">
+            <div class="contact-hero-overlay"></div>
+            <div class="contact-hero-content">
+                <h1>建立<span>联系</span></h1>
+                <p>专业咨询 · 全球服务 · 精密火力支援。我们的团队随时准备为您提供支持。</p>
+                <div class="hero-badges">
+                    <span class="badge-item">24/7 热线</span>
+                    <span class="badge-item">全球经销</span>
+                    <span class="badge-item">专属演示</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主网格: 表单 + 信息 -->
+        <div class="contact-main-grid">
+            <!-- 左侧表单 -->
+            <div class="contact-form-card">
+                <h2>发送问询</h2>
+                <p class="form-sub">填写以下信息，我们的专家将在 24 小时内与您取得联系。</p>
+                <form class="contact-form" action="#" method="post">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" name="name" placeholder="您的姓名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">公司 / 机构</label>
+                            <input type="text" id="company" name="company" placeholder="可选">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">电子邮箱</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">电话</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+1 555 123 4567">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">主题</label>
+                        <select id="subject" name="subject">
+                            <option value="">请选择</option>
+                            <option value="demo">预约演示</option>
+                            <option value="bulk">批量采购咨询</option>
+                            <option value="service">售后服务</option>
+                            <option value="dealer">经销商合作</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">留言</label>
+                        <textarea id="message" name="message" placeholder="请描述您的需求……"></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">发送消息</button>
+                </form>
+            </div>
+
+            <!-- 右侧信息 -->
+            <div class="contact-info-side">
+                <!-- 服务热线 / 邮箱 -->
+                <div class="info-card">
+                    <h3>直接联系</h3>
+                    <div class="phone-row">
+                        <span>+1 (800) 555‑0199</span>
+                    </div>
+                    <div class="email-row">
+                        <a href="mailto:contact@vanguardarms.com">contact@vanguardarms.com</a>
+                    </div>
+                    <div class="divider-light"></div>
+                    <p style="font-size:0.85rem; color:var(--color-textMuted);">总部：瑞士苏黎世 · 全球运营</p>
+                </div>
+
+                <!-- 全球经销商列表 -->
+                <div class="info-card">
+                    <h3>全球经销商</h3>
+                    <div class="dealer-list">
+                        <div class="dealer-item">
+                            <span class="region">北美</span>
+                            <span class="location">休斯顿 · 多伦多</span>
+                        </div>
+                        <div class="dealer-item">
+                            <span class="region">欧洲</span>
+                            <span class="location">苏黎世 · 慕尼黑 · 伦敦</span>
+                        </div>
+                        <div class="dealer-item">
+                            <span class="region">亚太</span>
+                            <span class="location">新加坡 · 东京 · 悉尼</span>
+                        </div>
+                        <div class="dealer-item">
+                            <span class="region">中东</span>
+                            <span class="location">迪拜 · 阿布扎比</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 预约演示 / 批量采购入口 -->
+                <div class="info-card">
+                    <h3>专属服务</h3>
+                    <p style="font-size:0.9rem; margin-bottom:12px;">预约现场性能演示或咨询批量采购方案。</p>
+                    <div class="cta-group">
+                        <a href="mailto:demo@vanguardarms.com?subject=预约演示" class="cta-btn" target="_blank" rel="noopener noreferrer">预约演示</a>
+                        <a href="mailto:bulk@vanguardarms.com?subject=批量采购咨询" class="cta-btn primary-cta" target="_blank" rel="noopener noreferrer">批量采购咨询</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚（与首页一致） -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="about.html">品牌</a>
+                <a href="products.html">产品</a>
+                <a href="contact.html">联系</a>
+            </div>
+            <span class="copyright">© 2025 Vanguard Arms · 保留所有权利</span>
+        </div>
+    </footer>
+</body>
+</html>

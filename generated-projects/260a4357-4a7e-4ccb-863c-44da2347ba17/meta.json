@@ -1,0 +1,10 @@
+{
+  "projectId" : "260a4357-4a7e-4ccb-863c-44da2347ba17",
+  "originalInput" : "为产品页面再增加几个狙击枪的item",
+  "projectName" : null,
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>ARMS FOCUS | 精密装备</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap\" rel=\"stylesheet\">\n    <styl...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#2B3A30\",\n    \"secondary\": \"#1A1F1C\",\n    \"background\": \"#0B0D0E\",\n    \"surface\": \"#16191C\",\n    \"text\": \"#E8EAED\",\n    \"textMuted\": \"#7A818A\",\n    \"accent\": \"#D4AF37\"\n  },\n  \"typography\": {\n    \"headingFont\": \"Archivo, sans-serif\",\n    \"bodyFont\": \"Plus Jakarta Sans, sans-serif\",\n    \"scale\": 1.333\n  },\n  \"spacing\": {\n    \"unit\": \"8px\",\n    \"scale\": 1.5\n  },\n  \"layoutDirection\": \"全宽沉浸式暗色Hero + 居中网格画廊 + 侧边悬浮规格参数 + 底部联系区\",\n  \"mood\": \"冷峻精密, 工业美学, 沉稳专业\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 1,
+  "createdAt" : [ 2026, 5, 8, 16, 57, 4, 839917800 ]
+}

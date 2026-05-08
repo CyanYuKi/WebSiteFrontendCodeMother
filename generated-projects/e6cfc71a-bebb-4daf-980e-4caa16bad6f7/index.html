@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>山屿茶 · 自然手作奶茶</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+ <style>
+    :root {
+      --color-primary: #C48B5C;
+      --color-secondary: #E5D0C1;
+      --color-background: #FAF6F2;
+      --color-surface: #FFFFFF;
+      --color-text: #2D2420;
+      --color-textMuted: #8A7B74;
+      --color-accent: #6B9080;
+      --font-heading: 'DM Serif Display', 'Noto Serif SC', serif;
+      --font-body: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+      --spacing-unit: 0.5rem;
+      --container-max: 1200px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+
+    a:hover {
+      opacity: 0.7;
+    }
+
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ─── Navigation ─── */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(250, 246, 242, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(197, 139, 92, 0.1);
+    }
+
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .navbar .logo img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .navbar .logo span {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: var(--color-primary);
+      letter-spacing: 0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--color-textMuted);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 0.25rem;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--color-primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: brightness(0.75) saturate(1.05);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(250, 246, 242, 0) 0%,
+        rgba(250, 246, 242, 0.15) 50%,
+        rgba(250, 246, 242, 0.85) 100%
+      );
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 720px;
+    }
+
+    .hero-content h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      color: var(--color-surface);
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.92);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2.5rem;
+      border-radius: 40px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-surface);
+      box-shadow: 0 4px 14px rgba(196, 139, 92, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196, 139, 92, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--color-surface);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--color-surface);
+    }
+
+    /* ─── Arc transition ─── */
+    .arc-divider {
+      position: relative;
+      margin-top: -6vw;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .arc-divider svg {
+      display: block;
+      width: 100%;
+      height: 8vw;
+      fill: var(--color-background);
+    }
+
+    /* ─── Section common ─── */
+    section {
+      padding: 5rem 0;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--color-primary);
+      text-align: center;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--color-textMuted);
+      max-width: 560px;
+      margin: 0 auto 3.5rem;
+      font-size: 1.05rem;
+      font-weight: 400;
+    }
+
+    /* ─── Features (双栏) ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .features-image {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(45, 36, 32, 0.08);
+      aspect-ratio: 3 / 4;
+    }
+
+    .features-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .features-image:hover img {
+      transform: scale(1.04);
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1.25rem 1.5rem;
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(45, 36, 32, 0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(45, 36, 32, 0.06);
+    }
+
+    .feature-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--color-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: var(--color-primary);
+    }
+
+    .feature-text h3 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+      color: var(--color-text);
+    }
+
+    .feature-text p {
+      color: var(--color-textMuted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ─── Gallery (交错网格) ─── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-auto-rows: 240px;
+      gap: 1.25rem;
+    }
+
+    .gallery-grid .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-grid .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-grid .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .gallery-item:first-child {
+      grid-row: span 2;
+    }
+
+    .gallery-item:nth-child(2) {
+      grid-column: span 1;
+    }
+
+    .gallery-item:nth-child(3) {
+      grid-column: span 1;
+    }
+
+    .gallery-item:nth-child(4) {
+      grid-column: span 2;
+    }
+
+    /* ─── Testimonial ─── */
+    .testimonial-card {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border-radius: 24px;
+      padding: 2.5rem 3rem;
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(45, 36, 32, 0.05);
+    }
+
+    .testimonial-avatar {
+      flex-shrink: 0;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--color-secondary);
+    }
+
+    .testimonial-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .testimonial-content blockquote {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--color-text);
+      margin-bottom: 0.75rem;
+      line-height: 1.7;
+    }
+
+    .testimonial-content cite {
+      font-style: normal;
+      color: var(--color-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      background: var(--color-primary);
+      margin: 0;
+      padding: 5rem 0;
+      position: relative;
+    }
+
+    .cta-section .container {
+      text-align: center;
+      color: var(--color-surface);
+    }
+
+    .cta-section h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+      font-size: 1.05rem;
+    }
+
+    .cta-section .btn-primary {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      box-shadow: none;
+    }
+
+    .cta-section .btn-primary:hover {
+      background: var(--color-secondary);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      background: var(--color-text);
+      color: rgba(255, 255, 255, 0.7);
+      padding: 3rem 0 2rem;
+      font-size: 0.9rem;
+    }
+
+    footer .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    footer .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    footer .footer-links a {
+      color: rgba(255, 255, 255, 0.6);
+      transition: color 0.3s ease;
+    }
+
+    footer .footer-links a:hover {
+      color: var(--color-secondary);
+    }
+
+    footer .copyright {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .features-image {
+        aspect-ratio: 16 / 9;
+        order: -1;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 200px;
+      }
+
+      .gallery-item:first-child {
+        grid-row: span 1;
+        grid-column: span 2;
+      }
+
+      .gallery-item:nth-child(4) {
+        grid-column: span 2;
+      }
+
+      .testimonial-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+      }
+
+      .navbar {
+        padding: 0.75rem 1.25rem;
+      }
+
+      .nav-links {
+        gap: 1.25rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-content h1 {
+        font-size: 2.8rem;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 220px;
+      }
+
+      .gallery-item:first-child,
+      .gallery-item:nth-child(4) {
+        grid-column: span 1;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      footer .container {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+ </style>
+</head>
+<body>
+
+ <!-- Navigation -->
+ <nav class="navbar">
+    <div class="logo">
+      <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/0c/20260508/c70535fc/ce52bc3b-584b-41f4-be81-d45ddb8eafdc-1.png?Expires=1778304599&OSSAccessKeyId=STS.NZQ5Q4TUNnLVwtgSyWT9GsLn2&Signature=4NlwOGlbIMoi2eTRpZzXGC7XuJ8%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nkfuuAuYpv2Y69dVLWt3kCWLZrnInF0Dz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb40JTbDiM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGwk5MNwyeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET3dIq8zCuU5wGoABo0Bb9vPT8T8Rc%2FDDLR%2FvyHjXeQLAs2xrMxMjECASTBOOTr5vU%2BEB4nagm6YW8l7298uYiK8RgAyRttewR5JQ7qG6ssHgNLpHfTzROSD3StkG3XuyfMBciNXyj5ZceTLhWNyTy%2F6VA9J4AKrt2gkOtwn0qYj0Kjjd8KziMMEkQNIgAA%3D%3D" alt="山屿茶 logo" loading="eager">
+      <span>山屿茶</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">本味</a></li>
+      <li><a href="#gallery">集锦</a></li>
+      <li><a href="#testimonial">茶语</a></li>
+      <li><a href="shop.html">线上商城</a></li>
+    </ul>
+ </nav>
+
+ <!-- Hero -->
+ <section class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="https://images.pexels.com/photos/7407330/pexels-photo-7407330.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="山屿茶主视觉" loading="eager">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>山屿之间<br>一杯自然</h1>
+      <p>源自山野的纯粹茶香，手作现制的温暖甜润。每一口都是自然的馈赠。</p>
+      <div class="hero-cta">
+        <a href="#features" class="btn btn-primary">探索本味</a>
+        <a href="shop.html" class="btn btn-outline">进入商城</a>
+      </div>
+    </div>
+ </section>
+
+ <!-- Arc divider -->
+ <div class="arc-divider">
+    <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+      <path d="M0,0 C300,100 900,100 1200,0 L1200,100 L0,100 Z" />
+    </svg>
+ </div>
+
+ <!-- Features -->
+ <section id="features">
+    <div class="container">
+      <h2 class="section-title">本味 · 自然</h2>
+      <p class="section-subtitle">从茶园到手中，我们珍惜每一片叶子的旅程，用温度还原最本真的味道。</p>
+      <div class="features-grid">
+        <div class="features-image">
+          <img src="https://images.pexels.com/photos/8473953/pexels-photo-8473953.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="手作茶饮" loading="eager">
+        </div>
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-icon">🌱</div>
+            <div class="feature-text">
+              <h3>高山原叶</h3>
+              <p>甄选海拔800米以上生态茶园，每一片茶叶都饱含山岚的润泽与阳光的温度。</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🥛</div>
+            <div class="feature-text">
+              <h3>鲜牛乳手作</h3>
+              <p>每日新鲜配送的本地牧场牛乳，与现萃茶汤温柔相融，奶香清甜不腻口。</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🍯</div>
+            <div class="feature-text">
+              <h3>低卡自然甜</h3>
+              <p>以天然代糖与花果草本调配甜味，不加香精与奶精，轻负担也能享受好滋味。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- Gallery -->
+ <section id="gallery">
+    <div class="container">
+      <h2 class="section-title">集锦 · 茶景</h2>
+      <p class="section-subtitle">每一杯都是一幅小景，记录着山与屿之间的温柔片刻。</p>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/8455889/pexels-photo-8455889.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶饮展示" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/14267671/pexels-photo-14267671.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="茶饮细节" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/33154241/pexels-photo-33154241.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="茶园风景" loading="lazy">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.pexels.com/photos/6412832/pexels-photo-6412832.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="手作过程" loading="lazy">
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- Testimonial -->
+ <section id="testimonial">
+    <div class="container">
+      <h2 class="section-title">茶语 · 回响</h2>
+      <p class="section-subtitle">来自山屿茶友的真实声音，每一句都让我们感动。</p>
+      <div class="testimonial-card">
+        <div class="testimonial-avatar">
+          <img src="https://images.pexels.com/photos/7968353/pexels-photo-7968353.jpeg?auto=compress&cs=tinysrgb&h=350" alt="顾客好评" loading="lazy">
+        </div>
+        <div class="testimonial-content">
+          <blockquote>“第一次喝到这么干净的奶茶，茶味很足但完全不涩，牛乳的甜润恰到好处。感觉像坐在山间的茶寮里，整个人的节奏都慢了下来。”</blockquote>
+          <cite>— 林溪，山屿茶常客</cite>
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <!-- CTA -->
+ <section class="cta-section">
+    <div class="container">
+      <h2>把山屿的味道带回家</h2>
+      <p>线上商城现已开启，全国顺丰冷运直达。在家也能享用这一杯山野自然。</p>
+      <a href="shop.html" class="btn btn-primary">前往线上商城</a>
+    </div>
+ </section>
+
+ <!-- Footer -->
+ <footer>
+    <div class="container">
+      <div class="copyright">© 2025 山屿茶 · 自然手作奶茶</div>
+      <div class="footer-links">
+        <a href="about.html">关于我们</a>
+        <a href="shop.html">线上商城</a>
+        <a href="contact.html">联系我们</a>
+      </div>
+    </div>
+ </footer>
+
+ <!-- PAGES_PLAN -->
+ <!-- PAGES_PLAN: [{"name":"shop.html","title":"线上商城","overview":"展示山屿茶全系列产品，包括高山原叶奶茶、鲜果茶、冷萃茶等品类，支持按口味分类筛选，每款产品配有图文详情与价格，支持加入购物车。","layout":"grid"},{"name":"about.html","title":"关于我们","overview":"讲述山屿茶的品牌故事、茶源产地、手作理念与创始团队，配以茶园实景与团队照片，传递温暖质朴的品牌精神。","layout":"detail"},{"name":"contact.html","title":"联系我们","overview":"提供门店地址地图、在线客服表单、加盟咨询入口与社交媒体链接，方便顾客与品牌建立联系。","layout":"form"}] -->
+</body>
+</html>

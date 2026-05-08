@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARMS FOCUS · 品牌</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2B3A30;
+            --color-secondary: #1A1F1C;
+            --color-background: #0B0D0E;
+            --color-surface: #16191C;
+            --color-text: #E8EAED;
+            --color-textMuted: #7A818A;
+            --color-accent: #D4AF37;
+            --font-heading: Archivo, sans-serif;
+            --font-body: Plus Jakarta Sans, sans-serif;
+            --spacing-unit: 8px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        /* 导航栏 */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--spacing-unit) * 4);
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+            background: rgba(11, 13, 14, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .main-nav a {
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            position: relative;
+            transition: color var(--transition);
+            padding: 4px 0;
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width var(--transition);
+        }
+
+        .main-nav a:hover {
+            color: var(--color-text);
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .main-nav a.nav-cta {
+            background: var(--color-accent) !important;
+            color: var(--color-secondary) !important;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .main-nav a.nav-cta::after {
+            display: none;
+        }
+
+        .main-nav a.nav-cta:hover {
+            background: #c49f2e !important;
+            color: var(--color-secondary) !important;
+        }
+
+        .main-nav a.active {
+            color: var(--color-accent);
+        }
+
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        /* about 页面 grid 布局 */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            padding: 0;
+            margin-top: 60px;
+        }
+
+        /* hero 区块 - 品牌起源 */
+        .about-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 70vh;
+            background: var(--color-surface);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
+        }
+
+        .about-hero-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.3) contrast(1.15);
+            transition: transform 0.6s ease, filter 0.5s ease;
+        }
+
+        .about-hero-image:hover img {
+            transform: scale(1.03);
+            filter: grayscale(0) contrast(1);
+        }
+
+        .about-hero-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 8);
+            background: linear-gradient(135deg, rgba(11,13,14,0.95) 0%, rgba(22,25,28,0.98) 100%);
+        }
+
+        .about-hero-content .section-tag {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            display: inline-block;
+            border-left: 2px solid var(--color-accent);
+            padding-left: calc(var(--spacing-unit) * 2);
+        }
+
+        .about-hero-content h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 4);
+        }
+
+        .about-hero-content h1 span {
+            color: var(--color-accent);
+        }
+
+        .about-hero-content p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            max-width: 520px;
+            line-height: 1.8;
+        }
+
+        /* 发展历程 timeline 网格 */
+        .timeline-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2px;
+            background: rgba(212, 175, 55, 0.08);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
+        }
+
+        .timeline-card {
+            background: var(--color-surface);
+            padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 5);
+            position: relative;
+            transition: background var(--transition);
+        }
+
+        .timeline-card:hover {
+            background: rgba(22, 25, 28, 0.9);
+        }
+
+        .timeline-card .year {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            line-height: 1;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            opacity: 0.7;
+        }
+
+        .timeline-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+        }
+
+        .timeline-card p {
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            line-height: 1.7;
+        }
+
+        /* 核心设计理念 + 品牌细节图 2列 */
+        .philosophy-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
+        }
+
+        .philosophy-text {
+            background: var(--color-surface);
+            padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .philosophy-text .section-tag {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            display: inline-block;
+            border-left: 2px solid var(--color-accent);
+            padding-left: calc(var(--spacing-unit) * 2);
+        }
+
+        .philosophy-text h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            letter-spacing: -0.01em;
+        }
+
+        .philosophy-text p {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.8;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .philosophy-text .principle-list {
+            list-style: none;
+            padding: 0;
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .philosophy-text .principle-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: calc(var(--spacing-unit) * 2);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+        }
+
+        .philosophy-text .principle-list li::before {
+            content: "◆";
+            color: var(--color-accent);
+            font-size: 0.6rem;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .philosophy-image {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .philosophy-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.25) contrast(1.15);
+            transition: transform 0.6s ease, filter 0.5s ease;
+        }
+
+        .philosophy-image:hover img {
+            transform: scale(1.03);
+            filter: grayscale(0) contrast(1);
+        }
+
+        /* 团队风采 - 满宽网格 */
+        .team-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
+        }
+
+        .team-image {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.3) contrast(1.1);
+            transition: transform 0.6s ease, filter 0.5s ease;
+        }
+
+        .team-image:hover img {
+            transform: scale(1.03);
+            filter: grayscale(0) contrast(1);
+        }
+
+        .team-content {
+            background: var(--color-surface);
+            padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .team-content .section-tag {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            display: inline-block;
+            border-left: 2px solid var(--color-accent);
+            padding-left: calc(var(--spacing-unit) * 2);
+        }
+
+        .team-content h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            letter-spacing: -0.01em;
+        }
+
+        .team-content p {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.8;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .team-content .team-stats {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 6);
+            margin-top: calc(var(--spacing-unit) * 3);
+            padding-top: calc(var(--spacing-unit) * 3);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .team-content .team-stats .stat-item {
+            text-align: center;
+        }
+
+        .team-content .team-stats .stat-value {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            line-height: 1;
+        }
+
+        .team-content .team-stats .stat-label {
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+            letter-spacing: 0.05em;
+            margin-top: calc(var(--spacing-unit) * 1);
+        }
+
+        /* footer 底部导航 */
+        .site-footer {
+            background: var(--color-surface);
+            padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+            border-top: 1px solid rgba(212, 175, 55, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 3);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 4);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-nav a {
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color var(--transition);
+        }
+
+        .footer-nav a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-copyright {
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+            opacity: 0.6;
+            letter-spacing: 0.05em;
+        }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .about-hero {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .about-hero-image {
+                min-height: 40vh;
+            }
+
+            .about-hero-content {
+                padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+            }
+
+            .timeline-section {
+                grid-template-columns: 1fr;
+            }
+
+            .philosophy-section {
+                grid-template-columns: 1fr;
+            }
+
+            .philosophy-image {
+                min-height: 40vh;
+                order: -1;
+            }
+
+            .team-section {
+                grid-template-columns: 1fr;
+            }
+
+            .team-image {
+                min-height: 40vh;
+                order: -1;
+            }
+
+            .team-content .team-stats {
+                gap: calc(var(--spacing-unit) * 3);
+            }
+
+            .main-nav {
+                gap: calc(var(--spacing-unit) * 2);
+                padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2);
+            }
+
+            .main-nav a {
+                font-size: 0.65rem;
+                letter-spacing: 0.08em;
+            }
+
+            .main-nav a.nav-cta {
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
+
+            .team-content {
+                padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+            }
+
+            .philosophy-text {
+                padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 4);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-nav {
+                gap: calc(var(--spacing-unit) * 1.5);
+                padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 1.5);
+                flex-wrap: wrap;
+            }
+
+            .main-nav a {
+                font-size: 0.6rem;
+            }
+
+            .about-hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .timeline-card {
+                padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 3);
+            }
+
+            .team-content .team-stats {
+                flex-direction: column;
+                gap: calc(var(--spacing-unit) * 2);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="main-nav">
+        <a href="index.html">首页</a>
+        <a href="about.html" class="active">品牌</a>
+        <a href="products.html">产品</a>
+        <a href="contact.html" class="nav-cta">联系</a>
+    </nav>
+
+    <main class="about-grid">
+        <!-- Hero 品牌起源 -->
+        <section class="about-hero">
+            <div class="about-hero-image">
+                <img 
+                    src="https://images.pexels.com/photos/6669182/pexels-photo-6669182.jpeg?auto=compress&cs=tinysrgb&h=350" 
+                    alt="ARMS FOCUS 品牌起源" 
+                    loading="lazy"
+                >
+            </div>
+            <div class="about-hero-content">
+                <span class="section-tag">起源 · 初心</span>
+                <h1>精密之魂<br><span>始于专注</span></h1>
+                <p>
+                    ARMS FOCUS 诞生于对极致精密的不懈追求。我们相信，每一件装备都是信任的承载，每一处细节都关乎使命的达成。从一间精密工坊起步，历时十余载，我们始终以冷峻理性的工程思维，重塑装备的可靠边界。
+                </p>
+            </div>
+        </section>
+
+        <!-- 发展历程 timeline -->
+        <section class="timeline-section">
+            <div class="timeline-card">
+                <div class="year">2012</div>
+                <h3>创始元年</h3>
+                <p>在瑞士苏黎世创立精密机械工作室，专注于竞赛级枪械配件的手工定制，奠定“零公差”工艺标准。</p>
+            </div>
+            <div class="timeline-card">
+                <div class="year">2016</div>
+                <h3>技术突破</h3>
+                <p>引入航空级铝合金与碳纤维复合材料，推出首个量产化战术护木系列，减重 35% 同时结构强度提升 40%。</p>
+            </div>
+            <div class="timeline-card">
+                <div class="year">2021</div>
+                <h3>全球布局</h3>
+                <p>在美国德州建立第二研发中心，与多家特种作战单位合作测试，产品覆盖 20 个国家，成为专业领域信赖品牌。</p>
+            </div>
+        </section>
+
+        <!-- 核心设计理念 + 品牌细节图 -->
+        <section class="philosophy-section">
+            <div class="philosophy-text">
+                <span class="section-tag">设计理念</span>
+                <h2>冷峻精密 · 工业美学</h2>
+                <p>
+                    每一件 ARMS FOCUS 产品都遵循“形式追随功能”的纯粹法则。我们摒弃冗余装饰，以最直接的几何语言、最严谨的工程计算，打造经得起极端环境考验的装备。
+                </p>
+                <ul class="principle-list">
+                    <li>零公差配合——每一处接口均采用 CNC 一次装夹加工，确保重复拆装精度</li>
+                    <li>极致减重——通过拓扑优化与有限元分析，在强度与重量之间找到最优解</li>
+                    <li>耐候表面——硬质阳极氧化 + 特氟龙涂层，应对盐雾、湿热、沙尘等严苛环境</li>
+                </ul>
+            </div>
+            <div class="philosophy-image">
+                <img 
+                    src="https://images.pexels.com/photos/6091659/pexels-photo-6091659.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" 
+                    alt="品牌细节与设计工艺" 
+                    loading="lazy"
+                >
+            </div>
+        </section>
+
+        <!-- 团队风采 -->
+        <section class="team-section">
+            <div class="team-image">
+                <img 
+                    src="https://images.pexels.com/photos/9229891/pexels-photo-9229891.jpeg?auto=compress&cs=tinysrgb&h=350" 
+                    alt="ARMS FOCUS 团队风采" 
+                    loading="lazy"
+                >
+            </div>
+            <div class="team-content">
+                <span class="section-tag">团队 · 匠心</span>
+                <h2>一群偏执的工程师</h2>
+                <p>
+                    我们的团队由前特种部队装备顾问、航空航天工程师和竞技射击冠军组成。平均从业经验超过 15 年，每个人都带着对“可靠”二字的极致偏执。在这里，每一个设计决策都由数据和现场反馈驱动。
+                </p>
+                <div class="team-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">15+</div>
+                        <div class="stat-label">平均年资</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">核心研发</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">全球基地</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-nav">
+            <a href="index.html">首页</a>
+            <a href="about.html">品牌</a>
+            <a href="products.html">产品</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-copyright">
+            © 2025 ARMS FOCUS · 精密装备
+        </div>
+    </footer>
+</body>
+</html>

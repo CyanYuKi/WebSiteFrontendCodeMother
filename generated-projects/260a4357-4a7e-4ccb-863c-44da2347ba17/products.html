@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARMS FOCUS - 产品</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2B3A30;
+            --color-secondary: #1A1F1C;
+            --color-background: #0B0D0E;
+            --color-surface: #16191C;
+            --color-text: #E8EAED;
+            --color-textMuted: #7A818A;
+            --color-accent: #D4AF37;
+            --font-heading: Archivo, sans-serif;
+            --font-body: Plus Jakarta Sans, sans-serif;
+            --spacing-unit: 8px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        /* Main Navigation – 与首页完全一致 */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--spacing-unit) * 4);
+            padding: 18px 40px;
+            background: rgba(11, 13, 14, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+            z-index: 1000;
+        }
+
+        .main-nav a {
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            position: relative;
+            transition: color var(--transition);
+            padding: 6px 2px;
+        }
+
+        .main-nav a:hover {
+            color: var(--color-text);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: width var(--transition);
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .main-nav a.nav-cta {
+            background: var(--color-accent) !important;
+            color: var(--color-secondary) !important;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .main-nav a.nav-cta:hover {
+            background: #c49a2f !important;
+            color: var(--color-secondary) !important;
+        }
+
+        .main-nav a.nav-cta::after {
+            display: none;
+        }
+
+        /* 页面特有样式 - 网格布局 */
+        .products-page {
+            padding-top: 100px;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-bottom: 80px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            margin-bottom: 16px;
+        }
+
+        .page-header p {
+            color: var(--color-textMuted);
+            font-size: 1rem;
+            max-width: 580px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .accent-bar {
+            width: 60px;
+            height: 2px;
+            background: var(--color-accent);
+            margin: 18px auto 0;
+        }
+
+        /* 分类筛选 */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 48px;
+        }
+
+        .filter-btn {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            background: transparent;
+            border: 1px solid rgba(122, 129, 138, 0.25);
+            padding: 8px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            background: rgba(212, 175, 55, 0.06);
+        }
+
+        /* 产品网格 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .product-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid rgba(122, 129, 138, 0.12);
+            transition: transform 0.4s ease, border-color var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: var(--color-secondary);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.25) contrast(1.1);
+            transition: transform 0.6s ease, filter 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+            filter: grayscale(0) contrast(1);
+        }
+
+        .product-info {
+            padding: 20px 18px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-category {
+            font-family: var(--font-heading);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 6px;
+        }
+
+        .product-name {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 6px;
+        }
+
+        .product-specs {
+            color: var(--color-textMuted);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .product-specs span {
+            display: block;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(122, 129, 138, 0.1);
+        }
+
+        .product-price {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .product-link {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color var(--transition);
+            padding: 6px 0;
+        }
+
+        .product-link:hover {
+            color: var(--color-accent);
+        }
+
+        /* Footer – 与首页一致 */
+        .site-footer {
+            border-top: 1px solid rgba(122, 129, 138, 0.1);
+            padding: 40px 40px 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .site-footer .footer-brand {
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+        }
+
+        .site-footer .footer-links {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .site-footer .footer-links a {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            transition: color var(--transition);
+        }
+
+        .site-footer .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        .site-footer .footer-copy {
+            font-size: 0.7rem;
+            color: rgba(122, 129, 138, 0.5);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .main-nav {
+                padding: 14px 20px;
+                gap: calc(var(--spacing-unit) * 2.5);
+            }
+            .main-nav a {
+                font-size: 0.65rem;
+            }
+            .main-nav a.nav-cta {
+                padding: 6px 14px;
+                font-size: 0.6rem;
+            }
+            .products-page {
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-top: 80px;
+            }
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 20px;
+            }
+            .site-footer {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px 24px;
+            }
+            .site-footer .footer-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            .filter-bar {
+                gap: 8px;
+            }
+            .filter-btn {
+                font-size: 0.6rem;
+                padding: 6px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 – 与首页完全一致，标记 active -->
+    <nav class="main-nav">
+        <a href="index.html">首页</a>
+        <a href="about.html">品牌</a>
+        <a href="products.html" style="color: var(--color-text);">产品</a>
+        <a href="contact.html" class="nav-cta">联系</a>
+    </nav>
+
+    <!-- 产品页面主内容 -->
+    <main class="products-page">
+
+        <!-- 页面头部 -->
+        <header class="page-header">
+            <h1>全系列产品</h1>
+            <p>步枪 · 手枪 · 光学瞄准镜 · 战术配件 — 精密工程，只为极致性能。</p>
+            <div class="accent-bar"></div>
+        </header>
+
+        <!-- 分类筛选 -->
+        <div class="filter-bar">
+            <button class="filter-btn active">全部</button>
+            <button class="filter-btn">步枪</button>
+            <button class="filter-btn">手枪</button>
+            <button class="filter-btn">瞄准镜</button>
+            <button class="filter-btn">战术配件</button>
+        </div>
+
+        <!-- 产品网格 -->
+        <div class="product-grid">
+
+            <!-- 产品卡 1 — 步枪 -->
+            <div class="product-card" data-category="步枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/6566976/pexels-photo-6566976.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="ARMS FOCUS 狙击步枪" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">步枪</div>
+                    <div class="product-name">AF-308 精确射手</div>
+                    <div class="product-specs">
+                        <span>口径 .308 Win</span>
+                        <span>枪管 20" 重型不锈钢</span>
+                        <span>弹匣容量 10/20 发</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$2,890</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 2 — 手枪 -->
+            <div class="product-card" data-category="手枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/18326134/pexels-photo-18326134.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="ARMS FOCUS 战术手枪" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">手枪</div>
+                    <div class="product-name">AF-9 战术紧凑型</div>
+                    <div class="product-specs">
+                        <span>口径 9×19mm</span>
+                        <span>枪管 4.25" 螺纹</span>
+                        <span>弹匣容量 17 发</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$1,150</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 3 — 瞄准镜 -->
+            <div class="product-card" data-category="瞄准镜">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/5910470/pexels-photo-5910470.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="ARMS FOCUS 光学瞄准镜" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">瞄准镜</div>
+                    <div class="product-name">AF 4-16×50 FFP</div>
+                    <div class="product-specs">
+                        <span>倍率 4-16×</span>
+                        <span>物镜 50mm 全多层镀膜</span>
+                        <span>照明分化板 / 视差调节</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$1,690</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 4 — 战术配件 -->
+            <div class="product-card" data-category="战术配件">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/9267495/pexels-photo-9267495.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="ARMS FOCUS 战术导轨系统" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">战术配件</div>
+                    <div class="product-name">AF M-LOK 护木</div>
+                    <div class="product-specs">
+                        <span>长度 10.5" / 13.5"</span>
+                        <span>材质 7075-T6 铝合金</span>
+                        <span>重量 275g / 340g</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$290</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 5 — 步枪 -->
+            <div class="product-card" data-category="步枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/6669182/pexels-photo-6669182.jpeg?auto=compress&cs=tinysrgb&h=350" alt="ARMS FOCUS 突击步枪" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">步枪</div>
+                    <div class="product-name">AF-556 卡宾枪</div>
+                    <div class="product-specs">
+                        <span>口径 5.56×45mm</span>
+                        <span>枪管 16" 冷锻</span>
+                        <span>弹匣容量 30 发</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$1,890</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 6 — 手枪 -->
+            <div class="product-card" data-category="手枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/6091659/pexels-photo-6091659.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="ARMS FOCUS 竞赛手枪" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">手枪</div>
+                    <div class="product-name">AF-45 竞赛级</div>
+                    <div class="product-specs">
+                        <span>口径 .45 ACP</span>
+                        <span>枪管 5.5" 竞赛级</span>
+                        <span>弹匣容量 13 发</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$1,590</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 7 — 瞄准镜 -->
+            <div class="product-card" data-category="瞄准镜">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/27152199/pexels-photo-27152199.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="ARMS FOCUS 红点瞄准镜" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">瞄准镜</div>
+                    <div class="product-name">AF RDS-1 红点</div>
+                    <div class="product-specs">
+                        <span>倍率 1×</span>
+                        <span>窗口 30mm / 自动亮度</span>
+                        <span>夜视兼容 / 防水</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$490</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品卡 8 — 战术配件 -->
+            <div class="product-card" data-category="战术配件">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/6642770/pexels-photo-6642770.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="ARMS FOCUS 战术枪托" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">战术配件</div>
+                    <div class="product-name">AF 可折叠枪托</div>
+                    <div class="product-specs">
+                        <span>5 段可调 LOP</span>
+                        <span>材质 聚合物 + 铝芯</span>
+                        <span>折叠方向 左侧</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$220</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增狙击枪 1 — 高精度狙击步枪 -->
+            <div class="product-card" data-category="步枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/28117314/pexels-photo-28117314.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="高精度狙击步枪" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">步枪</div>
+                    <div class="product-name">AF-300 高精度狙击步枪</div>
+                    <div class="product-specs">
+                        <span>口径 .300 Win Mag</span>
+                        <span>枪管 26" 竞赛级不锈钢</span>
+                        <span>弹匣容量 5 发</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$4,290</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增狙击枪 2 — 战术狙击系统 -->
+            <div class="product-card" data-category="步枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/2244607/pexels-photo-2244607.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="战术狙击系统" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">步枪</div>
+                    <div class="product-name">AF-TAC 战术狙击系统</div>
+                    <div class="product-specs">
+                        <span>口径 7.62×51mm</span>
+                        <span>枪管 22" 重型螺旋槽</span>
+                        <span>多功能导轨 / 可调枪托</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$3,590</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增狙击枪 3 — 反器材狙击步枪 -->
+            <div class="product-card" data-category="步枪">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/9725702/pexels-photo-9725702.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="反器材狙击步枪" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">步枪</div>
+                    <div class="product-name">AF-50 反器材狙击步枪</div>
+                    <div class="product-specs">
+                        <span>口径 .50 BMG</span>
+                        <span>枪管 29" 重型</span>
+                        <span>弹匣容量 5 发</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$6,890</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增狙击枪 4 — 精确战术瞄准镜 -->
+            <div class="product-card" data-category="瞄准镜">
+                <div class="product-image">
+                    <img src="https://images.pexels.com/photos/5910470/pexels-photo-5910470.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="战术瞄准系统" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-category">瞄准镜</div>
+                    <div class="product-name">AF 5-25×56 战术瞄准系统</div>
+                    <div class="product-specs">
+                        <span>倍率 5-25×</span>
+                        <span>物镜 56mm ED 镜片</span>
+                        <span>精密分化板 / 带激光测距</span>
+                    </div>
+                    <div class="product-footer">
+                        <span class="product-price">$2,490</span>
+                        <a href="#" class="product-link">查看详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer – 与首页一致 -->
+    <footer class="site-footer">
+        <div class="footer-brand">ARMS FOCUS</div>
+        <div class="footer-links">
+            <a href="index.html">首页</a>
+            <a href="about.html">品牌</a>
+            <a href="products.html">产品</a>
+            <a href="contact.html">联系</a>
+        </div>
+        <div class="footer-copy">© 2026 ARMS FOCUS. 保留所有权利.</div>
+    </footer>
+
+</body>
+</html>

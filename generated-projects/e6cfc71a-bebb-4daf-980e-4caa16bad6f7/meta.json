@@ -1,0 +1,10 @@
+{
+  "projectId" : "e6cfc71a-bebb-4daf-980e-4caa16bad6f7",
+  "originalInput" : "生成一个奶茶品牌官网",
+  "projectName" : null,
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>山屿茶 · 自然手作奶茶</title>\n <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n <link href=\"https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@300...",
+  "designConcept" : "{\n  \"colorPalette\": {\n    \"primary\": \"#C48B5C\",\n    \"secondary\": \"#E5D0C1\",\n    \"background\": \"#FAF6F2\",\n    \"surface\": \"#FFFFFF\",\n    \"text\": \"#2D2420\",\n    \"textMuted\": \"#8A7B74\",\n    \"accent\": \"#6B9080\"\n  },\n  \"typography\": {\n    \"headingFont\": \"DM Serif Display, Noto Serif SC, serif\",\n    \"bodyFont\": \"Plus Jakarta Sans, Noto Sans SC, sans-serif\",\n    \"scale\": 1.414\n  },\n  \"spacing\": {\n    \"unit\": \"0.5rem\",\n    \"scale\": 1.618\n  },\n  \"layoutDirection\": \"沉浸式全屏Hero + 弧形过渡内容区 + 双栏特性展示 + 交错网格画廊\",\n  \"mood\": \"自然清新, 温暖治愈, 质感现代\"\n}",
+  "reviewPassed" : true,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 5, 8, 13, 35, 17, 788116500 ]
+}

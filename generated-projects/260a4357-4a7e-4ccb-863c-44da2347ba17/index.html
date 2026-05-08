@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARMS FOCUS | 精密装备</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #2B3A30;
+            --color-secondary: #1A1F1C;
+            --color-background: #0B0D0E;
+            --color-surface: #16191C;
+            --color-text: #E8EAED;
+            --color-textMuted: #7A818A;
+            --color-accent: #D4AF37;
+            --font-heading: Archivo, sans-serif;
+            --font-body: Plus Jakarta Sans, sans-serif;
+            --spacing-unit: 8px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-background);
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        a:hover {
+            color: #e6c25b;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.15;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        h1 {
+            font-size: clamp(2.6rem, 6vw, 5rem);
+            font-weight: 900;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            letter-spacing: 0.08em;
+        }
+
+        h3 {
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+            letter-spacing: 0.04em;
+        }
+
+        .text-muted {
+            color: var(--color-textMuted);
+        }
+
+        .accent {
+            color: var(--color-accent);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 3);
+        }
+
+        .section-label {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            display: inline-block;
+            border-left: 3px solid var(--color-accent);
+            padding-left: calc(var(--spacing-unit) * 1.5);
+        }
+
+        /* Header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(11, 13, 14, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+            z-index: 1000;
+            padding: 0 calc(var(--spacing-unit) * 3);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1280px;
+            margin: 0 auto;
+            height: 72px;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 1.5);
+        }
+
+        .logo-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text);
+        }
+
+        .logo-text span {
+            color: var(--color-accent);
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 4);
+        }
+
+        .main-nav a {
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            position: relative;
+            transition: color var(--transition);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--color-accent);
+            transition: width var(--transition);
+        }
+
+        .main-nav a:hover {
+            color: var(--color-text);
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--color-accent) !important;
+            color: var(--color-secondary) !important;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            background: #e6c25b !important;
+            color: var(--color-secondary) !important;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            background: var(--color-background);
+            overflow: hidden;
+            padding-top: 72px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.45;
+            filter: grayscale(0.4) contrast(1.1);
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(11,13,14,0.3) 0%, rgba(11,13,14,0.85) 70%, var(--color-background) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 1280px;
+            padding: 0 calc(var(--spacing-unit) * 3);
+            padding-bottom: clamp(60px, 12vh, 120px);
+        }
+
+        .hero-badge {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            display: inline-block;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+        }
+
+        .hero-title {
+            max-width: 800px;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+            color: var(--color-textMuted);
+            max-width: 560px;
+            margin-bottom: calc(var(--spacing-unit) * 5);
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 3);
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: calc(var(--spacing-unit) * 1.5);
+            padding: 14px 32px;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--color-text);
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: var(--color-secondary);
+        }
+
+        .btn-primary:hover {
+            background: #e6c25b;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 1.5px solid var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .btn-outline:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Showcase / Gallery Section */
+        .showcase {
+            background: var(--color-background);
+            padding: clamp(60px, 10vh, 120px) 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.06);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
+        }
+
+        .showcase-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: calc(var(--spacing-unit) * 8);
+        }
+
+        .showcase-header h2 {
+            max-width: 600px;
+        }
+
+        .showcase-header p {
+            max-width: 480px;
+            margin-top: calc(var(--spacing-unit) * 2);
+            color: var(--color-textMuted);
+            font-size: 0.95rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: calc(var(--spacing-unit) * 3);
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--color-surface);
+            aspect-ratio: 4 / 3;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+            border: 1px solid rgba(212, 175, 55, 0.06);
+        }
+
+        .gallery-item:nth-child(3),
+        .gallery-item:nth-child(4) {
+            aspect-ratio: 16 / 9;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.5s ease;
+            filter: grayscale(0.3) contrast(1.1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0) contrast(1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2.5);
+            background: linear-gradient(0deg, rgba(11,13,14,0.9) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .gallery-overlay span {
+            font-size: 0.72rem;
+            color: var(--color-accent);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-family: var(--font-heading);
+        }
+
+        /* Feature / Specs Sidebar layout */
+        .specs-section {
+            background: var(--color-surface);
+            padding: clamp(50px, 8vh, 100px) 0;
+        }
+
+        .specs-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 8);
+            align-items: center;
+        }
+
+        .specs-visual {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 4 / 5;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .specs-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.25) contrast(1.15);
+        }
+
+        .specs-info {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--spacing-unit) * 4);
+        }
+
+        .specs-info h2 {
+            max-width: 400px;
+        }
+
+        .specs-desc {
+            color: var(--color-textMuted);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .spec-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 2.5);
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .spec-item {
+            padding: calc(var(--spacing-unit) * 2);
+            background: rgba(11, 13, 14, 0.4);
+            border-radius: var(--radius-sm);
+            border-left: 2px solid var(--color-accent);
+        }
+
+        .spec-item .label {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-textMuted);
+            font-family: var(--font-heading);
+            margin-bottom: 4px;
+        }
+
+        .spec-item .value {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--color-text);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: var(--color-background);
+            padding: clamp(50px, 8vh, 100px) 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 6);
+            align-items: center;
+        }
+
+        .testimonial-image {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .testimonial-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.3) contrast(1.1);
+        }
+
+        .testimonial-content blockquote {
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+            line-height: 1.8;
+            color: var(--color-text);
+            font-style: italic;
+            padding: calc(var(--spacing-unit) * 3) 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+
+        .testimonial-author {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--color-accent);
+            font-size: 0.9rem;
+        }
+
+        .testimonial-author span {
+            color: var(--color-textMuted);
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.8rem;
+            letter-spacing: normal;
+            font-style: normal;
+        }
+
+        /* CTA / Contact */
+        .cta-section {
+            background: var(--color-secondary);
+            padding: clamp(50px, 8vh, 100px) 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.08);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .cta-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 8);
+            align-items: center;
+        }
+
+        .cta-content h2 {
+            max-width: 450px;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .cta-content p {
+            color: var(--color-textMuted);
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            max-width: 420px;
+        }
+
+        .cta-image {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+        }
+
+        .cta-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.25) contrast(1.1);
+        }
+
+        /* Footer */
+        .site-footer {
+            background: var(--color-background);
+            padding: calc(var(--spacing-unit) * 8) 0 calc(var(--spacing-unit) * 4);
+            border-top: 1px solid rgba(212, 175, 55, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 6);
+            margin-bottom: calc(var(--spacing-unit) * 6);
+        }
+
+        .footer-brand p {
+            color: var(--color-textMuted);
+            font-size: 0.85rem;
+            max-width: 320px;
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .footer-col h5 {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            font-weight: 600;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--color-textMuted);
+            font-size: 0.85rem;
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            transition: color var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: calc(var(--spacing-unit) * 4);
+            border-top: 1px solid rgba(212, 175, 55, 0.06);
+            font-size: 0.75rem;
+            color: var(--color-textMuted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .specs-layout,
+            .testimonials-grid,
+            .cta-inner {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 5);
+            }
+
+            .specs-visual {
+                aspect-ratio: 16 / 9;
+                order: -1;
+            }
+
+            .testimonial-image {
+                order: -1;
+            }
+
+            .cta-image {
+                order: -1;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                height: 64px;
+            }
+
+            .main-nav a:not(.nav-cta) {
+                display: none;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 2);
+            }
+
+            .gallery-item {
+                aspect-ratio: 16 / 9 !important;
+            }
+
+            .hero-content {
+                padding-bottom: 60px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .spec-list {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--spacing-unit) * 4);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: calc(var(--spacing-unit) * 2);
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 calc(var(--spacing-unit) * 2);
+            }
+
+            .site-header {
+                padding: 0 calc(var(--spacing-unit) * 2);
+            }
+
+            .logo-text {
+                font-size: 0.9rem;
+            }
+
+            .nav-cta {
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.75rem;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ======= HEADER ======= -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="logo-link">
+                <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/c2/20260508/c70535fc/aa231ac6-2f08-493e-b3cb-7125670a9d34-1.png?Expires=1778315073&OSSAccessKeyId=STS.NYQxvPGWEoHa5E59P9Xw3PWSo&Signature=Q2Lmfno%2FJnFGC%2B%2BUQWtQA0pCt18%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rkM8zkqohk2IqKN2OE3VBsVPgfv5L4jTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb43ovYjiM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGAs9ILwyeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET855X7jCuU5wGoABKV58xJ%2FpQQTu7AfcHRERCmRDzUkdn41a%2FTsBP%2F9T5JHYRlEJKJUYjgXhdwXQo%2FJx0bh2xgnqSIC5Hb2IpOPBhKCxwWSKYNhbsMfRlCzp380%2BWqPGvfbaKbfUgy7w4qTIMMkLV8H5DjOQyCQS8kfSRUA2Q1tjhGHu65QlKSu0Po4gAA%3D%3D" alt="ARMS FOCUS 标志" class="logo-img" width="42" height="42" loading="eager">
+                <span class="logo-text">ARMS <span>FOCUS</span></span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html">首页</a>
+                <a href="about.html">品牌</a>
+                <a href="products.html">产品</a>
+                <a href="contact.html" class="nav-cta">联系</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ======= HERO ======= -->
+    <section class="hero" id="home">
+        <img src="https://images.pexels.com/photos/27152199/pexels-photo-27152199.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="精密装备主视觉" class="hero-bg" width="3512" height="6240" loading="eager">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-badge">第75届国际防卫展 · 首发</span>
+            <h1 class="hero-title">精准，<br class="hide-mobile">从未如此 <span class="accent">纯粹</span></h1>
+            <p class="hero-sub">从精密机械到战术系统，ARMS FOCUS 以军工级标准重塑操作体验。每一处细节，都为专业而生。</p>
+            <div class="hero-actions">
+                <a href="products.html" class="btn btn-primary">探索产品线</a>
+                <a href="about.html" class="btn btn-outline">了解品牌</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= GALLERY / SHOWCASE ======= -->
+    <section class="showcase" id="showcase">
+        <div class="container">
+            <div class="showcase-header">
+                <span class="section-label">产品精选</span>
+                <h2>当代装备 · 工业美学</h2>
+                <p>从竞技射击到战术防卫，每一款产品都经过严苛的工程验证。</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/6566976/pexels-photo-6566976.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="战术步枪系统" width="5600" height="3733" loading="eager">
+                    <div class="gallery-overlay">
+                        <h4>AR-15 战术平台</h4>
+                        <span>精密机匣 · 模块化护木</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/18326134/pexels-photo-18326134.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="竞技手枪" width="4672" height="7008" loading="eager">
+                    <div class="gallery-overlay">
+                        <h4>X-9 竞赛手枪</h4>
+                        <span>竞赛级扳机 · 钨钢滑套</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/5910470/pexels-photo-5910470.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="精密瞄准镜" width="4256" height="2832" loading="eager">
+                    <div class="gallery-overlay">
+                        <h4>VORTEX 高清瞄准镜</h4>
+                        <span>ED 玻璃 · 钛合金镜筒</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.pexels.com/photos/9267495/pexels-photo-9267495.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="战术配件" width="4256" height="2832" loading="eager">
+                    <div class="gallery-overlay">
+                        <h4>模块化战术套件</h4>
+                        <span>M-LOK 导轨 · 人体工学握把</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= SPECS / FEATURES ======= -->
+    <section class="specs-section" id="specs">
+        <div class="container specs-layout">
+            <div class="specs-visual">
+                <img src="https://images.pexels.com/photos/6091659/pexels-photo-6091659.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="功能特色展示" width="4000" height="6000" loading="eager">
+            </div>
+            <div class="specs-info">
+                <span class="section-label">核心参数</span>
+                <h2>工程学的极致表达</h2>
+                <p class="specs-desc">从材料科学到人机工程，ARMS FOCUS 将每一处公差控制在微米级。冷锻枪管、航空级铝合金机匣、竞赛级扳机组，构成无懈可击的性能三角。</p>
+                <div class="spec-list">
+                    <div class="spec-item">
+                        <div class="label">枪管工艺</div>
+                        <div class="value">冷锻铬钼钢</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">扳机力</div>
+                        <div class="value">2.5 – 3.5 lb</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">口径</div>
+                        <div class="value">5.56 NATO / .223</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="label">机匣材质</div>
+                        <div class="value">7075-T6 铝</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= TESTIMONIALS ======= -->
+    <section class="testimonials" id="testimonials">
+        <div class="container testimonials-grid">
+            <div class="testimonial-image">
+                <img src="https://images.pexels.com/photos/6669182/pexels-photo-6669182.jpeg?auto=compress&cs=tinysrgb&h=350" alt="客户评价" width="6705" height="4470" loading="lazy">
+            </div>
+            <div class="testimonial-content">
+                <span class="section-label">使用者评价</span>
+                <blockquote>
+                    "ARMS FOCUS 重新定义了什么是'可靠'。在极端环境测试中，它的表现远超我的预期。精度和手感都是顶级的，这就是我信任的工具。"
+                </blockquote>
+                <div class="testimonial-author">
+                    — 马库斯·陈 <span>三届IPSC全国冠军 · 战术教官</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= CTA / CONTACT ======= -->
+    <section class="cta-section" id="contact">
+        <div class="container cta-inner">
+            <div class="cta-content">
+                <span class="section-label">合作咨询</span>
+                <h2>为专业机构提供定制方案</h2>
+                <p>执法部门、军事单位及竞技射击团队可直接联系我们的工程团队，获取专属配置建议与批量采购政策。</p>
+                <a href="contact.html" class="btn btn-primary">预约演示</a>
+            </div>
+            <div class="cta-image">
+                <img src="https://images.pexels.com/photos/9067690/pexels-photo-9067690.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="联系区配图" width="2543" height="3390" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= FOOTER ======= -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo-link" style="margin-bottom: 0;">
+                        <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/c2/20260508/c70535fc/aa231ac6-2f08-493e-b3cb-7125670a9d34-1.png?Expires=1778315073&OSSAccessKeyId=STS.NYQxvPGWEoHa5E59P9Xw3PWSo&Signature=Q2Lmfno%2FJnFGC%2B%2BUQWtQA0pCt18%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5rkM8zkqohk2IqKN2OE3VBsVPgfv5L4jTz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb43ovYjiM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGAs9ILwyeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET855X7jCuU5wGoABKV58xJ%2FpQQTu7AfcHRERCmRDzUkdn41a%2FTsBP%2F9T5JHYRlEJKJUYjgXhdwXQo%2FJx0bh2xgnqSIC5Hb2IpOPBhKCxwWSKYNhbsMfRlCzp380%2BWqPGvfbaKbfUgy7w4qTIMMkLV8H5DjOQyCQS8kfSRUA2Q1tjhGHu65QlKSu0Po4gAA%3D%3D" alt="ARMS FOCUS 标志" class="logo-img" width="42" height="42" loading="lazy">
+                        <span class="logo-text">ARMS <span>FOCUS</span></span>
+                    </a>
+                    <p>专注精密射击装备的研发与制造，服务于全球专业用户。坚守工程标准，定义行业新高度。</p>
+                </div>
+                <div class="footer-col">
+                    <h5>导航</h5>
+                    <a href="index.html">首页</a>
+                    <a href="about.html">品牌故事</a>
+                    <a href="products.html">全部产品</a>
+                    <a href="contact.html">联系我们</a>
+                </div>
+                <div class="footer-col">
+                    <h5>产品线</h5>
+                    <a href="products.html">步枪系统</a>
+                    <a href="products.html">手枪系列</a>
+                    <a href="products.html">光学瞄具</a>
+                    <a href="products.html">战术配件</a>
+                </div>
+                <div class="footer-col">
+                    <h5>支持</h5>
+                    <a href="contact.html">技术支持</a>
+                    <a href="contact.html">售后维护</a>
+                    <a href="about.html">经销商网络</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2025 ARMS FOCUS. All rights reserved.</span>
+                <span>冷峻精密 · 工业美学</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PAGES_PLAN: [{"name":"about.html","title":"品牌故事","overview":"介绍ARMS FOCUS的品牌起源、发展历程、核心设计理念和团队风采，配以团队合影与品牌标志性细节图，传递冷峻专业、精密可靠的品牌形象。","layout":"grid"},{"name":"products.html","title":"产品系列","overview":"展示ARMS FOCUS旗下全系列产品，包括步枪、手枪、光学瞄准镜、战术配件等，提供分类筛选和关键参数浏览，采用网格布局呈现产品图片与简要规格。","layout":"grid"},{"name":"contact.html","title":"联系我们","overview":"包含联系表单、服务热线、邮件地址及全球经销商列表，背景使用联系区配图，提供预约演示与批量采购咨询入口。","layout":"form"}] -->
+</body>
+</html>

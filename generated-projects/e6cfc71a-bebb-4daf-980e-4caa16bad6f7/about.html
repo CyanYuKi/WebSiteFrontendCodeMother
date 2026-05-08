@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="山屿茶 — 让我们在山屿之间，喝一杯有温度的茶。">
+    <title>关于我们 · 山屿茶</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+SC:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #C48B5C;
+            --color-secondary: #E5D0C1;
+            --color-background: #FAF6F2;
+            --color-surface: #FFFFFF;
+            --color-text: #2D2420;
+            --color-textMuted: #8A7B74;
+            --color-accent: #6B9080;
+            --font-heading: 'DM Serif Display', 'Noto Serif SC', serif;
+            --font-body: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+            --spacing-unit: 0.5rem;
+            --container-max: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* ========== Navbar ========== */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 2rem;
+            background-color: var(--color-background);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--color-text);
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-textMuted);
+            letter-spacing: 0.3px;
+            position: relative;
+            padding-bottom: 0.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--color-primary);
+        }
+
+        /* ========== About Hero ========== */
+        .about-hero {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .about-hero img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            filter: brightness(0.65) saturate(1.05);
+        }
+
+        .about-hero-overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 2rem;
+        }
+
+        .about-hero-overlay h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .about-hero-overlay p {
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.85;
+        }
+
+        /* ========== Story Section ========== */
+        .story-section {
+            padding: 5rem 0 3rem;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .story-text h2 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            color: var(--color-text);
+            margin-bottom: 1.2rem;
+            line-height: 1.3;
+        }
+
+        .story-text p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .story-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .story-image:hover img {
+            transform: scale(1.04);
+        }
+
+        /* ========== Origin / 产地 ========== */
+        .origin-section {
+            background-color: var(--color-surface);
+            padding: 4rem 0;
+        }
+
+        .origin-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .origin-content h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            text-align: center;
+            color: var(--color-text);
+        }
+
+        .origin-desc {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--color-textMuted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .origin-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .origin-card {
+            background: var(--color-background);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .origin-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .origin-card .icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            display: inline-block;
+        }
+
+        .origin-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .origin-card p {
+            font-size: 0.95rem;
+            color: var(--color-textMuted);
+            line-height: 1.6;
+        }
+
+        /* ========== Philosophy / 手作理念 ========== */
+        .philosophy-section {
+            padding: 4rem 0;
+            background: var(--color-background);
+        }
+
+        .philosophy-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .philosophy-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .philosophy-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .philosophy-image:hover img {
+            transform: scale(1.04);
+        }
+
+        .philosophy-text h2 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            color: var(--color-text);
+            margin-bottom: 1.2rem;
+            line-height: 1.3;
+        }
+
+        .philosophy-text p {
+            font-size: 1rem;
+            color: var(--color-textMuted);
+            margin-bottom: 1.2rem;
+            line-height: 1.8;
+        }
+
+        /* ========== Team Section ========== */
+        .team-section {
+            background-color: var(--color-surface);
+            padding: 4rem 0;
+        }
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .team-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--color-text);
+        }
+
+        .team-header p {
+            color: var(--color-textMuted);
+            max-width: 550px;
+            margin: 0.5rem auto 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .team-card {
+            background: var(--color-background);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+            padding-bottom: 1.5rem;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            object-position: center 20%;
+        }
+
+        .team-card h4 {
+            font-family: var(--font-heading);
+            font-size: 1.15rem;
+            margin-top: 1rem;
+            color: var(--color-text);
+        }
+
+        .team-card span {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--color-primary);
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+
+        .team-card p {
+            font-size: 0.9rem;
+            color: var(--color-textMuted);
+            padding: 0.5rem 1rem 0;
+            line-height: 1.5;
+        }
+
+        /* ========== Footer ========== */
+        .footer {
+            background-color: var(--color-text);
+            color: #eae5df;
+            padding: 3rem 2rem 1.5rem;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+            max-width: var(--container-max);
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            max-width: 280px;
+        }
+
+        .footer-brand h3 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.65);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .footer-links h4 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            max-width: var(--container-max);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 992px) {
+            .story-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .origin-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            .philosophy-inner {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .navbar {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+                justify-content: center;
+            }
+            .nav-links {
+                gap: 1.2rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .about-hero-overlay h1 {
+                font-size: 2.5rem;
+            }
+            .origin-cards {
+                grid-template-columns: 1fr;
+            }
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== Navigation ========== -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/0c/20260508/c70535fc/ce52bc3b-584b-41f4-be81-d45ddb8eafdc-1.png?Expires=1778304599&OSSAccessKeyId=STS.NZQ5Q4TUNnLVwtgSyWT9GsLn2&Signature=4NlwOGlbIMoi2eTRpZzXGC7XuJ8%3D&security-token=CAIS0QJ1q6Ft5B2yfSjIr5nkfuuAuYpv2Y69dVLWt3kCWLZrnInF0Dz2IHhMeXFoBO8fsf8%2Bnm9S7%2F0flrp6SJtIXleCZtF94oxN9h2gb4fb40JTbDiM08%2FLI3OaLjKm9u2wCryLYbGwU%2FOpbE%2B%2B5U0X6LDmdDKkckW4OJmS8%2FBOZcgWWQ%2FKBlgvRq0hRG1YpdQdKGHaONu0LxfumRCwNkdzvRdmgm4NgsbWgO%2Fks0SD0gall7ZO%2FNiqfcL%2FMvMBZskvD42Hu8VtbbfE3SJq7BxHybx7lqQs%2B02c5onAWwEMvEzZaLuOrYc2d1JjG68iFqhBrf7w0PJxpuHMnpWy0wxKMfGOwYkswiYwqiGtN5RKVr5RHd6TUxxGwk5MNwyeuEri7Sau%2BL%2Fuv371Nj4pbzJlIxqBEfSs42vhaQzYQLPO25pbv9cLiTuhk7WET3dIq8zCuU5wGoABo0Bb9vPT8T8Rc%2FDDLR%2FvyHjXeQLAs2xrMxMjECASTBOOTr5vU%2BEB4nagm6YW8l7298uYiK8RgAyRttewR5JQ7qG6ssHgNLpHfTzROSD3StkG3XuyfMBciNXyj5ZceTLhWNyTy%2F6VA9J4AKrt2gkOtwn0qYj0Kjjd8KziMMEkQNIgAA%3D%3D" alt="山屿茶 logo" loading="eager">
+            <span>山屿茶</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="about.html" class="active">我们的故事</a></li>
+            <li><a href="shop.html">线上商城</a></li>
+        </ul>
+    </nav>
+
+    <!-- ========== About Hero ========== -->
+    <section class="about-hero">
+        <img src="https://images.pexels.com/photos/17286806/pexels-photo-17286806.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="山屿茶 茶园晨雾" loading="eager">
+        <div class="about-hero-overlay">
+            <h1>山屿之间 · 一杯暖茶</h1>
+            <p>从山野到掌心，我们用质朴的手作，还原茶本真的味道</p>
+        </div>
+    </section>
+
+    <!-- ========== Story Section ========== -->
+    <section class="story-section">
+        <div class="container story-grid">
+            <div class="story-text">
+                <h2>我们的品牌故事</h2>
+                <p>
+                    山屿茶诞生于一次偶然的山间漫步。创始人林溪在福建云雾缭绕的茶山里，被一位老茶农手中那杯清澈透亮的茶汤深深打动——没有繁复的工业加工，只有阳光、雨露和手掌的温度。那一刻，她决定将这份质朴的感动带到城市里。
+                </p>
+                <p>
+                    山屿茶不是一家普通的饮品店。我们深入云南、福建、浙江的优质茶区，与世代种茶的农人合作，坚持手工采摘、传统窨制。每一片茶叶都带着山屿的气息，每一杯茶饮都倾注了手作的心意。我们相信，真正的温暖不在杯子里，而在背后那些认真生活的人手里。
+                </p>
+            </div>
+            <div class="story-image">
+                <img src="https://images.pexels.com/photos/7407330/pexels-photo-7407330.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="山间茶田" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Origin Section ========== -->
+    <section class="origin-section">
+        <div class="container origin-content">
+            <h2>茶源产地</h2>
+            <p class="origin-desc">
+                我们跨越山河，只为寻找一杯有灵魂的茶。每一片茶叶都有它的故乡，我们用心记录下每一座山屿的名字。
+            </p>
+            <div class="origin-cards">
+                <div class="origin-card">
+                    <div class="icon">🌱</div>
+                    <h3>福建 · 武夷岩茶</h3>
+                    <p>丹霞地貌的岩韵花香，数十年老枞水仙，炭焙工艺层层渗透，茶汤醇厚绵长。</p>
+                </div>
+                <div class="origin-card">
+                    <div class="icon">🍃</div>
+                    <h3>云南 · 普洱秘境</h3>
+                    <p>原始森林里的古树茶，叶片肥厚，内质丰富。自然陈化，越陈越香。</p>
+                </div>
+                <div class="origin-card">
+                    <div class="icon">🌸</div>
+                    <h3>浙江 · 西湖龙井</h3>
+                    <p>狮峰山下的群体种，明前采摘，手工辉锅。豆花香清雅，鲜爽甘甜。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Philosophy Section ========== -->
+    <section class="philosophy-section">
+        <div class="container philosophy-inner">
+            <div class="philosophy-image">
+                <img src="https://images.pexels.com/photos/8473953/pexels-photo-8473953.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="手作茶过程" loading="lazy">
+            </div>
+            <div class="philosophy-text">
+                <h2>手作理念</h2>
+                <p>
+                    在机械量产的时代，我们固执地选择“慢”。山屿茶的每一款茶饮，都坚持手工现泡、现调。从水温的把控到浸泡的时间，从手打鲜果到拉花装饰，每一个步骤都由茶饮师亲手完成。
+                </p>
+                <p>
+                    我们拒绝使用茶粉、奶精和人工添加剂。只用原叶茶、鲜牛乳和当季水果。手作最大的意义，是让你在每一口茶汤里，都能喝到制作者的用心——那是一份无法被机器取代的温暖。
+                </p>
+                <p>
+                    我们相信，好的茶饮会让人慢下来。在忙碌的日常里，给自己一杯茶的时间，感受山屿之间的宁静与治愈。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Team Section ========== -->
+    <section class="team-section">
+        <div class="container">
+            <div class="team-header">
+                <h2>创始团队</h2>
+                <p>一群因为热爱而相聚的年轻人，用匠心做一杯有温度的茶</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <img src="https://images.pexels.com/photos/22884672/pexels-photo-22884672.jpeg?auto=compress&cs=tinysrgb&h=350" alt="林溪 — 创始人" loading="lazy">
+                    <h4>林溪</h4>
+                    <span>创始人 & 首席茶人</span>
+                    <p>十年茶山行走，国家高级评茶师。坚信好茶是人与自然的对话。</p>
+                </div>
+                <div class="team-card">
+                    <img src="https://images.pexels.com/photos/7968353/pexels-photo-7968353.jpeg?auto=compress&cs=tinysrgb&h=350" alt="陈一禾 — 产品总监" loading="lazy">
+                    <h4>陈一禾</h4>
+                    <span>产品研发总监</span>
+                    <p>前米其林甜品师，将法式甜品的细腻融入中式茶饮，创意无限。</p>
+                </div>
+                <div class="team-card">
+                    <img src="https://images.pexels.com/photos/22884672/pexels-photo-22884672.jpeg?auto=compress&cs=tinysrgb&h=350" alt="周远 — 空间主理" loading="lazy">
+                    <h4>周远</h4>
+                    <span>空间与视觉主理</span>
+                    <p>建筑师出身，用光线与材质营造温暖质朴的饮茶空间。</p>
+                </div>
+                <div class="team-card">
+                    <img src="https://images.pexels.com/photos/7968353/pexels-photo-7968353.jpeg?auto=compress&cs=tinysrgb&h=350" alt="赵小满 — 运营主理" loading="lazy">
+                    <h4>赵小满</h4>
+                    <span>运营主理</span>
+                    <p>社群守护者，用真诚的服务让每一位客人感受到家的温度。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Footer ========== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h3>山屿茶</h3>
+                <p>在山屿之间，喝一杯有温度的茶。</p>
+            </div>
+            <div class="footer-links">
+                <h4>探索</h4>
+                <a href="about.html">我们的故事</a>
+                <a href="shop.html">线上商城</a>
+            </div>
+            <div class="footer-links">
+                <h4>联系</h4>
+                <a href="mailto:hello@shanyu.tea" target="_blank" rel="noopener noreferrer">hello@shanyu.tea</a>
+                <a href="https://instagram.com/shanyutea" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 山屿茶 · 手作茶饮
+        </div>
+    </footer>
+
+</body>
+</html>

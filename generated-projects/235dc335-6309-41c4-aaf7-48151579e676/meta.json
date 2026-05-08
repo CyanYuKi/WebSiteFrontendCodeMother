@@ -1,0 +1,9 @@
+{
+  "projectId" : "235dc335-6309-41c4-aaf7-48151579e676",
+  "originalInput" : "change nav background to #333",
+  "htmlCodePreview" : "<!DOCTYPE html>\n<html>\n<head>\n<title>Test</title>\n<style>\n:root {\n    --nav-bg: #333;\n    --text-light: #fff;\n    --font-main: system-ui, -apple-system, sans-serif;\n}\nbody {\n    margin: 0;\n    font-family: var(--font-main);\n}\nnav {\n    background: var(--nav-bg);\n    color: var(--text-light);\n    padding: 1rem;\n}\n</style>\n</head>\n<body>\n<nav>nav</nav>\n</body>\n</html>",
+  "designConcept" : "",
+  "reviewPassed" : false,
+  "retryCount" : 2,
+  "createdAt" : [ 2026, 5, 7, 16, 51, 41, 205239000 ]
+}
